@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {{ font-family: Arial, sans-serif; color: {{primaryColor}}; }}
+        .header {{ text-align: center; margin-bottom: 20px; }}
+        .logo {{ max-height: 100px; }}
+        table {{ width: 100%; border-collapse: collapse; }}
+        th, td {{ border: 1px solid {{primaryColor}}; padding: 8px; text-align: left; }}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="{{logo}}" alt="Company Logo" class="logo">
+        <h1>SOC2 Detailed Audit</h1>
+    </div>
+    <p>Company: {{companyName}}</p>
+    <p>Report Date: {{reportDate}}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each auditLogs}}
+            <tr>
+                <td>{{this.timestamp}}</td>
+                <td>{{this.user}}</td>
+                <td>{{this.action}}</td>
+                <td>{{this.details}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</body>
+</html>
