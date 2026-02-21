@@ -16,6 +16,7 @@
     "json2csv": "^6.0.0-alpha.2",
     "morgan": "^1.10.0",
     "node-cron": "^4.2.1",
+    "prom-client": "^15.1.0",
     "puppeteer": "^24.37.5",
     "sqlite3": "^5.1.7"
   },

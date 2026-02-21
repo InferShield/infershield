@@ -1,0 +1,224 @@
+groups:
+  - name: infershield_system
+    interval: 30s
+    rules:
+      # High CPU usage
+      - alert: HighCPUUsage
+        expr: rate(process_cpu_seconds_total[5m]) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "High CPU usage detected"
+          description: "Pod {{ $labels.kubernetes_pod_name }} CPU usage is {{ $value | humanizePercentage }}"
+
+      # Critical CPU usage
+      - alert: CriticalCPUUsage
+        expr: rate(process_cpu_seconds_total[5m]) > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          component: backend
+        annotations:
+          summary: "Critical CPU usage detected"
+          description: "Pod {{ $labels.kubernetes_pod_name }} CPU usage is {{ $value | humanizePercentage }}"
+
+      # High memory usage
+      - alert: HighMemoryUsage
+        expr: process_resident_memory_bytes / 1073741824 > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "High memory usage detected"
+          description: "Pod {{ $labels.kubernetes_pod_name }} memory usage is {{ $value }} GB"
+
+      # Pod restart rate
+      - alert: HighPodRestartRate
+        expr: rate(kube_pod_container_status_restarts_total[15m]) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          component: backend
+        annotations:
+          summary: "High pod restart rate"
+          description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} is restarting frequently"
+
+      # Pod not ready
+      - alert: PodNotReady
+        expr: kube_pod_status_ready{condition="false"} == 1
+        for: 10m
+        labels:
+          severity: critical
+          component: backend
+        annotations:
+          summary: "Pod not ready"
+          description: "Pod {{ $labels.pod }} in namespace {{ $labels.namespace }} has been not ready for 10 minutes"
+
+  - name: infershield_api
+    interval: 30s
+    rules:
+      # High error rate
+      - alert: HighErrorRate
+        expr: rate(http_requests_total{status_code=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High API error rate"
+          description: "Error rate is {{ $value | humanizePercentage }} on {{ $labels.method }} {{ $labels.route }}"
+
+      # Critical error rate
+      - alert: CriticalErrorRate
+        expr: rate(http_requests_total{status_code=~"5.."}[5m]) / rate(http_requests_total[5m]) > 0.15
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "Critical API error rate"
+          description: "Error rate is {{ $value | humanizePercentage }} on {{ $labels.method }} {{ $labels.route }}"
+
+      # High latency (p95)
+      - alert: HighLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 3
+        for: 5m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "High API latency"
+          description: "P95 latency is {{ $value }}s on {{ $labels.method }} {{ $labels.route }}"
+
+      # Very high latency (p95)
+      - alert: VeryHighLatency
+        expr: histogram_quantile(0.95, rate(http_request_duration_seconds_bucket[5m])) > 10
+        for: 2m
+        labels:
+          severity: critical
+          component: api
+        annotations:
+          summary: "Very high API latency"
+          description: "P95 latency is {{ $value }}s on {{ $labels.method }} {{ $labels.route }}"
+
+      # Low request rate (possible outage)
+      - alert: LowRequestRate
+        expr: rate(http_requests_total[5m]) < 0.1
+        for: 10m
+        labels:
+          severity: warning
+          component: api
+        annotations:
+          summary: "Low API request rate"
+          description: "Request rate is {{ $value }} req/s, possible outage or traffic drop"
+
+  - name: infershield_business
+    interval: 1m
+    rules:
+      # High report generation failure rate
+      - alert: HighReportFailureRate
+        expr: rate(reports_generated_total{status="failure"}[10m]) / rate(reports_generated_total[10m]) > 0.1
+        for: 10m
+        labels:
+          severity: warning
+          component: reporting
+        annotations:
+          summary: "High report generation failure rate"
+          description: "{{ $value | humanizePercentage }} of report generations are failing"
+
+      # Slow report generation
+      - alert: SlowReportGeneration
+        expr: histogram_quantile(0.95, rate(report_generation_duration_seconds_bucket[10m])) > 30
+        for: 10m
+        labels:
+          severity: warning
+          component: reporting
+        annotations:
+          summary: "Slow report generation"
+          description: "P95 report generation time is {{ $value }}s for {{ $labels.framework }} {{ $labels.format }}"
+
+      # High policy violation rate
+      - alert: HighPolicyViolationRate
+        expr: rate(policy_violations_total{severity=~"high|critical"}[5m]) > 10
+        for: 5m
+        labels:
+          severity: warning
+          component: security
+        annotations:
+          summary: "High policy violation rate"
+          description: "{{ $value }} high/critical policy violations per second"
+
+      # Cache hit rate too low
+      - alert: LowCacheHitRate
+        expr: rate(cache_hits_total[10m]) / (rate(cache_hits_total[10m]) + rate(cache_misses_total[10m])) < 0.5
+        for: 15m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "Low cache hit rate"
+          description: "Cache hit rate is {{ $value | humanizePercentage }} for {{ $labels.cache_type }}"
+
+  - name: infershield_database
+    interval: 30s
+    rules:
+      # Database down
+      - alert: DatabaseDown
+        expr: up{job="postgresql"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: database
+        annotations:
+          summary: "Database is down"
+          description: "PostgreSQL database has been down for 1 minute"
+
+      # Slow database queries
+      - alert: SlowDatabaseQueries
+        expr: histogram_quantile(0.95, rate(db_query_duration_seconds_bucket[5m])) > 1
+        for: 10m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "Slow database queries"
+          description: "P95 query time is {{ $value }}s for {{ $labels.query_type }}"
+
+      # High database connection count
+      - alert: HighDatabaseConnections
+        expr: active_connections{type="database"} > 80
+        for: 5m
+        labels:
+          severity: warning
+          component: database
+        annotations:
+          summary: "High database connection count"
+          description: "{{ $value }} active database connections"
+
+  - name: infershield_redis
+    interval: 30s
+    rules:
+      # Redis down
+      - alert: RedisDown
+        expr: up{job="redis"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          component: cache
+        annotations:
+          summary: "Redis is down"
+          description: "Redis cache has been down for 1 minute"
+
+      # High Redis memory usage
+      - alert: HighRedisMemoryUsage
+        expr: redis_memory_used_bytes / redis_memory_max_bytes > 0.9
+        for: 5m
+        labels:
+          severity: warning
+          component: cache
+        annotations:
+          summary: "High Redis memory usage"
+          description: "Redis memory usage is {{ $value | humanizePercentage }}"
