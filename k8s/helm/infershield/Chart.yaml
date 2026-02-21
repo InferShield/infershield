@@ -1,0 +1,18 @@
+apiVersion: v2
+name: infershield
+description: AI security platform for enterprise LLM deployments
+type: application
+version: 0.3.2
+appVersion: "0.3.2"
+keywords:
+  - ai
+  - security
+  - llm
+  - compliance
+  - firewall
+home: https://infershield.io
+sources:
+  - https://github.com/InferShield/infershield
+maintainers:
+  - name: InferShield Team
+    email: security@infershield.io

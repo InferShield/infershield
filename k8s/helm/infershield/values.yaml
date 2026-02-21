@@ -1,0 +1,167 @@
+# Default values for infershield
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+image:
+  repository: ghcr.io/infershield/infershield
+  pullPolicy: IfNotPresent
+  tag: "" # defaults to appVersion from Chart.yaml
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "3000"
+  prometheus.io/path: "/metrics"
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  fsGroup: 1000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  allowPrivilegeEscalation: false
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+  annotations: {}
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/rate-limit: "100"
+  hosts:
+    - host: api.infershield.io
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: infershield-tls
+      hosts:
+        - api.infershield.io
+
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - infershield
+          topologyKey: kubernetes.io/hostname
+
+# Application configuration
+config:
+  nodeEnv: production
+  logLevel: info
+  port: 3000
+  
+  # Database
+  database:
+    host: postgres-postgresql
+    port: 5432
+    name: infershield
+    sslMode: require
+  
+  # Redis
+  redis:
+    host: redis-master
+    port: 6379
+    password: ""
+  
+  # Security
+  security:
+    encryptionEnabled: true
+    rateLimitEnabled: true
+    auditLoggingEnabled: true
+  
+  # Performance
+  performance:
+    cacheEnabled: true
+    workerThreads: 4
+    preAggregationEnabled: true
+
+# External services
+postgresql:
+  enabled: true
+  auth:
+    username: infershield
+    password: "" # set via sealed secret
+    database: infershield
+  primary:
+    persistence:
+      enabled: true
+      size: 10Gi
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 250m
+
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    password: "" # set via sealed secret
+  master:
+    persistence:
+      enabled: true
+      size: 8Gi
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+
+# Monitoring
+metrics:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    interval: 30s
+    scrapeTimeout: 10s
+
+# Secrets (use sealed-secrets or external-secrets in production)
+secrets:
+  databasePassword: ""
+  redisPassword: ""
+  jwtSecret: ""
+  encryptionKey: ""
