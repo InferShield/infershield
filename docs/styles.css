@@ -629,3 +629,64 @@ section {
 .glow {
     animation: glow-pulse 2s ease-in-out infinite;
 }
+
+/* Notice Banner */
+.notice-section {
+    padding: 40px 20px;
+    border-top: 1px solid #1a1a2e;
+}
+
+.notice-banner {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: rgba(0, 217, 255, 0.1);
+    border: 2px solid #00d9ff;
+    border-radius: 8px;
+    padding: 30px;
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.notice-icon {
+    font-size: 48px;
+    line-height: 1;
+}
+
+.notice-content h3 {
+    color: #00d9ff;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+.notice-content p {
+    color: #e0e0e0;
+    margin-bottom: 10px;
+    line-height: 1.6;
+}
+
+.notice-content p:last-child {
+    margin-bottom: 0;
+}
+
+.notice-link {
+    color: #00d9ff;
+    text-decoration: none;
+    border-bottom: 1px solid #00d9ff;
+}
+
+.notice-link:hover {
+    color: #00ffff;
+    border-bottom-color: #00ffff;
+}
+
+@media (max-width: 768px) {
+    .notice-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .notice-icon {
+        font-size: 36px;
+    }
+}
