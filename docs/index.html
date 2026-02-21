@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InferShield - Open Source Security for LLM Inference</title>
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <!-- Animated Background -->
+    <canvas id="matrix" class="matrix-bg"></canvas>
+    
+    <main class="container">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="ascii-logo">
+██╗███╗   ██╗███████╗███████╗██████╗ ███████╗██╗  ██╗██╗███████╗██╗     ██████╗ 
+██║████╗  ██║██╔════╝██╔════╝██╔══██╗██╔════╝██║  ██║██║██╔════╝██║     ██╔══██╗
+██║██╔██╗ ██║█████╗  █████╗  ██████╔╝███████╗███████║██║█████╗  ██║     ██║  ██║
+██║██║╚██╗██║██╔══╝  ██╔══╝  ██╔══██╗╚════██║██╔══██║██║██╔══╝  ██║     ██║  ██║
+██║██║ ╚████║██║     ███████╗██║  ██║███████║██║  ██║██║███████╗███████╗██████╔╝
+╚═╝╚═╝  ╚═══╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝ 
+            </div>
+            
+            <h1 class="glow">OPEN SOURCE SECURITY FOR LLM INFERENCE</h1>
+            
+            <p class="tagline">
+                <span class="prompt">></span> Self-hosted. Provider-agnostic. Free forever.
+            </p>
+            
+            <div class="badges">
+                <span class="badge">✓ OPEN SOURCE</span>
+                <span class="badge">✓ SELF-HOSTED</span>
+                <span class="badge">✓ ZERO-TRUST</span>
+            </div>
+            
+            <div class="cta-buttons">
+                <a href="#waitlist" class="btn btn-primary">JOIN WAITLIST</a>
+                <a href="https://github.com/infershield" class="btn btn-secondary">VIEW ON GITHUB</a>
+            </div>
+            
+            <p class="meta">// Launch: March 2026 | MIT Licensed</p>
+        </section>
+
+        <!-- Live Threat Detection Demo -->
+        <section class="demo-section">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">infershield-proxy@localhost:8000</span>
+                </div>
+                <div class="terminal-body" id="demo-output">
+                    <div class="log-line"><span class="timestamp">[17:42:03]</span> <span class="info">INFO</span> Proxy started on port 8000</div>
+                    <div class="log-line"><span class="timestamp">[17:42:05]</span> <span class="info">INFO</span> Connected to OpenAI API</div>
+                    <div class="log-line"><span class="timestamp">[17:42:08]</span> <span class="success">PASS</span> Request ID: req_abc123 | Risk: 0 | Latency: 42ms</div>
+                    <div class="log-line"><span class="timestamp">[17:42:12]</span> <span class="warning">DETECT</span> Prompt injection attempt detected</div>
+                    <div class="log-line threat-detail">
+                        <span class="prompt">    └─></span> Pattern: "Ignore previous instructions"<br>
+                        <span class="prompt">    └─></span> Risk Score: 85/100<br>
+                        <span class="prompt">    └─></span> Action: BLOCKED
+                    </div>
+                    <div class="log-line"><span class="timestamp">[17:42:15]</span> <span class="danger">BLOCK</span> Request ID: req_def456 | Risk: 85 | Threat: PROMPT_INJECTION</div>
+                    <div class="log-line"><span class="timestamp">[17:42:18]</span> <span class="success">PASS</span> Request ID: req_ghi789 | Risk: 5 | Latency: 38ms</div>
+                </div>
+                <div class="scanline"></div>
+            </div>
+        </section>
+
+        <!-- The Problem -->
+        <section class="problem-section">
+            <h2 class="section-title">
+                <span class="comment">// THE LLM SECURITY GAP</span>
+            </h2>
+            
+            <div class="stat-grid">
+                <div class="stat-card">
+                    <div class="stat-label">GARTNER PREDICTION</div>
+                    <div class="stat-value glow">60%</div>
+                    <div class="stat-desc">of AI enterprises will face security incidents by 2027</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">ATTACK SURFACE</div>
+                    <div class="stat-value glow">10x</div>
+                    <div class="stat-desc">deployment speed vs. security implementation</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">COMPLIANCE GAP</div>
+                    <div class="stat-value glow">73%</div>
+                    <div class="stat-desc">of CISOs can't answer basic AI audit questions</div>
+                </div>
+            </div>
+            
+            <div class="threat-grid">
+                <div class="threat-card error">
+                    <div class="threat-header">
+                        <span class="threat-icon">⚠</span>
+                        <span class="threat-code">[THREAT_001]</span>
+                    </div>
+                    <h3>Prompt Injection</h3>
+                    <p>Attackers manipulate LLM behavior through crafted inputs. Your WAF won't catch it.</p>
+                </div>
+                
+                <div class="threat-card error">
+                    <div class="threat-header">
+                        <span class="threat-icon">⚠</span>
+                        <span class="threat-code">[THREAT_002]</span>
+                    </div>
+                    <h3>Data Exfiltration</h3>
+                    <p>Sensitive credentials leak through LLM responses. No audit trail exists.</p>
+                </div>
+                
+                <div class="threat-card error">
+                    <div class="threat-header">
+                        <span class="threat-icon">⚠</span>
+                        <span class="threat-code">[THREAT_003]</span>
+                    </div>
+                    <h3>Jailbreak Attempts</h3>
+                    <p>Users bypass safety guardrails. Your SIEM has no visibility.</p>
+                </div>
+                
+                <div class="threat-card error">
+                    <div class="threat-header">
+                        <span class="threat-icon">⚠</span>
+                        <span class="threat-code">[THREAT_004]</span>
+                    </div>
+                    <h3>Compliance Violations</h3>
+                    <p>Auditors demand proof. You have no logs, no controls, no answers.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="solution-section">
+            <h2 class="section-title">
+                <span class="comment">// HOW INFERSHIELD WORKS</span>
+            </h2>
+            
+            <div class="architecture">
+                <div class="arch-box">
+                    <div class="arch-label">YOUR APP</div>
+                    <div class="arch-code">app.py / server.js</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box highlight">
+                    <div class="arch-label">INFERSHIELD PROXY</div>
+                    <div class="arch-code">localhost:8000</div>
+                    <div class="arch-features">
+                        ✓ Threat Detection<br>
+                        ✓ Policy Enforcement<br>
+                        ✓ Audit Logging
+                    </div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box">
+                    <div class="arch-label">ANY LLM</div>
+                    <div class="arch-code">OpenAI | Anthropic | Google</div>
+                </div>
+            </div>
+            
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">quick-start.sh</span>
+                </div>
+                <div class="terminal-body">
+                    <div class="code-line"><span class="comment"># Install InferShield (< 60 seconds)</span></div>
+                    <div class="code-line"><span class="prompt">$</span> docker pull infershield/proxy:latest</div>
+                    <div class="code-line"><span class="prompt">$</span> docker run -p 8000:8000 \\</div>
+                    <div class="code-line">    -e OPENAI_API_KEY=sk-xxx \\</div>
+                    <div class="code-line">    infershield/proxy</div>
+                    <div class="code-line">&nbsp;</div>
+                    <div class="code-line"><span class="comment"># Update your code (one line change)</span></div>
+                    <div class="code-line"><span class="strike">client = OpenAI(base_url="https://api.openai.com/v1")</span></div>
+                    <div class="code-line"><span class="success-text">client = OpenAI(base_url="http://localhost:8000/v1")</span></div>
+                    <div class="code-line">&nbsp;</div>
+                    <div class="code-line"><span class="success-text">✓ Done. Every request now protected.</span></div>
+                </div>
+            </div>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3>🛡️ Real-Time Protection</h3>
+                    <ul>
+                        <li>Prompt injection detection</li>
+                        <li>Data exfiltration blocking</li>
+                        <li>Jailbreak prevention</li>
+                        <li>Custom policy rules</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>📊 Complete Visibility</h3>
+                    <ul>
+                        <li>Every request logged</li>
+                        <li>Risk scores calculated</li>
+                        <li>Threat patterns tracked</li>
+                        <li>Compliance-ready exports</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🚀 Zero Friction</h3>
+                    <ul>
+                        <li>Self-hosted (your infra)</li>
+                        <li>Provider-agnostic</li>
+                        <li>< 1ms latency overhead</li>
+                        <li>No code changes needed</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔓 Truly Open</h3>
+                    <ul>
+                        <li>MIT licensed forever</li>
+                        <li>Full source transparency</li>
+                        <li>No telemetry/tracking</li>
+                        <li>Community-driven</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enterprise -->
+        <section class="enterprise-section">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">enterprise.md</span>
+                </div>
+                <div class="terminal-body">
+                    <h2 class="glow">INFERSHIELD ENTERPRISE</h2>
+                    <p class="enterprise-desc">Advanced security for regulated industries</p>
+                    
+                    <div class="enterprise-grid">
+                        <div class="enterprise-col">
+                            <div class="comment">// Advanced Detection</div>
+                            <ul>
+                                <li>ML-based threat analysis</li>
+                                <li>Custom detection rules</li>
+                                <li>Zero-day protection</li>
+                                <li>Behavioral anomaly detection</li>
+                            </ul>
+                        </div>
+                        <div class="enterprise-col">
+                            <div class="comment">// Compliance</div>
+                            <ul>
+                                <li>SOC 2 / HIPAA / GDPR reports</li>
+                                <li>Audit log retention</li>
+                                <li>Compliance dashboard</li>
+                                <li>Policy templates (finance/health)</li>
+                            </ul>
+                        </div>
+                        <div class="enterprise-col">
+                            <div class="comment">// Integrations</div>
+                            <ul>
+                                <li>SSO / SAML / RBAC</li>
+                                <li>Slack / PagerDuty alerts</li>
+                                <li>Splunk / DataDog export</li>
+                                <li>Custom webhooks</li>
+                            </ul>
+                        </div>
+                        <div class="enterprise-col">
+                            <div class="comment">// Support</div>
+                            <ul>
+                                <li>24/7 security hotline</li>
+                                <li>Dedicated Slack channel</li>
+                                <li>SLA guarantees</li>
+                                <li>Managed hosting option</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <p class="enterprise-footer">
+                        <span class="prompt">></span> Join waitlist for early access pricing
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Waitlist Form -->
+        <section class="waitlist-section" id="waitlist">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">join-waitlist</span>
+                </div>
+                <div class="terminal-body">
+                    <h2 class="glow">SECURE YOUR LLM INFRASTRUCTURE</h2>
+                    <p class="waitlist-desc">Early access opens March 2026. Lock in your spot.</p>
+                    
+                    <form id="waitlist-form" class="waitlist-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>First Name *</label>
+                                <input type="text" name="firstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Last Name *</label>
+                                <input type="text" name="lastName" required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Work Email *</label>
+                            <input type="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Company Name *</label>
+                            <input type="text" name="company" required>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Industry</label>
+                                <select name="industry">
+                                    <option value="">Select...</option>
+                                    <option value="tech">Technology</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="healthcare">Healthcare</option>
+                                    <option value="government">Government</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Use Case</label>
+                                <select name="useCase">
+                                    <option value="">Select...</option>
+                                    <option value="chatbot">Customer chatbots</option>
+                                    <option value="internal">Internal AI tools</option>
+                                    <option value="api">API platform</option>
+                                    <option value="agent">AI agents</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-full">JOIN WAITLIST</button>
+                        
+                        <p class="form-note">// No spam. Just launch updates and early access.</p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="https://github.com/infershield">GitHub</a>
+                <a href="#">Docs</a>
+                <a href="#">Blog</a>
+                <a href="mailto:security@infershield.io">Contact</a>
+            </div>
+            <p class="footer-copy">© 2026 InferShield · Open source security for LLM inference</p>
+            <p class="footer-meta">// Built for security teams, by security engineers</p>
+        </footer>
+    </main>
+    
+    <script src="./script.js"></script>
+</body>
+</html>

@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Threat detection backend
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+    volumes:
+      - ./audit-logs:/app/audit-logs
+    restart: unless-stopped
+
+  # Security proxy
+  proxy:
+    build: ./proxy
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - BACKEND_URL=http://backend:5000
+      - PORT=8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # Monitoring dashboard
+  dashboard:
+    build: ./dashboard
+    ports:
+      - "3000:80"
+    environment:
+      - BACKEND_URL=http://backend:5000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  audit-logs:

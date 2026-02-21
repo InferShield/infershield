@@ -1,0 +1,53 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+*.env
+
+# API keys and secrets
+**/secrets/
+**/.secrets/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Logs
+logs/
+*.log
+audit-logs/
+
+# Database
+*.sqlite
+*.db
+data/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-*
+
+# Build
+dist/
+build/
+*.pyc
+__pycache__/
+
+# Docker
+docker-compose.override.yml
+
+# Test
+coverage/
+.pytest_cache/
+.coverage
