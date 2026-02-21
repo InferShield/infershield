@@ -87,20 +87,43 @@ if (waitlistForm) {
         const formData = new FormData(waitlistForm);
         const data = Object.fromEntries(formData);
         
-        // TODO: Replace with actual form submission (Google Forms, etc.)
-        console.log('Waitlist submission:', data);
-        
-        // Show success message
+        // Submit to Formspree
         const btn = waitlistForm.querySelector('button[type="submit"]');
         const originalText = btn.textContent;
-        btn.textContent = '✓ ADDED TO WAITLIST';
-        btn.style.background = '#00ff88';
+        btn.textContent = 'SUBMITTING...';
+        btn.disabled = true;
         
-        setTimeout(() => {
-            btn.textContent = originalText;
-            btn.style.background = '';
-            waitlistForm.reset();
-        }, 3000);
+        fetch('https://formspree.io/f/mwvnrbpa', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            },
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                btn.textContent = '✓ ADDED TO WAITLIST';
+                btn.style.background = '#00ff88';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                    btn.disabled = false;
+                    waitlistForm.reset();
+                }, 3000);
+            } else {
+                throw new Error('Submission failed');
+            }
+        })
+        .catch(error => {
+            console.error('Waitlist submission error:', error);
+            btn.textContent = '✗ ERROR - TRY AGAIN';
+            btn.style.background = '#ff4444';
+            setTimeout(() => {
+                btn.textContent = originalText;
+                btn.style.background = '';
+                btn.disabled = false;
+            }, 3000);
+        });
     });
 }
 
