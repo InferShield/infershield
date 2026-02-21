@@ -1,0 +1,142 @@
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - staging
+          - production
+      version:
+        description: 'Version to deploy (e.g. v0.4.0)'
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.28.0'
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: '3.13.0'
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBECONFIG }}" | base64 -d > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
+      - name: Validate cluster connection
+        run: |
+          kubectl cluster-info
+          kubectl get nodes
+
+      - name: Create namespace if not exists
+        run: |
+          kubectl create namespace infershield --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy PostgreSQL (if not exists)
+        run: |
+          if ! helm status postgres -n infershield &>/dev/null; then
+            helm repo add bitnami https://charts.bitnami.com/bitnami
+            helm install postgres bitnami/postgresql \
+              --namespace infershield \
+              --set auth.database=infershield \
+              --set auth.username=infershield \
+              --set auth.password=${{ secrets.POSTGRES_PASSWORD }} \
+              --set primary.persistence.size=20Gi
+          fi
+
+      - name: Deploy Redis (if not exists)
+        run: |
+          if ! helm status redis -n infershield &>/dev/null; then
+            helm repo add bitnami https://charts.bitnami.com/bitnami
+            helm install redis bitnami/redis \
+              --namespace infershield \
+              --set auth.enabled=false \
+              --set master.persistence.size=8Gi
+          fi
+
+      - name: Run database migrations
+        run: |
+          kubectl run migrations \
+            --image=ghcr.io/${{ github.repository }}:${{ inputs.version }} \
+            --restart=Never \
+            --namespace=infershield \
+            --env="DATABASE_URL=${{ secrets.DATABASE_URL }}" \
+            --command -- npx knex migrate:latest
+          
+          kubectl wait --for=condition=complete --timeout=300s job/migrations -n infershield || true
+          kubectl logs job/migrations -n infershield
+          kubectl delete job migrations -n infershield
+
+      - name: Deploy InferShield
+        run: |
+          helm upgrade --install infershield ./k8s/helm/infershield \
+            --namespace infershield \
+            --set image.tag=${{ inputs.version }} \
+            --set image.repository=ghcr.io/${{ github.repository }} \
+            --set environment=${{ inputs.environment }} \
+            --set postgresql.host=postgres-postgresql \
+            --set redis.host=redis-master \
+            --set ingress.enabled=true \
+            --set ingress.hosts[0].host=${{ secrets.INGRESS_HOST }} \
+            --set ingress.tls[0].secretName=infershield-tls \
+            --set ingress.tls[0].hosts[0]=${{ secrets.INGRESS_HOST }} \
+            --wait \
+            --timeout 10m
+
+      - name: Verify deployment
+        run: |
+          kubectl rollout status deployment/infershield-backend -n infershield --timeout=5m
+          kubectl get pods -n infershield
+          kubectl get svc -n infershield
+          kubectl get ingress -n infershield
+
+      - name: Run smoke tests
+        run: |
+          ENDPOINT="https://${{ secrets.INGRESS_HOST }}"
+          
+          # Health check
+          curl -f "${ENDPOINT}/health" || exit 1
+          
+          # Metrics endpoint
+          curl -f "${ENDPOINT}/metrics" || exit 1
+          
+          echo "Smoke tests passed!"
+
+      - name: Notify Slack
+        if: always()
+        uses: slackapi/slack-github-action@v1
+        with:
+          webhook-url: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            {
+              "text": "Deployment ${{ job.status }}: ${{ inputs.environment }} - ${{ inputs.version }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Deployment ${{ job.status }}*\n*Environment:* ${{ inputs.environment }}\n*Version:* ${{ inputs.version }}\n*Triggered by:* ${{ github.actor }}"
+                  }
+                }
+              ]
+            }
