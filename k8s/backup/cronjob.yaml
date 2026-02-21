@@ -1,0 +1,209 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-scripts
+  namespace: infershield
+data:
+  backup.sh: |
+    #!/bin/bash
+    set -euo pipefail
+    
+    BACKUP_DATE=$(date +%Y-%m-%d-%H%M%S)
+    BACKUP_DIR="/tmp/backups/${BACKUP_DATE}"
+    
+    mkdir -p "${BACKUP_DIR}"
+    
+    # Backup PostgreSQL
+    echo "[INFO] Backing up PostgreSQL..."
+    PGPASSWORD="${POSTGRES_PASSWORD}" pg_dump \
+      -h "${POSTGRES_HOST}" \
+      -p "${POSTGRES_PORT}" \
+      -U "${POSTGRES_USER}" \
+      -d "${POSTGRES_DB}" \
+      --format=plain \
+      --no-owner \
+      | gzip > "${BACKUP_DIR}/postgres-${BACKUP_DATE}.sql.gz"
+    
+    # Backup Redis
+    echo "[INFO] Backing up Redis..."
+    redis-cli -h "${REDIS_HOST}" -p "${REDIS_PORT}" --rdb "${BACKUP_DIR}/redis-${BACKUP_DATE}.rdb"
+    
+    # Create manifest
+    echo "[INFO] Creating manifest..."
+    cat > "${BACKUP_DIR}/manifest.json" <<EOF
+    {
+      "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
+      "version": "${APP_VERSION}",
+      "components": {
+        "postgresql": {"file": "postgres-${BACKUP_DATE}.sql.gz"},
+        "redis": {"file": "redis-${BACKUP_DATE}.rdb"}
+      }
+    }
+    EOF
+    
+    # Upload to S3
+    echo "[INFO] Uploading to S3..."
+    aws s3 sync "${BACKUP_DIR}/" "s3://${S3_BUCKET}/${S3_PREFIX}/${BACKUP_DATE}/" --quiet
+    
+    # Cleanup
+    rm -rf "${BACKUP_DIR}"
+    
+    echo "[INFO] Backup complete: ${BACKUP_DATE}"
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: infershield-backup
+  namespace: infershield
+spec:
+  # Run daily at 2 AM UTC
+  schedule: "0 2 * * *"
+  successfulJobsHistoryLimit: 7
+  failedJobsHistoryLimit: 3
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: infershield-backup
+        spec:
+          restartPolicy: OnFailure
+          serviceAccountName: backup-sa
+          containers:
+            - name: backup
+              image: postgres:15-alpine
+              command: ["/bin/sh", "-c"]
+              args:
+                - |
+                  apk add --no-cache redis aws-cli bash curl
+                  chmod +x /scripts/backup.sh
+                  /scripts/backup.sh
+              env:
+                - name: POSTGRES_HOST
+                  value: "postgres.infershield.svc.cluster.local"
+                - name: POSTGRES_PORT
+                  value: "5432"
+                - name: POSTGRES_DB
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-secret
+                      key: database
+                - name: POSTGRES_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-secret
+                      key: username
+                - name: POSTGRES_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: postgres-secret
+                      key: password
+                - name: REDIS_HOST
+                  value: "redis.infershield.svc.cluster.local"
+                - name: REDIS_PORT
+                  value: "6379"
+                - name: S3_BUCKET
+                  valueFrom:
+                    configMapKeyRef:
+                      name: backup-config
+                      key: s3-bucket
+                - name: S3_PREFIX
+                  valueFrom:
+                    configMapKeyRef:
+                      name: backup-config
+                      key: s3-prefix
+                      optional: true
+                - name: APP_VERSION
+                  value: "0.4.0"
+                - name: AWS_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-credentials
+                      key: access-key-id
+                - name: AWS_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-credentials
+                      key: secret-access-key
+                - name: AWS_DEFAULT_REGION
+                  valueFrom:
+                    secretKeyRef:
+                      name: aws-credentials
+                      key: region
+                      optional: true
+              volumeMounts:
+                - name: scripts
+                  mountPath: /scripts
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 256Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+          volumes:
+            - name: scripts
+              configMap:
+                name: backup-scripts
+                defaultMode: 0755
+
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: backup-sa
+  namespace: infershield
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: backup-role
+  namespace: infershield
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "pods/exec"]
+    verbs: ["get", "list", "create"]
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get", "list"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: backup-rolebinding
+  namespace: infershield
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: backup-role
+subjects:
+  - kind: ServiceAccount
+    name: backup-sa
+    namespace: infershield
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backup-config
+  namespace: infershield
+data:
+  s3-bucket: "infershield-backups"
+  s3-prefix: "prod"
+
+---
+# Example secret (replace with actual credentials)
+apiVersion: v1
+kind: Secret
+metadata:
+  name: aws-credentials
+  namespace: infershield
+type: Opaque
+stringData:
+  access-key-id: "AKIAIOSFODNN7EXAMPLE"
+  secret-access-key: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+  region: "us-east-1"
