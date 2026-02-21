@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "infershield.fullname" . }}-config
+  labels:
+    {{- include "infershield.labels" . | nindent 4 }}
+data:
+  NODE_ENV: {{ .Values.config.nodeEnv | quote }}
+  LOG_LEVEL: {{ .Values.config.logLevel | quote }}
+  PORT: {{ .Values.config.port | quote }}
+  
+  # Database
+  DATABASE_HOST: {{ .Values.config.database.host | quote }}
+  DATABASE_PORT: {{ .Values.config.database.port | quote }}
+  DATABASE_NAME: {{ .Values.config.database.name | quote }}
+  DATABASE_SSL_MODE: {{ .Values.config.database.sslMode | quote }}
+  
+  # Redis
+  REDIS_HOST: {{ .Values.config.redis.host | quote }}
+  REDIS_PORT: {{ .Values.config.redis.port | quote }}
+  
+  # Security
+  ENCRYPTION_ENABLED: {{ .Values.config.security.encryptionEnabled | quote }}
+  RATE_LIMIT_ENABLED: {{ .Values.config.security.rateLimitEnabled | quote }}
+  AUDIT_LOGGING_ENABLED: {{ .Values.config.security.auditLoggingEnabled | quote }}
+  
+  # Performance
+  CACHE_ENABLED: {{ .Values.config.performance.cacheEnabled | quote }}
+  WORKER_THREADS: {{ .Values.config.performance.workerThreads | quote }}
+  PRE_AGGREGATION_ENABLED: {{ .Values.config.performance.preAggregationEnabled | quote }}
