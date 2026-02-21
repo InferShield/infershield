@@ -7,7 +7,8 @@
  * Usage: node scripts/setup-stripe.js
  */
 
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(__dirname, '../backend/.env') });
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 // Product definitions
