@@ -18,4 +18,7 @@ router.get('/:id/download', validateRequest, checkRBAC(['Admin', 'Policy Manager
 // DELETE /api/reports/:id - Delete report
 router.delete('/:id', validateRequest, checkRBAC(['Admin']), deleteReport);
 
+const scheduleRoutes = require('./schedules');
+router.use(scheduleRoutes);
+
 module.exports = router;
