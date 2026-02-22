@@ -41,7 +41,8 @@ module.exports = {
       port: process.env.DB_PORT || 5432,
       database: process.env.DB_NAME || 'infershield',
       user: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PASSWORD || 'password'
+      password: process.env.DB_PASSWORD || 'password',
+      ssl: { rejectUnauthorized: false }
     },
     pool: {
       min: 2,
