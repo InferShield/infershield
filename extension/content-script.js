@@ -68,13 +68,19 @@ let isScanning = false;
 function injectChatGPT() {
   console.log('🛡️ [InferShield] Setting up ChatGPT injection...');
   
-  // Find the textarea (ChatGPT uses contenteditable divs, not textareas)
-  const findTextarea = () => {
-    // Try multiple selectors for different ChatGPT versions
-    return document.querySelector('textarea[data-id="root"]') || 
-           document.querySelector('textarea') ||
-           document.querySelector('[contenteditable="true"]') ||
-           document.querySelector('#prompt-textarea');
+  // Find the input element (ChatGPT uses contenteditable divs)
+  const findInput = () => {
+    // Try to find the visible contenteditable div first
+    const contentEditables = document.querySelectorAll('[contenteditable="true"]');
+    for (const el of contentEditables) {
+      // Find one that's visible and in the main input area
+      if (el.offsetParent !== null && el.textContent !== undefined) {
+        return el;
+      }
+    }
+    // Fallback to textarea
+    return document.querySelector('textarea:not([style*="display: none"])') ||
+           document.querySelector('textarea');
   };
   
   // Get text content from element (works for both textarea and contenteditable)
@@ -87,14 +93,16 @@ function injectChatGPT() {
   // Intercept Enter key
   const handleKeydown = async (e) => {
     if (e.key === 'Enter' && !e.shiftKey && !isScanning) {
-      const textarea = findTextarea();
-      const text = getTextContent(textarea) || '';  // Extra safety
+      const input = findInput();
+      const text = getTextContent(input) || '';  // Extra safety
       
-      console.log('🛡️ [InferShield] Enter pressed, textarea:', textarea);
+      console.log('🛡️ [InferShield] Enter pressed, input element:', input);
+      console.log('🛡️ [InferShield] Input visible?', input?.offsetParent !== null);
       console.log('🛡️ [InferShield] Text content:', text);
+      console.log('🛡️ [InferShield] Text length:', text.length);
       console.log('🛡️ [InferShield] Text type:', typeof text);
       
-      if (textarea && text && text.trim()) {
+      if (input && text && text.trim()) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
@@ -105,7 +113,7 @@ function injectChatGPT() {
           // Allow the send
           isScanning = false;
           // Trigger the original behavior
-          textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+          input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
         }
       }
     }
