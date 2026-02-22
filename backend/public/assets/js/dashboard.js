@@ -178,6 +178,7 @@ async function loadAPIKeys() {
     if (window.InferShieldDemoMode && window.InferShieldDemoMode.isActive()) {
         const demoData = await window.InferShieldDemoMode.getData();
         if (demoData && demoData.apiKeys) {
+            console.log('[Demo] API keys loaded:', demoData.apiKeys);
             apiKeys = demoData.apiKeys.map(key => ({
                 id: key.id,
                 name: key.name,

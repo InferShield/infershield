@@ -219,7 +219,13 @@
 }
 
 /* Mobile Responsiveness */
-@media (max-width: 768px) {
+@media (max-width: 375px) {
+  .shepherd-element {
+    max-width: 90vw !important;
+    margin-left: auto;
+    margin-right: auto;
+ }
+}
   .shepherd-element {
     max-width: 90vw;
     margin: 0 auto;
