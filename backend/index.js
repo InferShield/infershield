@@ -25,7 +25,7 @@ redisClient.on('error', (error) => console.error(`Redis error: ${error}`));
 
 // Basic route
 app.get('/', (req, res) => {
-    res.send('Agentic Firewall Backend is running');
+    res.send('InferShield Backend is running');
 });
 
 // API Routes placeholder

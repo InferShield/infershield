@@ -1,5 +1,5 @@
 /**
- * Example: Using OpenAI SDK with Agentic Firewall Proxy (Node.js)
+ * Example: Using OpenAI SDK with InferShield Proxy (Node.js)
  * 
  * Just change the baseURL - that's it!
  */
@@ -85,7 +85,7 @@ async function testSQLInjection() {
 }
 
 async function main() {
-  console.log('\n🛡️  Agentic Firewall - JavaScript Example');
+  console.log('\n🛡️  InferShield - JavaScript Example');
   console.log('='.repeat(50));
   
   try {
