@@ -1,0 +1,153 @@
+#!/bin/bash
+# InferShield CLI Scanner v0.7.0
+# Scan code/text for PII and security threats
+
+set -euo pipefail
+
+# Config
+ENDPOINT="${INFERSHIELD_ENDPOINT:-http://localhost:5000}"
+API_KEY="${INFERSHIELD_API_KEY:-}"
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Usage
+usage() {
+  cat << EOF
+InferShield CLI Scanner v0.7.0
+
+USAGE:
+  infershield-scan [FILE]
+  cat file.js | infershield-scan
+  
+EXAMPLES:
+  infershield-scan mycode.js          # Scan a file
+  echo "const key='sk-123';" | infershield-scan  # Scan stdin
+  git diff HEAD | infershield-scan    # Scan changes
+  
+ENVIRONMENT VARIABLES:
+  INFERSHIELD_API_KEY     API key (required)
+  INFERSHIELD_ENDPOINT    API endpoint (default: http://localhost:5000)
+  
+EXIT CODES:
+  0  No threats detected
+  1  Threats detected or error
+EOF
+  exit 1
+}
+
+# Check dependencies
+check_deps() {
+  for cmd in curl jq; do
+    if ! command -v $cmd &> /dev/null; then
+      echo -e "${RED}❌ Error: '$cmd' not found. Please install it.${NC}"
+      exit 1
+    fi
+  done
+}
+
+# Check API key
+check_api_key() {
+  if [ -z "$API_KEY" ]; then
+    echo -e "${RED}❌ Error: INFERSHIELD_API_KEY not set${NC}"
+    echo ""
+    echo "Set your API key:"
+    echo "  export INFERSHIELD_API_KEY='isk_live_...'"
+    echo ""
+    echo "Get your key at: http://localhost:8080/dashboard.html"
+    exit 1
+  fi
+}
+
+# Main scan function
+scan() {
+  local input="$1"
+  
+  # Escape for JSON
+  local escaped=$(echo "$input" | jq -Rs .)
+  
+  # Call API
+  local response=$(curl -s "$ENDPOINT/api/analyze" \
+    -H "X-API-Key: $API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{\"prompt\":$escaped,\"agent_id\":\"cli\"}" 2>&1)
+  
+  # Check for curl errors
+  if [ $? -ne 0 ]; then
+    echo -e "${RED}❌ Connection error: $response${NC}"
+    exit 1
+  fi
+  
+  # Check for API errors
+  local success=$(echo "$response" | jq -r '.success // false')
+  if [ "$success" != "true" ]; then
+    local error=$(echo "$response" | jq -r '.error // "Unknown error"')
+    echo -e "${RED}❌ API error: $error${NC}"
+    exit 1
+  fi
+  
+  # Parse results
+  local threat=$(echo "$response" | jq -r '.threat_detected')
+  local risk=$(echo "$response" | jq -r '.risk_score')
+  local threat_count=$(echo "$response" | jq -r '.threats | length')
+  
+  # Display results
+  echo ""
+  if [ "$threat" = "true" ]; then
+    echo -e "${RED}⚠️  THREAT DETECTED${NC} (Risk: ${risk}/100)"
+    echo ""
+    echo "Threats found:"
+    echo "$response" | jq -r '.threats[] | "  • \(.severity | ascii_upcase): \(.pattern) - \(.matched_text // "redacted")"'
+    echo ""
+    echo "Redacted version:"
+    echo "$response" | jq -r '.redacted_prompt' | sed 's/^/  /'
+    echo ""
+    return 1
+  else
+    echo -e "${GREEN}✅ No threats detected${NC} (Risk: ${risk}/100)"
+    echo ""
+    return 0
+  fi
+}
+
+# Main
+main() {
+  # Help
+  if [ "${1:-}" = "-h" ] || [ "${1:-}" = "--help" ]; then
+    usage
+  fi
+  
+  # Check dependencies
+  check_deps
+  check_api_key
+  
+  # Read input
+  if [ $# -eq 0 ]; then
+    # Read from stdin
+    if [ -t 0 ]; then
+      echo -e "${YELLOW}Reading from stdin... (Ctrl+D to finish)${NC}"
+    fi
+    input=$(cat)
+  else
+    # Read from file
+    if [ ! -f "$1" ]; then
+      echo -e "${RED}❌ Error: File not found: $1${NC}"
+      exit 1
+    fi
+    input=$(cat "$1")
+  fi
+  
+  # Check if empty
+  if [ -z "$input" ]; then
+    echo -e "${RED}❌ Error: No input provided${NC}"
+    exit 1
+  fi
+  
+  # Scan
+  scan "$input"
+}
+
+main "$@"
