@@ -153,6 +153,14 @@ if (document.getElementById('signupForm')) {
 
             // Store token
             setToken(loginData.token);
+            
+            // Clear demo mode if it was active
+            if (window.InferShieldDemoMode && window.InferShieldDemoMode.isActive()) {
+                localStorage.removeItem('infershield_demo_mode');
+                localStorage.removeItem('infershield_demo_activated_at');
+                localStorage.removeItem('infershield_demo_data');
+                console.log('[InferShield] Demo mode cleared after signup');
+            }
 
             // Redirect to dashboard
             window.location.href = 'dashboard.html';

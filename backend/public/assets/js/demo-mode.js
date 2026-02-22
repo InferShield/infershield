@@ -115,7 +115,7 @@ function showDemoIndicator() {
         // Exploring with sample data. 
         <a href="#" id="exitDemoBtn" class="link">Exit Demo</a>
         or
-        <a href="/signup.html" class="link">Sign Up</a>
+        <a href="#" id="signUpFromDemoBtn" class="link">Sign Up</a>
       </span>
     </div>
   `;
@@ -129,6 +129,18 @@ function showDemoIndicator() {
     if (confirm('Exit demo mode? You\'ll be redirected to the login page.')) {
       deactivateDemoMode();
     }
+  });
+  
+  // Add sign up handler - clear demo mode and go to signup
+  document.getElementById('signUpFromDemoBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    // Clear demo mode flags but don't redirect to login
+    localStorage.removeItem('infershield_demo_mode');
+    localStorage.removeItem('infershield_demo_activated_at');
+    localStorage.removeItem('infershield_demo_data');
+    console.log('[InferShield] Demo mode cleared - redirecting to signup');
+    // Go to signup page
+    window.location.href = '/signup.html';
   });
   
   console.log('[InferShield] Demo mode indicator shown');
