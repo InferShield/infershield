@@ -269,6 +269,12 @@ document.getElementById('cancelKeyBtn').addEventListener('click', () => {
 document.getElementById('createKeyForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    // Block in demo mode
+    if (window.InferShieldDemoMode && window.InferShieldDemoMode.isActive()) {
+        alert('⚠ Demo Mode\n\nYou cannot create API keys in demo mode.\nSign up for a free account to create real API keys!');
+        return;
+    }
+    
     const formData = new FormData(e.target);
     const data = {
         name: formData.get('name'),
@@ -323,6 +329,21 @@ async function revokeKey(keyId) {
 
 // Load usage details
 async function loadUsageDetails() {
+    // Check demo mode first
+    if (window.InferShieldDemoMode && window.InferShieldDemoMode.isActive()) {
+        const demoData = await window.InferShieldDemoMode.getData();
+        if (demoData && demoData.usage && demoData.usage.daily) {
+            const html = demoData.usage.daily.map(day => `
+                <div class="usage-row">
+                    <span class="usage-label">${new Date(day.date).toLocaleDateString()}</span>
+                    <span class="usage-value">${day.requests} requests (${day.pii_detections} PII)</span>
+                </div>
+            `).join('');
+            document.getElementById('usageDetails').innerHTML = html || '<p class="comment">Demo usage data</p>';
+        }
+        return;
+    }
+    
     try {
         const response = await apiRequest('/usage/daily');
         const data = await response.json();
@@ -359,6 +380,32 @@ async function loadUsageDetails() {
 
 // Load billing info
 async function loadBillingInfo() {
+    // Check demo mode first
+    if (window.InferShieldDemoMode && window.InferShieldDemoMode.isActive()) {
+        const demoData = await window.InferShieldDemoMode.getData();
+        if (demoData && demoData.user) {
+            const plan = demoData.user.plan || 'PRO';
+            let html = `
+                <div class="usage-row">
+                    <span class="usage-label">Current Plan:</span>
+                    <span class="usage-value success-text">${plan.toUpperCase()}</span>
+                </div>
+                <div class="usage-row">
+                    <span class="usage-label">Status:</span>
+                    <span class="usage-value">Active (Demo)</span>
+                </div>
+                <div class="usage-row">
+                    <span class="usage-label">Monthly Quota:</span>
+                    <span class="usage-value">10,000 requests</span>
+                </div>
+            `;
+            document.getElementById('billingInfo').innerHTML = html;
+            document.getElementById('upgradeBtn').style.display = 'none';
+            document.getElementById('portalBtn').style.display = 'none';
+        }
+        return;
+    }
+    
     try {
         const response = await apiRequest('/billing/subscription');
         const data = await response.json();
@@ -425,6 +472,12 @@ document.getElementById('portalBtn').addEventListener('click', async () => {
 document.getElementById('accountForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     
+    // Block in demo mode
+    if (window.InferShieldDemoMode && window.InferShieldDemoMode.isActive()) {
+        alert('⚠ Demo Mode\n\nYou cannot update profile in demo mode.\nSign up for a free account to manage your profile!');
+        return;
+    }
+    
     const data = {
         name: document.getElementById('accountName').value,
         company: document.getElementById('accountCompany').value
@@ -450,6 +503,12 @@ document.getElementById('accountForm').addEventListener('submit', async (e) => {
 // Handle password change
 document.getElementById('passwordForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    // Block in demo mode
+    if (window.InferShieldDemoMode && window.InferShieldDemoMode.isActive()) {
+        alert('⚠ Demo Mode\n\nYou cannot change password in demo mode.\nSign up for a free account to manage your security settings!');
+        return;
+    }
     
     const data = {
         currentPassword: document.getElementById('currentPassword').value,
