@@ -103,6 +103,30 @@ const PII_PATTERNS = {
     category: 'credentials'
   },
   
+  // OpenAI API Keys
+  openai_key: {
+    pattern: /\b(sk-(?:proj-)?[A-Za-z0-9]{20,})\b/g,
+    name: 'OpenAI API Key',
+    severity: 'critical',
+    category: 'credentials'
+  },
+  
+  // Anthropic API Keys
+  anthropic_key: {
+    pattern: /\b(sk-ant-[A-Za-z0-9-_]{95,})\b/g,
+    name: 'Anthropic API Key',
+    severity: 'critical',
+    category: 'credentials'
+  },
+  
+  // GitHub Personal Access Tokens
+  github_token: {
+    pattern: /\b(ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{82})\b/g,
+    name: 'GitHub Token',
+    severity: 'critical',
+    category: 'credentials'
+  },
+  
   // Date of birth
   date_of_birth: {
     pattern: /\b(?:0?[1-9]|1[0-2])[-/](?:0?[1-9]|[12]\d|3[01])[-/](?:19|20)\d{2}\b/g,

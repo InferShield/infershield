@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const { detectPII, redactPII } = require('./services/pii-redactor');
 
 const app = express();
 
@@ -243,18 +244,35 @@ function preprocessPrompt(prompt) {
 
 // Analyze prompt endpoint
 app.post('/api/analyze', (req, res) => {
-  const { prompt, agent_id } = req.body;
+  const { prompt, agent_id, metadata } = req.body;
   
   if (!prompt) {
-    return res.status(400).json({ error: 'Prompt is required' });
+    return res.status(400).json({ 
+      success: false,
+      error: 'Prompt is required' 
+    });
   }
   
-  // Preprocess: decode and normalize
-  const processed = preprocessPrompt(prompt);
+  const startTime = Date.now();
   
-  // Check against policies for ALL variants (original + decoded)
-  let risk_score = 0;
-  let threats = [];
+  // Step 1: PII Detection
+  const piiDetection = detectPII(prompt);
+  const piiThreats = piiDetection.map(pii => ({
+    type: 'pii',
+    severity: pii.severity,
+    pattern: pii.type,
+    matched_text: pii.value,
+    position: { start: pii.start, end: pii.end }
+  }));
+  
+  // Step 2: Redact PII for safe analysis
+  const redactedResult = redactPII(prompt);
+  const redacted_prompt = redactedResult.redacted;
+  
+  // Step 3: Check against injection/exfiltration policies
+  const processed = preprocessPrompt(prompt);
+  let policy_risk = 0;
+  let policy_threats = [];
   
   processed.variants.forEach(variant => {
     policies.forEach(policy => {
@@ -264,10 +282,14 @@ app.post('/api/analyze', (req, res) => {
         const regex = new RegExp(policy.rule_value, 'i');
         if (regex.test(variant)) {
           const weight = policy.weight || 50;
-          // Only add weight once per policy (even if multiple variants match)
-          if (!threats.includes(policy.name)) {
-            risk_score += weight;
-            threats.push(policy.name);
+          if (!policy_threats.find(t => t.pattern === policy.name)) {
+            policy_risk += weight;
+            policy_threats.push({
+              type: 'injection',
+              severity: weight >= 70 ? 'critical' : weight >= 40 ? 'high' : 'medium',
+              pattern: policy.name,
+              matched_text: null // Don't expose matched text for injection attempts
+            });
           }
         }
       } catch (e) {
@@ -276,32 +298,42 @@ app.post('/api/analyze', (req, res) => {
     });
   });
   
-  // Cap risk score at 100
-  risk_score = Math.min(risk_score, 100);
+  // Step 4: Combine threats and calculate total risk
+  const all_threats = [...piiThreats, ...policy_threats];
   
-  const status = risk_score >= 70 ? 'blocked' : risk_score >= 40 ? 'warning' : 'allowed';
+  // Calculate risk score (PII + policy risks)
+  const pii_risk = piiThreats.reduce((sum, t) => {
+    const severity_weights = { critical: 90, high: 70, medium: 40, low: 20 };
+    return sum + (severity_weights[t.severity] || 0);
+  }, 0);
   
-  // Log the interaction
+  let total_risk = Math.min(pii_risk + policy_risk, 100);
+  
+  const threat_detected = all_threats.length > 0;
+  const status = total_risk >= 70 ? 'blocked' : total_risk >= 40 ? 'warning' : 'allowed';
+  
+  // Step 5: Log the interaction
   const log = {
     id: logs.length + 1,
     timestamp: new Date().toISOString(),
     agent_id: agent_id || 'unknown-agent',
     prompt: prompt.substring(0, 200),
     status,
-    risk_score
+    risk_score: total_risk,
+    threats: all_threats.length,
+    metadata: metadata || {}
   };
   logs.unshift(log);
   
-  // Keep only last 100 logs
   if (logs.length > 100) logs.pop();
   
-  // Create alert if high risk
-  if (risk_score >= 40) {
+  // Step 6: Create alert if high risk
+  if (total_risk >= 40) {
     const alert = {
       id: alerts.length + 1,
       timestamp: new Date().toISOString(),
-      severity: risk_score >= 70 ? 'critical' : 'warning',
-      message: threats.join('; '),
+      severity: total_risk >= 70 ? 'critical' : 'warning',
+      message: all_threats.map(t => t.pattern).join('; '),
       agent_id: agent_id || 'unknown-agent',
       log_id: log.id
     };
@@ -310,11 +342,21 @@ app.post('/api/analyze', (req, res) => {
     if (alerts.length > 50) alerts.pop();
   }
   
+  const scanDuration = Date.now() - startTime;
+  
+  // Step 7: Return response
   res.json({
-    status,
-    risk_score,
-    threats,
-    log_id: log.id
+    success: true,
+    threat_detected,
+    risk_score: total_risk,
+    threats: all_threats,
+    redacted_prompt,
+    metadata: {
+      scanned_at: new Date().toISOString(),
+      scan_duration_ms: scanDuration,
+      agent_id: agent_id || 'unknown-agent',
+      log_id: log.id
+    }
   });
 });
 
