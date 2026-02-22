@@ -5,7 +5,7 @@ console.log('[InferShield] Background service worker loaded');
 
 // Default configuration
 const DEFAULT_CONFIG = {
-  apiEndpoint: 'http://localhost:5000', // Will be updated in settings
+  apiEndpoint: 'https://app.infershield.io', // Cloud API (self-hosters can change to localhost:5000)
   apiKey: '',
   mode: 'warn', // 'block' or 'warn'
   enabled: true,

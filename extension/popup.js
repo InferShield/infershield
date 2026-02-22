@@ -5,7 +5,7 @@ console.log('[InferShield] Popup loaded');
 
 // Default config
 const DEFAULT_CONFIG = {
-  apiEndpoint: 'http://localhost:5000',
+  apiEndpoint: 'https://app.infershield.io',
   apiKey: '',
   mode: 'warn',
   enabled: true,
