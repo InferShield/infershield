@@ -1028,3 +1028,157 @@ section {
     border-bottom-color: #00ffff;
     text-shadow: 0 0 10px #00d9ff;
 }
+
+/* Document Pages (Privacy, Terms, etc.) */
+body > header {
+    background: rgba(0, 217, 255, 0.05);
+    border-bottom: 1px solid rgba(0, 217, 255, 0.3);
+    padding: 40px 0;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+body > header h1 {
+    color: #00d9ff;
+    font-size: 42px;
+    font-weight: 700;
+    text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+    margin: 0;
+}
+
+body > main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+}
+
+article {
+    background: rgba(0, 217, 255, 0.02);
+    border: 1px solid rgba(0, 217, 255, 0.15);
+    border-radius: 8px;
+    padding: 50px;
+}
+
+article > header h2 {
+    color: #00d9ff;
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    border-bottom: 2px solid rgba(0, 217, 255, 0.3);
+    padding-bottom: 15px;
+}
+
+article > header p {
+    color: #a0a0a0;
+    font-size: 14px;
+    margin: 8px 0;
+}
+
+article > header p strong {
+    color: #00d9ff;
+}
+
+article > p {
+    color: #d0d0d0;
+    line-height: 1.8;
+    margin-bottom: 25px;
+}
+
+article section {
+    margin-top: 40px;
+}
+
+article section h3 {
+    color: #00d9ff;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    margin-top: 30px;
+}
+
+article section h4 {
+    color: #00d9ff;
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 15px;
+    margin-top: 25px;
+}
+
+article ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 20px 0;
+}
+
+article ul li {
+    color: #d0d0d0;
+    line-height: 1.8;
+    margin-bottom: 12px;
+    padding-left: 30px;
+    position: relative;
+}
+
+article ul li::before {
+    content: "▸";
+    color: #00d9ff;
+    font-size: 18px;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+article ul li strong {
+    color: #00d9ff;
+    font-weight: 600;
+}
+
+body > footer {
+    background: rgba(0, 217, 255, 0.05);
+    border-top: 1px solid rgba(0, 217, 255, 0.3);
+    padding: 30px 0;
+    text-align: center;
+    margin-top: 80px;
+}
+
+body > footer p {
+    color: #a0a0a0;
+    font-size: 14px;
+    margin: 0 0 15px 0;
+}
+
+body > footer a {
+    color: #00d9ff;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s;
+}
+
+body > footer a:hover {
+    color: #00ffff;
+    border-bottom-color: #00d9ff;
+    text-shadow: 0 0 10px #00d9ff;
+}
+
+/* Responsive for document pages */
+@media (max-width: 768px) {
+    body > main {
+        padding: 0 20px 60px;
+    }
+    
+    article {
+        padding: 30px 25px;
+    }
+    
+    body > header h1 {
+        font-size: 32px;
+    }
+    
+    article > header h2 {
+        font-size: 24px;
+    }
+    
+    article section h3 {
+        font-size: 20px;
+    }
+}
