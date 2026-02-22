@@ -34,7 +34,12 @@ let isScanning = false;
     console.log('🛡️ [InferShield] Config enabled:', config.enabled);
     console.log('🛡️ [InferShield] Enabled sites:', config.enabledSites);
     
-    if (!config || !config.enabled || !config.enabledSites[hostname]) {
+    // For ChatGPT, check both domains (chat.openai.com and chatgpt.com)
+    const isChatGPT = hostname.includes('chat.openai.com') || hostname.includes('chatgpt.com');
+    const isEnabled = config.enabledSites[hostname] || 
+                      (isChatGPT && (config.enabledSites['chat.openai.com'] || config.enabledSites['chatgpt.com']));
+    
+    if (!config || !config.enabled || !isEnabled) {
       console.log('[InferShield] Disabled for this site');
       return;
     }
