@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>InferShield Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 400px;
+      min-height: 500px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #ffffff;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+      color: #00ff88;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 24px;
+    }
+
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section h2 {
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: #00ff88;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #cccccc;
+      font-weight: 500;
+    }
+
+    input[type="text"],
+    input[type="url"] {
+      width: 100%;
+      padding: 10px 12px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 13px;
+      font-family: 'Courier New', monospace;
+    }
+
+    input[type="text"]:focus,
+    input[type="url"]:focus {
+      outline: none;
+      border-color: #00ff88;
+      box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.2);
+    }
+
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 6px;
+      color: #ffffff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #00ff88;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #00ff88;
+    }
+
+    .checkbox-group label {
+      margin: 0;
+      cursor: pointer;
+      font-weight: normal;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #00ff88;
+      color: #000000;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: #00dd77;
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 6px;
+      margin-top: 16px;
+      font-size: 13px;
+      display: none;
+    }
+
+    .status.success {
+      background: rgba(0, 255, 136, 0.1);
+      border: 1px solid #00ff88;
+      color: #00ff88;
+      display: block;
+    }
+
+    .status.error {
+      background: rgba(255, 68, 68, 0.1);
+      border: 1px solid #ff4444;
+      color: #ff4444;
+      display: block;
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: #888;
+      margin-top: 6px;
+    }
+
+    .help-text a {
+      color: #00ff88;
+      text-decoration: none;
+    }
+
+    .help-text a:hover {
+      text-decoration: underline;
+    }
+
+    .divider {
+      border-top: 1px solid #333;
+      margin: 20px 0;
+    }
+
+    .footer {
+      text-align: center;
+      padding-top: 16px;
+      border-top: 1px solid #333;
+      margin-top: 24px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      font-size: 12px;
+    }
+
+    .footer-links a {
+      color: #00ff88;
+      text-decoration: none;
+    }
+
+    .footer-links a:hover {
+      text-decoration: underline;
+    }
+
+    .version {
+      font-size: 11px;
+      color: #666;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🛡️ InferShield</h1>
+  <div class="subtitle">AI Chat PII Protection</div>
+
+  <div class="section">
+    <h2>⚙️ Configuration</h2>
+    
+    <label for="apiEndpoint">API Endpoint</label>
+    <input type="url" id="apiEndpoint" placeholder="https://your-backend.railway.app">
+    <div class="help-text">Your InferShield backend URL</div>
+  </div>
+
+  <div class="section">
+    <label for="apiKey">API Key</label>
+    <input type="text" id="apiKey" placeholder="isk_live_...">
+    <div class="help-text">
+      Get your API key from <a href="#" id="dashboardLink" target="_blank">your dashboard</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <label for="mode">Protection Mode</label>
+    <select id="mode">
+      <option value="warn">Warn (Recommended)</option>
+      <option value="block">Block Always</option>
+    </select>
+    <div class="help-text">
+      <strong>Warn:</strong> Show modal, let you choose<br>
+      <strong>Block:</strong> Always block threats
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="section">
+    <h2>🌐 Enabled Sites</h2>
+    <div class="checkbox-group">
+      <input type="checkbox" id="site-chatgpt" checked>
+      <label for="site-chatgpt">ChatGPT (chat.openai.com)</label>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="site-claude" checked>
+      <label for="site-claude">Claude (claude.ai)</label>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="site-gemini" checked>
+      <label for="site-gemini">Gemini (gemini.google.com)</label>
+    </div>
+    <div class="checkbox-group">
+      <input type="checkbox" id="site-github" checked>
+      <label for="site-github">GitHub Copilot (github.com)</label>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="checkbox-group">
+      <input type="checkbox" id="enabled" checked>
+      <label for="enabled"><strong>Enable InferShield Protection</strong></label>
+    </div>
+  </div>
+
+  <button id="save">💾 Save Settings</button>
+
+  <div class="status" id="status"></div>
+
+  <div class="footer">
+    <div class="footer-links">
+      <a href="https://github.com/InferShield/infershield" target="_blank">GitHub</a>
+      <a href="#" id="privacyLink" target="_blank">Privacy</a>
+      <a href="https://infershield.io" target="_blank">Website</a>
+    </div>
+    <div class="version">v0.8.0</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

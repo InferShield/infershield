@@ -1,0 +1,266 @@
+/* InferShield Modal Styles */
+
+.infershield-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.85);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999999;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  animation: infershield-fade-in 0.2s ease-out;
+}
+
+@keyframes infershield-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.infershield-modal-content {
+  background: #1a1a1a;
+  border: 2px solid #00ff88;
+  border-radius: 12px;
+  padding: 32px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0, 255, 136, 0.3);
+  animation: infershield-slide-in 0.3s ease-out;
+  color: #ffffff;
+}
+
+@keyframes infershield-slide-in {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.infershield-modal-content h2 {
+  margin: 0 0 16px 0;
+  font-size: 24px;
+  color: #00ff88;
+  font-weight: 600;
+}
+
+.infershield-modal-content h3 {
+  margin: 16px 0 8px 0;
+  font-size: 16px;
+  color: #cccccc;
+  font-weight: 500;
+}
+
+.infershield-modal-content p {
+  margin: 12px 0;
+  line-height: 1.6;
+  color: #cccccc;
+}
+
+.infershield-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 255, 136, 0.2);
+  border-top-color: #00ff88;
+  border-radius: 50%;
+  animation: infershield-spin 0.8s linear infinite;
+  margin: 0 auto 20px;
+}
+
+@keyframes infershield-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.infershield-risk-score {
+  background: rgba(0, 255, 136, 0.1);
+  border-left: 4px solid #00ff88;
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 4px;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.infershield-risk-score strong {
+  color: #00ff88;
+  font-weight: 700;
+}
+
+.infershield-threats {
+  margin: 20px 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.infershield-threat-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid #ff4444;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.infershield-threat-severity {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.infershield-severity-critical {
+  background: #ff4444;
+  color: #ffffff;
+}
+
+.infershield-severity-high {
+  background: #ff8844;
+  color: #000000;
+}
+
+.infershield-severity-medium {
+  background: #ffaa44;
+  color: #000000;
+}
+
+.infershield-severity-low {
+  background: #88ff44;
+  color: #000000;
+}
+
+.infershield-threat-pattern {
+  color: #ffffff;
+  font-weight: 500;
+  flex: 1;
+  min-width: 150px;
+}
+
+.infershield-threat-match {
+  background: rgba(255, 68, 68, 0.2);
+  border: 1px solid #ff4444;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #ff8888;
+  flex-basis: 100%;
+  margin-top: 4px;
+}
+
+.infershield-warning {
+  background: rgba(255, 170, 68, 0.1);
+  border: 1px solid #ffaa44;
+  padding: 12px 16px;
+  border-radius: 4px;
+  margin: 16px 0;
+  color: #ffaa44 !important;
+  font-weight: 500;
+}
+
+.infershield-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+}
+
+.infershield-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+  min-width: 140px;
+}
+
+.infershield-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.infershield-btn:active {
+  transform: translateY(0);
+}
+
+.infershield-btn-primary {
+  background: #00ff88;
+  color: #000000;
+}
+
+.infershield-btn-primary:hover {
+  background: #00dd77;
+}
+
+.infershield-btn-danger {
+  background: #ff4444;
+  color: #ffffff;
+}
+
+.infershield-btn-danger:hover {
+  background: #dd3333;
+}
+
+.infershield-btn-warning {
+  background: #ffaa44;
+  color: #000000;
+}
+
+.infershield-btn-warning:hover {
+  background: #ee9933;
+}
+
+.infershield-btn-secondary {
+  background: #666666;
+  color: #ffffff;
+}
+
+.infershield-btn-secondary:hover {
+  background: #555555;
+}
+
+.infershield-footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+
+.infershield-footer small {
+  color: #888888;
+  font-size: 12px;
+}
+
+.infershield-footer strong {
+  color: #00ff88;
+}
+
+.infershield-footer a {
+  color: #00ff88;
+  text-decoration: none;
+}
+
+.infershield-footer a:hover {
+  text-decoration: underline;
+}
