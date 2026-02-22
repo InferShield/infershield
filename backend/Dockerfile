@@ -41,12 +41,12 @@ COPY --chown=nodejs:nodejs . .
 # Switch to non-root user
 USER nodejs
 
-# Expose port
-EXPOSE 3000
+# Expose port (Railway overrides with $PORT env var)
+EXPOSE 5000
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-    CMD node -e "require('http').get('http://localhost:3000/health', (r) => { process.exit(r.statusCode === 200 ? 0 : 1); });"
+# Note: Health check disabled for Railway (uses HTTP endpoint checking)
+# Railway will check the public URL /health endpoint
 
-# Start application
-CMD ["node", "server.js"]
+# Start application (use exec form with shell to support env vars)
+# Note: Railway's start command overrides this
+CMD ["sh", "-c", "node server.js"]

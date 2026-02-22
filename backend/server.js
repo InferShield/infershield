@@ -1,4 +1,12 @@
 // Global error handlers for debugging Railway crashes
+// Force stdout/stderr to flush immediately (disable buffering)
+if (process.stdout._handle) {
+  process.stdout._handle.setBlocking(true);
+}
+if (process.stderr._handle) {
+  process.stderr._handle.setBlocking(true);
+}
+
 process.on('uncaughtException', (error) => {
   console.error('💥 UNCAUGHT EXCEPTION:', error);
   console.error('Stack:', error.stack);
