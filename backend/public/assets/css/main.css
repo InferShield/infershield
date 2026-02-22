@@ -175,6 +175,15 @@ body {
     text-decoration: none;
 }
 
+.ascii-logo {
+    font-size: 10px;
+    color: #00d9ff;
+    text-shadow: 0 0 10px #00d9ff;
+    line-height: 1;
+    white-space: pre;
+    text-align: left;
+}
+
 .ascii-logo-small {
     font-size: 8px;
     color: #00d9ff;
