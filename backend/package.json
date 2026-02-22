@@ -4,7 +4,7 @@
   "description": "Agentic Firewall MVP Backend",
   "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "echo '🚀 npm start called' && echo 'PWD:' && pwd && echo 'Files:' && ls -la && echo 'Starting node...' && node server.js",
     "migrate:prod": "npx knex migrate:latest --env production",
     "migrate": "npx knex migrate:latest",
     "test": "jest",
