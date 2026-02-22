@@ -31,9 +31,12 @@ proxy.onResponse((ctx, callback) => {
 const port = config.port || 8888;
 proxy.listen({
   port,
-  sslCaDir: path.join(__dirname, '../certs')
+  host: '127.0.0.1',  // Bind to localhost instead of 0.0.0.0
+  sslCaDir: path.join(__dirname, '../certs'),
+  keepAlive: true,
+  forceSNI: true  // Force SNI for HTTPS
 }, () => {
-  console.log(`✅ Proxy server listening on port ${port}`);
+  console.log(`✅ Proxy server listening on 127.0.0.1:${port}`);
   console.log(`📁 Certificate location: ${path.join(__dirname, '../certs/infershield-ca.crt')}`);
   console.log(`🔍 Monitoring: OpenAI, Anthropic, Google AI, Cohere, Together`);
   console.log(`\n💡 To use: export HTTPS_PROXY=http://localhost:${port}\n`);
