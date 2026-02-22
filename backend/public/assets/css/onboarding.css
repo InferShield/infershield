@@ -1,0 +1,261 @@
+/**
+ * InferShield Onboarding Tour Styles
+ * Custom Shepherd.js theme matching terminal aesthetic
+ */
+
+/* Tour Step Container */
+.shepherd-element {
+  background: rgba(10, 10, 15, 0.98);
+  border: 1px solid #00ff41;
+  border-radius: 4px;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.3),
+              inset 0 0 20px rgba(0, 255, 65, 0.05);
+  max-width: 400px;
+  font-family: 'Courier New', monospace;
+  color: #00ff41;
+}
+
+/* Tour Header */
+.shepherd-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(0, 255, 65, 0.3);
+  padding: 16px;
+}
+
+/* Close Button */
+.shepherd-cancel-icon {
+  color: #00ff41;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.shepherd-cancel-icon:hover {
+  opacity: 1;
+  color: #ff4444;
+}
+
+/* Tour Content */
+.shepherd-text {
+  padding: 20px;
+  color: #00ff41;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.tour-content {
+  /* Container for custom content */
+}
+
+.tour-title {
+  color: #00ff41;
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0 0 12px 0;
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+}
+
+.tour-title .prompt {
+  color: #00ff41;
+  margin-right: 8px;
+}
+
+.tour-text {
+  color: rgba(0, 255, 65, 0.9);
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+.tour-subtext {
+  color: rgba(0, 255, 65, 0.6);
+  font-size: 12px;
+  font-style: italic;
+  margin-top: 8px;
+}
+
+.tour-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0;
+}
+
+.tour-list li {
+  color: rgba(0, 255, 65, 0.9);
+  padding: 4px 0;
+  font-size: 14px;
+}
+
+.tour-list li::before {
+  content: '> ';
+  color: #00ff41;
+  font-weight: bold;
+  margin-right: 4px;
+}
+
+/* Tour Footer (Buttons) */
+.shepherd-footer {
+  background: transparent;
+  border-top: 1px solid rgba(0, 255, 65, 0.3);
+  padding: 16px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Tour Buttons */
+.shepherd-button {
+  padding: 8px 20px;
+  border: 1px solid #00ff41;
+  background: transparent;
+  color: #00ff41;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.2s;
+  border-radius: 2px;
+}
+
+.shepherd-button:hover {
+  background: rgba(0, 255, 65, 0.1);
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+  transform: translateY(-1px);
+}
+
+.shepherd-button:active {
+  transform: translateY(0);
+}
+
+/* Primary Button */
+.shepherd-button-primary {
+  background: #00ff41;
+  color: #0a0a0f;
+  border-color: #00ff41;
+  box-shadow: 0 0 10px rgba(0, 255, 65, 0.5);
+}
+
+.shepherd-button-primary:hover {
+  background: #00ff41;
+  color: #0a0a0f;
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.8);
+}
+
+/* Secondary Button */
+.shepherd-button-secondary {
+  background: transparent;
+  color: rgba(0, 255, 65, 0.7);
+  border-color: rgba(0, 255, 65, 0.5);
+}
+
+.shepherd-button-secondary:hover {
+  color: #00ff41;
+  border-color: #00ff41;
+}
+
+/* Modal Overlay */
+.shepherd-modal-overlay-container {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.shepherd-modal-overlay-container.shepherd-modal-is-visible {
+  opacity: 1;
+}
+
+/* Arrow */
+.shepherd-arrow {
+  display: none; /* Hide arrow for cleaner look */
+}
+
+/* Alternative: Style the arrow if you want to show it */
+.shepherd-element[data-popper-placement^='top'] .shepherd-arrow::before {
+  border-top-color: #00ff41;
+}
+
+.shepherd-element[data-popper-placement^='bottom'] .shepherd-arrow::before {
+  border-bottom-color: #00ff41;
+}
+
+.shepherd-element[data-popper-placement^='left'] .shepherd-arrow::before {
+  border-left-color: #00ff41;
+}
+
+.shepherd-element[data-popper-placement^='right'] .shepherd-arrow::before {
+  border-right-color: #00ff41;
+}
+
+/* Highlighted Elements */
+.shepherd-target {
+  z-index: 9999;
+  position: relative;
+}
+
+.shepherd-enabled.shepherd-target {
+  /* Add subtle glow to highlighted elements */
+  box-shadow: 0 0 20px rgba(0, 255, 65, 0.5) !important;
+  border-color: #00ff41 !important;
+}
+
+/* Animation */
+@keyframes shepherd-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(0, 255, 65, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 255, 65, 0); }
+}
+
+.shepherd-element {
+  animation: shepherd-fade-in 0.3s ease-in;
+}
+
+@keyframes shepherd-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .shepherd-element {
+    max-width: 90vw;
+    margin: 0 auto;
+  }
+  
+  .tour-title {
+    font-size: 16px;
+  }
+  
+  .tour-text {
+    font-size: 13px;
+  }
+  
+  .shepherd-footer {
+    flex-direction: column;
+  }
+  
+  .shepherd-button {
+    width: 100%;
+    margin: 4px 0;
+  }
+}
+
+/* Success Text Color */
+.success-text {
+  color: #00ff41;
+  text-shadow: 0 0 10px rgba(0, 255, 65, 0.7);
+}
+
+/* Comment Text Color */
+.comment {
+  color: rgba(0, 255, 65, 0.6);
+}
+
+/* Prompt Symbol */
+.prompt {
+  color: #00ff41;
+  font-weight: bold;
+}

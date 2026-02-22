@@ -42,6 +42,9 @@ Shield
             </nav>
 
             <div class="sidebar-footer">
+                <button id="restartTourBtn" class="sidebar-link comment" style="cursor: pointer; background: none; border: none; padding: 8px 0; text-align: left; width: 100%;">
+                    <span class="prompt">?</span> Restart Tour
+                </button>
                 <a href="https://infershield.io" class="sidebar-link comment">← Back to site</a>
                 <button id="logoutBtn" class="sidebar-link comment">Logout</button>
             </div>
@@ -318,7 +321,13 @@ Shield
         </main>
     </div>
 
+    <!-- Shepherd.js - Onboarding Tour Library -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/shepherd.js@11.2.0/dist/css/shepherd.css">
+    <link rel="stylesheet" href="assets/css/onboarding.css">
+    <script src="https://cdn.jsdelivr.net/npm/shepherd.js@11.2.0/dist/js/shepherd.min.js"></script>
+    
     <script src="assets/js/matrix.js"></script>
     <script src="assets/js/dashboard.js"></script>
+    <script src="assets/js/onboarding.js"></script>
 </body>
 </html>
