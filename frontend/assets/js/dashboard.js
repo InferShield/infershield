@@ -1,5 +1,5 @@
 // API base URL
-const API_BASE = window.location.hostname === 'localhost' 
+const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('127.'))
     ? 'http://localhost:5000/api'
     : '/api';
 
