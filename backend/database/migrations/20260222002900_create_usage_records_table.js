@@ -1,13 +1,21 @@
 /**
  * Usage Tracking Migration
  * Creates usage_records table for metering and billing
+ * SQLite-compatible version
  */
 
 exports.up = function(knex) {
   return knex.schema.createTable('usage_records', (table) => {
-    table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
-    table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
-    table.uuid('api_key_id').references('id').inTable('api_keys').onDelete('SET NULL');
+    // Use incremental ID for SQLite, UUID for Postgres
+    if (knex.client.config.client === 'sqlite3') {
+      table.increments('id').primary();
+      table.integer('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
+      table.integer('api_key_id').references('id').inTable('api_keys').onDelete('SET NULL');
+    } else {
+      table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
+      table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
+      table.uuid('api_key_id').references('id').inTable('api_keys').onDelete('SET NULL');
+    }
     
     // Time period (for aggregation)
     table.date('period_date').notNullable(); // Daily aggregation

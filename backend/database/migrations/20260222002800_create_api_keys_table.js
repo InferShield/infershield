@@ -1,12 +1,19 @@
 /**
  * API Keys Migration
  * Creates api_keys table for customer access tokens
+ * SQLite-compatible version
  */
 
 exports.up = function(knex) {
   return knex.schema.createTable('api_keys', (table) => {
-    table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
-    table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
+    // Use incremental ID for SQLite, UUID for Postgres
+    if (knex.client.config.client === 'sqlite3') {
+      table.increments('id').primary();
+      table.integer('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
+    } else {
+      table.uuid('id').primary().defaultTo(knex.raw('gen_random_uuid()'));
+      table.uuid('user_id').notNullable().references('id').inTable('users').onDelete('CASCADE');
+    }
     
     // Key data
     table.string('key_hash', 255).notNullable().unique(); // bcrypt hash of the key
@@ -15,11 +22,11 @@ exports.up = function(knex) {
     table.text('description');
     
     // Permissions & scope
-    table.jsonb('permissions').defaultTo('{}'); // Future: scope restrictions
+    table.json('permissions').defaultTo(JSON.stringify({})); // Future: scope restrictions
     table.string('environment', 20).defaultTo('production'); // production, development, test
     
     // Status
-    table.enum('status', ['active', 'revoked', 'expired']).defaultTo('active');
+    table.string('status', 50).defaultTo('active'); // active, revoked, expired
     table.timestamp('last_used_at');
     table.timestamp('expires_at');
     table.timestamp('revoked_at');
