@@ -215,6 +215,9 @@ function scanRequest(ctx, callback) {
         if (blocked) {
           console.warn(`🛑 [${requestId}] BLOCKED - ${allDetections.length} detection(s)`);
           
+          // Mark context as blocked so response handler can skip
+          ctx.isBlocked = true;
+          
           ctx.proxyToClientResponse.writeHead(403, {
             'Content-Type': 'application/json',
             'X-InferShield-Blocked': 'true',
@@ -269,8 +272,8 @@ function scanRequest(ctx, callback) {
  */
 function scanResponse(ctx, callback) {
   try {
-    // Skip if request was already blocked (headers already sent)
-    if (ctx.proxyToClientResponse && ctx.proxyToClientResponse.headersSent) {
+    // Skip if request was blocked
+    if (ctx.isBlocked) {
       callback();
       return;
     }
