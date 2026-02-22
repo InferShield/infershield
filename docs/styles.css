@@ -690,3 +690,246 @@ section {
         font-size: 36px;
     }
 }
+
+/* Pricing Section */
+.pricing-section {
+    padding: 80px 0;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 40px;
+    max-width: 1200px;
+    margin: 0 auto 40px;
+}
+
+.pricing-card {
+    background: rgba(0, 217, 255, 0.05);
+    border: 1px solid #00d9ff;
+    border-radius: 8px;
+    padding: 40px 30px;
+    text-align: center;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.pricing-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 217, 255, 0.3);
+}
+
+.pricing-card.highlight {
+    border: 2px solid #00d9ff;
+    background: rgba(0, 217, 255, 0.1);
+    transform: scale(1.05);
+}
+
+.pricing-card.highlight:hover {
+    transform: scale(1.08);
+}
+
+.badge-popular {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #00d9ff;
+    color: #0a0e27;
+    padding: 5px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.pricing-card h3 {
+    color: #00d9ff;
+    font-size: 28px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.price {
+    font-size: 48px;
+    color: #fff;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+
+.period {
+    font-size: 18px;
+    color: #666;
+    font-weight: normal;
+}
+
+.pricing-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 30px 0;
+    text-align: left;
+}
+
+.pricing-features li {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(0, 217, 255, 0.1);
+    color: #e0e0e0;
+}
+
+.pricing-features li:last-child {
+    border-bottom: none;
+}
+
+.pricing-note {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    color: #a0a0a0;
+    font-size: 14px;
+}
+
+/* Use Cases Section */
+.use-cases-section {
+    padding: 80px 0;
+}
+
+.use-case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.use-case-card {
+    background: rgba(0, 217, 255, 0.05);
+    border: 1px solid #00d9ff;
+    border-radius: 8px;
+    padding: 30px;
+    transition: all 0.3s;
+}
+
+.use-case-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 217, 255, 0.2);
+}
+
+.use-case-card h3 {
+    color: #00d9ff;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.use-case-card p {
+    color: #e0e0e0;
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.use-case-card p strong {
+    color: #00d9ff;
+}
+
+.use-case-result {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 136, 0.1);
+    border-left: 3px solid #00ff88;
+    color: #00ff88;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+/* Waitlist Section */
+.waitlist-section {
+    padding: 80px 0;
+    background: rgba(0, 217, 255, 0.03);
+}
+
+.waitlist-tagline {
+    text-align: center;
+    font-size: 18px;
+    color: #a0a0a0;
+    max-width: 600px;
+    margin: 0 auto 40px;
+}
+
+.waitlist-form {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #00d9ff;
+    border-radius: 4px;
+    color: #fff;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    transition: all 0.3s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+}
+
+.form-input::placeholder {
+    color: #666;
+}
+
+.waitlist-note {
+    text-align: center;
+    margin-top: 30px;
+    color: #a0a0a0;
+    font-size: 14px;
+}
+
+.waitlist-note .notice-link {
+    color: #00d9ff;
+    text-decoration: none;
+    border-bottom: 1px solid #00d9ff;
+}
+
+.waitlist-note .notice-link:hover {
+    color: #00ffff;
+    border-bottom-color: #00ffff;
+}
+
+/* Footer Text */
+.footer-text {
+    color: #a0a0a0;
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+/* Responsive Updates */
+@media (max-width: 768px) {
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-card.highlight {
+        transform: scale(1);
+    }
+    
+    .pricing-card.highlight:hover {
+        transform: scale(1.02);
+    }
+    
+    .use-case-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .price {
+        font-size: 36px;
+    }
+}
