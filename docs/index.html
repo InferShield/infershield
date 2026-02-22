@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InferShield - Open Source Security for LLM Inference</title>
+    <title>InferShield - Stop AI Data Leaks Before They Happen</title>
+    <meta name="description" content="Open-source data leak prevention (DLP) for AI systems. Detect and redact PII before it reaches LLMs. HIPAA, GDPR, PCI-DSS compliant.">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -22,60 +23,68 @@
 ╚═╝╚═╝  ╚═══╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝ 
             </div>
             
-            <h1 class="glow">OPEN SOURCE SECURITY FOR LLM INFERENCE</h1>
+            <h1 class="glow">STOP AI DATA LEAKS BEFORE THEY HAPPEN</h1>
             
             <p class="tagline">
-                <span class="prompt">></span> Self-hosted. Provider-agnostic. Free forever.
+                <span class="prompt">></span> Open-source DLP gateway for LLM workflows
             </p>
             
             <div class="badges">
-                <span class="badge">✓ OPEN SOURCE</span>
+                <span class="badge">✓ PII DETECTION</span>
+                <span class="badge">✓ COMPLIANCE</span>
                 <span class="badge">✓ SELF-HOSTED</span>
-                <span class="badge">✓ ZERO-TRUST</span>
             </div>
             
             <div class="cta-buttons">
-                <a href="#waitlist" class="btn btn-primary">JOIN WAITLIST</a>
-                <a href="https://github.com/InferShield/infershield" class="btn btn-secondary">VIEW ON GITHUB</a>
+                <a href="https://github.com/InferShield/infershield" class="btn btn-primary">GET STARTED FREE</a>
+                <a href="#pricing" class="btn btn-secondary">VIEW PRICING</a>
             </div>
             
-            <p class="meta">// Launch: March 2026 | MIT Licensed</p>
+            <p class="meta">// v0.5.0 | MIT Licensed | HIPAA · GDPR · PCI-DSS</p>
         </section>
 
         <!-- Version Notice -->
         <section class="notice-section">
             <div class="notice-banner">
-                <div class="notice-icon">🚀</div>
+                <div class="notice-icon">🛡️</div>
                 <div class="notice-content">
-                    <h3>v0.1 MVP Release</h3>
-                    <p><strong>Current:</strong> API key-based integrations (OpenAI, Anthropic, Google)</p>
-                    <p><strong>Coming in v0.2:</strong> OAuth device flows for IDE integrations (GitHub Copilot, Cursor, Windsurf) 
-                    — <a href="https://github.com/InferShield/infershield/issues/1" class="notice-link">Track progress on GitHub →</a></p>
+                    <h3>v0.5.0: Compliance & Monetization Release</h3>
+                    <p><strong>New:</strong> PII detection & redaction (14 types) | Stripe payment integration | HIPAA/GDPR/PCI-DSS compliance</p>
+                    <p><strong>Coming in v1.0:</strong> Self-service signup, customer dashboard, documentation site 
+                    — <a href="https://github.com/InferShield/infershield/releases" class="notice-link">View changelog →</a></p>
                 </div>
             </div>
         </section>
 
-        <!-- Live Threat Detection Demo -->
+        <!-- Live PII Detection Demo -->
         <section class="demo-section">
             <div class="terminal">
                 <div class="terminal-header">
                     <span class="dot red"></span>
                     <span class="dot yellow"></span>
                     <span class="dot green"></span>
-                    <span class="terminal-title">infershield-proxy@localhost:8000</span>
+                    <span class="terminal-title">infershield-proxy@localhost:8000 - PII Detection</span>
                 </div>
                 <div class="terminal-body" id="demo-output">
-                    <div class="log-line"><span class="timestamp">[17:42:03]</span> <span class="info">INFO</span> Proxy started on port 8000</div>
-                    <div class="log-line"><span class="timestamp">[17:42:05]</span> <span class="info">INFO</span> Connected to OpenAI API</div>
-                    <div class="log-line"><span class="timestamp">[17:42:08]</span> <span class="success">PASS</span> Request ID: req_abc123 | Risk: 0 | Latency: 42ms</div>
-                    <div class="log-line"><span class="timestamp">[17:42:12]</span> <span class="warning">DETECT</span> Prompt injection attempt detected</div>
+                    <div class="log-line"><span class="timestamp">[00:12:03]</span> <span class="info">INFO</span> PII detection enabled (14 pattern types)</div>
+                    <div class="log-line"><span class="timestamp">[00:12:05]</span> <span class="info">INFO</span> Connected to OpenAI API</div>
+                    <div class="log-line"><span class="timestamp">[00:12:08]</span> <span class="success">PASS</span> Request ID: req_abc123 | Risk: 0 | PII: 0</div>
+                    <div class="log-line"><span class="timestamp">[00:12:12]</span> <span class="warning">DETECT</span> PII detected in prompt</div>
                     <div class="log-line threat-detail">
-                        <span class="prompt">    └─></span> Pattern: "Ignore previous instructions"<br>
-                        <span class="prompt">    └─></span> Risk Score: 85/100<br>
+                        <span class="prompt">    └─></span> Type: SSN (123-45-6789)<br>
+                        <span class="prompt">    └─></span> Type: Credit Card (4532-****-****-6467)<br>
+                        <span class="prompt">    └─></span> Type: Email (user@example.com)<br>
+                        <span class="prompt">    └─></span> Action: REDACTED (PARTIAL strategy)
+                    </div>
+                    <div class="log-line"><span class="timestamp">[00:12:13]</span> <span class="success">PASS</span> Request ID: req_def456 | PII: 3 redacted | Latency: 42ms</div>
+                    <div class="log-line"><span class="timestamp">[00:12:15]</span> <span class="warning">DETECT</span> Medical record number detected</div>
+                    <div class="log-line threat-detail">
+                        <span class="prompt">    └─></span> Type: MRN (MRN-123456)<br>
+                        <span class="prompt">    └─></span> Severity: CRITICAL<br>
+                        <span class="prompt">    └─></span> Compliance: HIPAA<br>
                         <span class="prompt">    └─></span> Action: BLOCKED
                     </div>
-                    <div class="log-line"><span class="timestamp">[17:42:15]</span> <span class="danger">BLOCK</span> Request ID: req_def456 | Risk: 85 | Threat: PROMPT_INJECTION</div>
-                    <div class="log-line"><span class="timestamp">[17:42:18]</span> <span class="success">PASS</span> Request ID: req_ghi789 | Risk: 5 | Latency: 38ms</div>
+                    <div class="log-line"><span class="timestamp">[00:12:16]</span> <span class="danger">BLOCK</span> Request ID: req_ghi789 | PII: 1 critical | Compliance: HIPAA</div>
                 </div>
                 <div class="scanline"></div>
             </div>
@@ -84,24 +93,24 @@
         <!-- The Problem -->
         <section class="problem-section">
             <h2 class="section-title">
-                <span class="comment">// THE LLM SECURITY GAP</span>
+                <span class="comment">// THE COMPLIANCE CRISIS</span>
             </h2>
             
             <div class="stat-grid">
                 <div class="stat-card">
-                    <div class="stat-label">GARTNER PREDICTION</div>
-                    <div class="stat-value glow">60%</div>
-                    <div class="stat-desc">of AI enterprises will face security incidents by 2027</div>
+                    <div class="stat-label">HEALTHCARE QUESTION</div>
+                    <div class="stat-value glow">"How do I let doctors use ChatGPT?"</div>
+                    <div class="stat-desc">without violating HIPAA and leaking patient data</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">ATTACK SURFACE</div>
-                    <div class="stat-value glow">10x</div>
-                    <div class="stat-desc">deployment speed vs. security implementation</div>
+                    <div class="stat-label">FINANCE QUESTION</div>
+                    <div class="stat-value glow">"How do we enable AI?"</div>
+                    <div class="stat-desc">without exposing account numbers and payment cards</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-label">COMPLIANCE GAP</div>
-                    <div class="stat-value glow">73%</div>
-                    <div class="stat-desc">of CISOs can't answer basic AI audit questions</div>
+                    <div class="stat-label">LEGAL QUESTION</div>
+                    <div class="stat-value glow">"How do we use AI?"</div>
+                    <div class="stat-desc">without violating attorney-client privilege</div>
                 </div>
             </div>
             
@@ -109,37 +118,37 @@
                 <div class="threat-card error">
                     <div class="threat-header">
                         <span class="threat-icon">⚠</span>
-                        <span class="threat-code">[THREAT_001]</span>
+                        <span class="threat-code">[HIPAA]</span>
                     </div>
-                    <h3>Prompt Injection</h3>
-                    <p>Attackers manipulate LLM behavior through crafted inputs. Your WAF won't catch it.</p>
+                    <h3>Protected Health Information</h3>
+                    <p>Medical records, SSNs, dates of birth leaked to OpenAI. $50k+ HIPAA fine per violation.</p>
                 </div>
                 
                 <div class="threat-card error">
                     <div class="threat-header">
                         <span class="threat-icon">⚠</span>
-                        <span class="threat-code">[THREAT_002]</span>
+                        <span class="threat-code">[PCI-DSS]</span>
                     </div>
-                    <h3>Data Exfiltration</h3>
-                    <p>Sensitive credentials leak through LLM responses. No audit trail exists.</p>
+                    <h3>Payment Card Data</h3>
+                    <p>Credit card numbers sent to LLM providers. Loss of PCI compliance, audit failure.</p>
                 </div>
                 
                 <div class="threat-card error">
                     <div class="threat-header">
                         <span class="threat-icon">⚠</span>
-                        <span class="threat-code">[THREAT_003]</span>
+                        <span class="threat-code">[GDPR]</span>
                     </div>
-                    <h3>Jailbreak Attempts</h3>
-                    <p>Users bypass safety guardrails. Your SIEM has no visibility.</p>
+                    <h3>Personal Data</h3>
+                    <p>Email addresses, phone numbers, IP addresses collected without consent. €20M+ fine.</p>
                 </div>
                 
                 <div class="threat-card error">
                     <div class="threat-header">
                         <span class="threat-icon">⚠</span>
-                        <span class="threat-code">[THREAT_004]</span>
+                        <span class="threat-code">[SOC 2]</span>
                     </div>
-                    <h3>Compliance Violations</h3>
-                    <p>Auditors demand proof. You have no logs, no controls, no answers.</p>
+                    <h3>Enterprise Security</h3>
+                    <p>No audit trail. No access controls. No data classification. Audit failure imminent.</p>
                 </div>
             </div>
         </section>
@@ -147,28 +156,28 @@
         <!-- How It Works -->
         <section class="solution-section">
             <h2 class="section-title">
-                <span class="comment">// HOW INFERSHIELD WORKS</span>
+                <span class="comment">// HOW PII DETECTION WORKS</span>
             </h2>
             
             <div class="architecture">
                 <div class="arch-box">
                     <div class="arch-label">YOUR APP</div>
-                    <div class="arch-code">app.py / server.js</div>
+                    <div class="arch-code">Sends: "SSN: 123-45-6789"</div>
                 </div>
                 <div class="arch-arrow">→</div>
                 <div class="arch-box highlight">
                     <div class="arch-label">INFERSHIELD PROXY</div>
                     <div class="arch-code">localhost:8000</div>
                     <div class="arch-features">
-                        ✓ Threat Detection<br>
-                        ✓ Policy Enforcement<br>
-                        ✓ Audit Logging
+                        ✓ Detect PII (14 types)<br>
+                        ✓ Redact: XXX-XX-6789<br>
+                        ✓ Log & Audit
                     </div>
                 </div>
                 <div class="arch-arrow">→</div>
                 <div class="arch-box">
-                    <div class="arch-label">ANY LLM</div>
-                    <div class="arch-code">OpenAI | Anthropic | Google</div>
+                    <div class="arch-label">LLM</div>
+                    <div class="arch-code">Receives: "SSN: XXX-XX-6789"</div>
                 </div>
             </div>
             
@@ -184,199 +193,225 @@
                     <div class="code-line"><span class="prompt">$</span> docker pull infershield/proxy:latest</div>
                     <div class="code-line"><span class="prompt">$</span> docker run -p 8000:8000 \\</div>
                     <div class="code-line">    -e OPENAI_API_KEY=sk-xxx \\</div>
+                    <div class="code-line">    -e PII_REDACTION_ENABLED=true \\</div>
                     <div class="code-line">    infershield/proxy</div>
                     <div class="code-line">&nbsp;</div>
                     <div class="code-line"><span class="comment"># Update your code (one line change)</span></div>
                     <div class="code-line"><span class="strike">client = OpenAI(base_url="https://api.openai.com/v1")</span></div>
                     <div class="code-line"><span class="success-text">client = OpenAI(base_url="http://localhost:8000/v1")</span></div>
                     <div class="code-line">&nbsp;</div>
-                    <div class="code-line"><span class="success-text">✓ Done. Every request now protected.</span></div>
+                    <div class="code-line"><span class="success-text">✓ Done. All PII automatically detected and redacted.</span></div>
                 </div>
             </div>
             
             <div class="feature-grid">
                 <div class="feature-card">
-                    <h3>🛡️ Real-Time Protection</h3>
+                    <h3>🛡️ 14 PII Types Detected</h3>
                     <ul>
-                        <li>Prompt injection detection</li>
-                        <li>Data exfiltration blocking</li>
-                        <li>Jailbreak prevention</li>
-                        <li>Custom policy rules</li>
+                        <li><strong>Critical:</strong> SSN, credit cards, medical records, bank accounts, API keys</li>
+                        <li><strong>High:</strong> Email addresses, driver's licenses, passports</li>
+                        <li><strong>Medium:</strong> Phone numbers, IP addresses, dates of birth</li>
+                        <li>&lt;5ms detection speed | &lt;1ms latency overhead</li>
                     </ul>
                 </div>
                 
                 <div class="feature-card">
-                    <h3>📊 Complete Visibility</h3>
+                    <h3>🔒 5 Redaction Strategies</h3>
                     <ul>
-                        <li>Every request logged</li>
-                        <li>Risk scores calculated</li>
-                        <li>Threat patterns tracked</li>
-                        <li>Compliance-ready exports</li>
+                        <li><strong>MASK:</strong> Replace with [SSN_REDACTED]</li>
+                        <li><strong>PARTIAL:</strong> Show last 4 (XXX-XX-6789)</li>
+                        <li><strong>HASH:</strong> One-way hash ([a3f5c2d1])</li>
+                        <li><strong>TOKEN:</strong> Reversible encryption (Enterprise)</li>
+                        <li><strong>REMOVE:</strong> Complete removal</li>
                     </ul>
                 </div>
                 
                 <div class="feature-card">
-                    <h3>🚀 Zero Friction</h3>
+                    <h3>✅ Compliance Coverage</h3>
                     <ul>
-                        <li>Self-hosted (your infra)</li>
-                        <li>Provider-agnostic</li>
-                        <li>< 1ms latency overhead</li>
-                        <li>No code changes needed</li>
+                        <li><strong>HIPAA:</strong> Protected Health Information (PHI)</li>
+                        <li><strong>GDPR:</strong> Personal data protection</li>
+                        <li><strong>PCI-DSS:</strong> Payment card data</li>
+                        <li><strong>SOC 2:</strong> Enterprise security controls</li>
                     </ul>
                 </div>
                 
                 <div class="feature-card">
-                    <h3>🔓 Truly Open</h3>
+                    <h3>📊 Real-Time Monitoring</h3>
                     <ul>
-                        <li>MIT licensed forever</li>
-                        <li>Full source transparency</li>
-                        <li>No telemetry/tracking</li>
-                        <li>Community-driven</li>
+                        <li>Live threat detection dashboard</li>
+                        <li>Compliance audit trails</li>
+                        <li>Prometheus metrics + Grafana</li>
+                        <li>Slack/PagerDuty alerting</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🚀 Production Ready</h3>
+                    <ul>
+                        <li>Kubernetes Helm charts</li>
+                        <li>Auto-scaling (2-10 pods)</li>
+                        <li>Zero-downtime deployments</li>
+                        <li>CI/CD automation (18 min to prod)</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>🔓 Open Source</h3>
+                    <ul>
+                        <li>MIT licensed | Full source code</li>
+                        <li>Self-host anywhere (Docker, K8s)</li>
+                        <li>No vendor lock-in</li>
+                        <li>Community-driven development</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- Enterprise -->
-        <section class="enterprise-section">
-            <div class="terminal">
-                <div class="terminal-header">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                    <span class="terminal-title">enterprise.md</span>
+        <!-- Pricing Section -->
+        <section class="pricing-section" id="pricing">
+            <h2 class="section-title">
+                <span class="comment">// PRICING</span>
+            </h2>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Free</h3>
+                    <div class="price">$0<span class="period">/month</span></div>
+                    <ul class="pricing-features">
+                        <li>✓ 100 requests/month</li>
+                        <li>✓ Basic PII detection</li>
+                        <li>✓ MASK redaction</li>
+                        <li>✓ Community support</li>
+                        <li>✓ Self-hosted deployment</li>
+                        <li>✓ MIT licensed source code</li>
+                    </ul>
+                    <a href="https://github.com/InferShield/infershield" class="btn btn-secondary">Get Started</a>
                 </div>
-                <div class="terminal-body">
-                    <h2 class="glow">INFERSHIELD ENTERPRISE</h2>
-                    <p class="enterprise-desc">Advanced security for regulated industries</p>
-                    
-                    <div class="enterprise-grid">
-                        <div class="enterprise-col">
-                            <div class="comment">// Advanced Detection</div>
-                            <ul>
-                                <li>ML-based threat analysis</li>
-                                <li>Custom detection rules</li>
-                                <li>Zero-day protection</li>
-                                <li>Behavioral anomaly detection</li>
-                            </ul>
-                        </div>
-                        <div class="enterprise-col">
-                            <div class="comment">// Compliance</div>
-                            <ul>
-                                <li>SOC 2 / HIPAA / GDPR reports</li>
-                                <li>Audit log retention</li>
-                                <li>Compliance dashboard</li>
-                                <li>Policy templates (finance/health)</li>
-                            </ul>
-                        </div>
-                        <div class="enterprise-col">
-                            <div class="comment">// Integrations</div>
-                            <ul>
-                                <li>SSO / SAML / RBAC</li>
-                                <li>Slack / PagerDuty alerts</li>
-                                <li>Splunk / DataDog export</li>
-                                <li>Custom webhooks</li>
-                            </ul>
-                        </div>
-                        <div class="enterprise-col">
-                            <div class="comment">// Support</div>
-                            <ul>
-                                <li>24/7 security hotline</li>
-                                <li>Dedicated Slack channel</li>
-                                <li>SLA guarantees</li>
-                                <li>Managed hosting option</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <p class="enterprise-footer">
-                        <span class="prompt">></span> Join waitlist for early access pricing
-                    </p>
+                
+                <div class="pricing-card highlight">
+                    <div class="badge-popular">MOST POPULAR</div>
+                    <h3>Pro</h3>
+                    <div class="price">$99<span class="period">/month</span></div>
+                    <ul class="pricing-features">
+                        <li>✓ 10,000 requests/month</li>
+                        <li>✓ All 14 PII types</li>
+                        <li>✓ PARTIAL + HASH redaction</li>
+                        <li>✓ Compliance reports</li>
+                        <li>✓ Email support</li>
+                        <li>✓ Prometheus metrics</li>
+                    </ul>
+                    <a href="#waitlist" class="btn btn-primary">Start Free Trial</a>
+                </div>
+                
+                <div class="pricing-card">
+                    <h3>Enterprise</h3>
+                    <div class="price">$499<span class="period">/month</span></div>
+                    <ul class="pricing-features">
+                        <li>✓ Unlimited requests</li>
+                        <li>✓ Everything in Pro</li>
+                        <li>✓ TOKEN + REMOVE strategies</li>
+                        <li>✓ Custom PII patterns</li>
+                        <li>✓ SSO (SAML, OAuth)</li>
+                        <li>✓ SLA + Dedicated support</li>
+                    </ul>
+                    <a href="#waitlist" class="btn btn-secondary">Contact Sales</a>
+                </div>
+            </div>
+            
+            <p class="pricing-note">
+                <span class="comment">// All plans include full access to open-source code. Paid plans add managed cloud hosting, compliance features, and support.</span>
+            </p>
+        </section>
+
+        <!-- Use Cases -->
+        <section class="use-cases-section">
+            <h2 class="section-title">
+                <span class="comment">// USE CASES</span>
+            </h2>
+            
+            <div class="use-case-grid">
+                <div class="use-case-card">
+                    <h3>🏥 Healthcare</h3>
+                    <p><strong>Challenge:</strong> Doctors want to use AI assistants, but patient data (SSN, MRN, diagnoses) would violate HIPAA.</p>
+                    <p><strong>Solution:</strong> InferShield detects and redacts PHI in real-time. Doctors get AI benefits while staying compliant.</p>
+                    <div class="use-case-result">Result: HIPAA-compliant AI without data exposure</div>
+                </div>
+                
+                <div class="use-case-card">
+                    <h3>💳 Financial Services</h3>
+                    <p><strong>Challenge:</strong> Customer service teams use AI for support, but credit card numbers and account details leak to LLM providers.</p>
+                    <p><strong>Solution:</strong> InferShield strips payment data before it reaches the LLM. PCI-DSS compliance maintained.</p>
+                    <div class="use-case-result">Result: PCI-DSS audit pass, zero payment data leaks</div>
+                </div>
+                
+                <div class="use-case-card">
+                    <h3>⚖️ Legal Firms</h3>
+                    <p><strong>Challenge:</strong> Lawyers want AI research assistants, but client names and case details would breach attorney-client privilege.</p>
+                    <p><strong>Solution:</strong> InferShield redacts names, emails, and sensitive identifiers. Privilege maintained.</p>
+                    <div class="use-case-result">Result: AI-powered legal research without privilege breach</div>
+                </div>
+                
+                <div class="use-case-card">
+                    <h3>🏢 Enterprise SaaS</h3>
+                    <p><strong>Challenge:</strong> Developers use Copilot, but API keys, database credentials, and customer data leak through code suggestions.</p>
+                    <p><strong>Solution:</strong> InferShield detects API keys and credentials before they reach GitHub Copilot. Security maintained.</p>
+                    <div class="use-case-result">Result: SOC 2 audit pass, zero credential leaks</div>
                 </div>
             </div>
         </section>
 
-        <!-- Waitlist Form -->
+        <!-- Social Proof / Waitlist -->
         <section class="waitlist-section" id="waitlist">
-            <div class="terminal">
-                <div class="terminal-header">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                    <span class="terminal-title">join-waitlist</span>
+            <h2 class="section-title">
+                <span class="comment">// JOIN THE WAITLIST</span>
+            </h2>
+            
+            <p class="waitlist-tagline">
+                Get early access to managed cloud hosting, compliance reports, and priority support.
+            </p>
+            
+            <form action="https://formspree.io/f/mwvnrbpa" method="POST" class="waitlist-form">
+                <div class="form-group">
+                    <input type="email" name="email" placeholder="your-email@company.com" required class="form-input">
                 </div>
-                <div class="terminal-body">
-                    <h2 class="glow">SECURE YOUR LLM INFRASTRUCTURE</h2>
-                    <p class="waitlist-desc">Early access opens March 2026. Lock in your spot.</p>
-                    
-                    <form id="waitlist-form" class="waitlist-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>First Name *</label>
-                                <input type="text" name="firstName" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Last Name *</label>
-                                <input type="text" name="lastName" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Work Email *</label>
-                            <input type="email" name="email" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Company Name *</label>
-                            <input type="text" name="company" required>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Industry</label>
-                                <select name="industry">
-                                    <option value="">Select...</option>
-                                    <option value="tech">Technology</option>
-                                    <option value="finance">Finance</option>
-                                    <option value="healthcare">Healthcare</option>
-                                    <option value="government">Government</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label>Use Case</label>
-                                <select name="useCase">
-                                    <option value="">Select...</option>
-                                    <option value="chatbot">Customer chatbots</option>
-                                    <option value="internal">Internal AI tools</option>
-                                    <option value="api">API platform</option>
-                                    <option value="agent">AI agents</option>
-                                    <option value="other">Other</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <button type="submit" class="btn btn-primary btn-full">JOIN WAITLIST</button>
-                        
-                        <p class="form-note">// No spam. Just launch updates and early access.</p>
-                    </form>
+                <div class="form-group">
+                    <input type="text" name="company" placeholder="Company Name (optional)" class="form-input">
                 </div>
-            </div>
+                <div class="form-group">
+                    <select name="use_case" class="form-input">
+                        <option value="">Primary Use Case (optional)</option>
+                        <option value="healthcare">Healthcare (HIPAA)</option>
+                        <option value="finance">Financial Services (PCI-DSS)</option>
+                        <option value="legal">Legal (Attorney-Client)</option>
+                        <option value="enterprise">Enterprise (SOC 2)</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">JOIN WAITLIST</button>
+            </form>
+            
+            <p class="waitlist-note">
+                <span class="comment">// Or start immediately: <a href="https://github.com/InferShield/infershield" class="notice-link">Self-host the open-source version →</a></span>
+            </p>
         </section>
 
         <!-- Footer -->
         <footer class="footer">
             <div class="footer-links">
                 <a href="https://github.com/InferShield/infershield">GitHub</a>
-                <a href="#">Docs</a>
-                <a href="#">Blog</a>
-                <a href="mailto:security@infershield.io">Contact</a>
+                <a href="https://github.com/InferShield/infershield/releases">Changelog</a>
+                <a href="https://github.com/InferShield/infershield/blob/main/docs/PII_REDACTION.md">Documentation</a>
+                <a href="https://github.com/InferShield/infershield/discussions">Community</a>
             </div>
-            <p class="footer-copy">© 2026 InferShield · Open source security for LLM inference</p>
-            <p class="footer-meta">// Built for security teams, by security engineers</p>
+            <p class="footer-text">
+                © 2026 InferShield. Released under MIT License.<br>
+                <span class="comment">// Built for security teams who refuse to compromise.</span>
+            </p>
         </footer>
     </main>
-    
-    <script src="./script.js"></script>
+
+    <!-- Matrix Animation Script -->
+    <script src="./matrix.js"></script>
 </body>
 </html>
