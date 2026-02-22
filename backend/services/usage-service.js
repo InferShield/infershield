@@ -42,6 +42,17 @@ class UsageService {
         pii_redactions: metadata.pii_redactions || 0
       });
     }
+    
+    // Also update API key usage counter (if apiKeyId provided)
+    if (apiKeyId) {
+      await db('api_keys')
+        .where({ id: apiKeyId })
+        .increment('total_requests', 1)
+        .update({
+          last_used_at: db.fn.now(),
+          first_used_at: db.raw('COALESCE(first_used_at, ?)', [db.fn.now()])
+        });
+    }
   }
 
   /**
