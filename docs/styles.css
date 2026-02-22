@@ -68,12 +68,15 @@ body {
 }
 
 .ascii-logo {
-    font-size: 10px;
+    font-size: 16px;
     color: #00d9ff;
     margin-bottom: 30px;
     white-space: pre;
     overflow-x: auto;
-    text-shadow: 0 0 10px #00d9ff;
+    text-shadow: 0 0 15px #00d9ff;
+    line-height: 1.2;
+    font-family: 'Courier New', monospace;
+    text-align: center;
 }
 
 .hero h1 {
@@ -592,7 +595,7 @@ section {
 /* Responsive */
 @media (max-width: 768px) {
     .ascii-logo {
-        font-size: 6px;
+        font-size: 12px;
     }
     
     .form-row {
