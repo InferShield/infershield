@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - InferShield</title>
+    <link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+    <!-- Matrix Background -->
+    <canvas id="matrix" class="matrix-bg"></canvas>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <pre class="ascii-logo-small">
+ ___      ___     ___
+|_ _|___ |  _|___|_  |
+ | ||   ||  _| -_|  _|
+|___|_|_||_| |___|___|
+Shield
+                </pre>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#overview" class="nav-item active" data-section="overview">
+                    <span class="prompt">></span> Overview
+                </a>
+                <a href="#keys" class="nav-item" data-section="keys">
+                    <span class="prompt">></span> API Keys
+                </a>
+                <a href="#usage" class="nav-item" data-section="usage">
+                    <span class="prompt">></span> Usage
+                </a>
+                <a href="#billing" class="nav-item" data-section="billing">
+                    <span class="prompt">></span> Billing
+                </a>
+                <a href="#account" class="nav-item" data-section="account">
+                    <span class="prompt">></span> Account
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="../docs/index.html" class="sidebar-link comment">← Back to site</a>
+                <button id="logoutBtn" class="sidebar-link comment">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <div class="container dashboard-container">
+                
+                <!-- Overview Section -->
+                <section id="section-overview" class="dashboard-section active">
+                    <h1 class="section-title">
+                        <span class="comment">// DASHBOARD</span>
+                    </h1>
+
+                    <div class="welcome-message">
+                        <p class="glow">Welcome back, <span id="userName">Loading...</span></p>
+                        <p class="comment">Current plan: <span id="userPlan" class="success-text">FREE</span></p>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card terminal">
+                            <div class="terminal-header">
+                                <span class="dot green"></span>
+                                <span class="terminal-title">requests</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="stat-value glow" id="totalRequests">0</div>
+                                <div class="stat-label comment">This Month</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card terminal">
+                            <div class="terminal-header">
+                                <span class="dot yellow"></span>
+                                <span class="terminal-title">quota</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="stat-value" id="quotaPercentage">0%</div>
+                                <div class="stat-label comment">Used</div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card terminal">
+                            <div class="terminal-header">
+                                <span class="dot red"></span>
+                                <span class="terminal-title">pii-detected</span>
+                            </div>
+                            <div class="terminal-body">
+                                <div class="stat-value" id="piiDetections">0</div>
+                                <div class="stat-label comment">Blocked</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quota Bar -->
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <span class="dot green"></span>
+                            <span class="terminal-title">usage-quota.sh</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="quota-info">
+                                <span class="comment">Requests:</span>
+                                <span class="glow"><span id="usedRequests">0</span> / <span id="limitRequests">100</span></span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="quotaBar" style="width: 0%"></div>
+                            </div>
+                            <p class="comment" id="quotaMessage">✓ Within quota</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- API Keys Section -->
+                <section id="section-keys" class="dashboard-section">
+                    <h1 class="section-title">
+                        <span class="comment">// API KEYS</span>
+                    </h1>
+
+                    <div class="section-actions">
+                        <button class="btn btn-primary" id="createKeyBtn">
+                            + CREATE NEW KEY
+                        </button>
+                    </div>
+
+                    <div id="keysContainer" class="keys-list">
+                        <!-- Keys will be loaded here -->
+                        <div class="loading comment">Loading keys...</div>
+                    </div>
+
+                    <!-- Create Key Modal -->
+                    <div id="createKeyModal" class="modal">
+                        <div class="modal-content terminal">
+                            <div class="terminal-header">
+                                <span class="dot red"></span>
+                                <span class="dot yellow"></span>
+                                <span class="dot green"></span>
+                                <span class="terminal-title">create-key.sh</span>
+                            </div>
+                            <div class="terminal-body">
+                                <h3>Create New API Key</h3>
+                                <form id="createKeyForm">
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <span class="prompt">></span> Key Name
+                                        </label>
+                                        <input 
+                                            type="text" 
+                                            name="name" 
+                                            class="form-input" 
+                                            placeholder="Production API Key"
+                                        >
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <span class="prompt">></span> Description (optional)
+                                        </label>
+                                        <textarea 
+                                            name="description" 
+                                            class="form-input" 
+                                            placeholder="Used for..."
+                                            rows="3"
+                                        ></textarea>
+                                    </div>
+                                    <div class="modal-actions">
+                                        <button type="submit" class="btn btn-primary">CREATE KEY</button>
+                                        <button type="button" class="btn btn-secondary" id="cancelKeyBtn">CANCEL</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Usage Section -->
+                <section id="section-usage" class="dashboard-section">
+                    <h1 class="section-title">
+                        <span class="comment">// USAGE DETAILS</span>
+                    </h1>
+
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <span class="dot green"></span>
+                            <span class="terminal-title">usage-stats.log</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div id="usageDetails" class="usage-details">
+                                <div class="loading comment">Loading usage data...</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Billing Section -->
+                <section id="section-billing" class="dashboard-section">
+                    <h1 class="section-title">
+                        <span class="comment">// BILLING</span>
+                    </h1>
+
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <span class="dot green"></span>
+                            <span class="terminal-title">subscription.json</span>
+                        </div>
+                        <div class="terminal-body">
+                            <div id="billingInfo">
+                                <div class="loading comment">Loading billing info...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section-actions">
+                        <button class="btn btn-primary" id="upgradeBtn" style="display: none;">
+                            UPGRADE PLAN
+                        </button>
+                        <button class="btn btn-secondary" id="portalBtn" style="display: none;">
+                            MANAGE SUBSCRIPTION
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Account Section -->
+                <section id="section-account" class="dashboard-section">
+                    <h1 class="section-title">
+                        <span class="comment">// ACCOUNT SETTINGS</span>
+                    </h1>
+
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <span class="dot green"></span>
+                            <span class="terminal-title">account.conf</span>
+                        </div>
+                        <div class="terminal-body">
+                            <form id="accountForm" class="auth-form">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span class="prompt">></span> Email
+                                    </label>
+                                    <input 
+                                        type="email" 
+                                        id="accountEmail" 
+                                        class="form-input" 
+                                        disabled
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span class="prompt">></span> Name
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="accountName" 
+                                        class="form-input" 
+                                        placeholder="Your Name"
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span class="prompt">></span> Company
+                                    </label>
+                                    <input 
+                                        type="text" 
+                                        id="accountCompany" 
+                                        class="form-input" 
+                                        placeholder="Your Company"
+                                    >
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">
+                                    SAVE CHANGES
+                                </button>
+                            </form>
+
+                            <hr class="divider">
+
+                            <h3 class="comment">// Change Password</h3>
+                            <form id="passwordForm" class="auth-form">
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span class="prompt">></span> Current Password
+                                    </label>
+                                    <input 
+                                        type="password" 
+                                        id="currentPassword" 
+                                        class="form-input"
+                                    >
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">
+                                        <span class="prompt">></span> New Password
+                                    </label>
+                                    <input 
+                                        type="password" 
+                                        id="newPassword" 
+                                        class="form-input"
+                                        minlength="8"
+                                    >
+                                </div>
+
+                                <button type="submit" class="btn btn-secondary">
+                                    CHANGE PASSWORD
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="assets/js/matrix.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>

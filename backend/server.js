@@ -163,6 +163,10 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Serve static frontend files
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Basic route
 app.get('/', (req, res) => {
   res.json({ status: 'running', message: 'Agentic Firewall Backend API' });
