@@ -1,6 +1,11 @@
 // InferShield Content Script
 // Injects into ChatGPT, Claude, Gemini, GitHub Copilot pages
 
+// IMMEDIATE DEBUG - This should show up first
+console.log('🛡️ [InferShield] EXTENSION LOADED - Script executing now!');
+console.log('🛡️ [InferShield] URL:', window.location.href);
+console.log('🛡️ [InferShield] Hostname:', window.location.hostname);
+
 console.log('[InferShield] Content script loaded on:', window.location.hostname);
 
 let config = null;
@@ -8,33 +13,49 @@ let isScanning = false;
 
 // Initialize
 (async function init() {
-  // Get configuration
-  const response = await chrome.runtime.sendMessage({ action: 'getConfig' });
-  if (response.success) {
-    config = response.config;
-    console.log('[InferShield] Config loaded:', config);
-  }
-  
-  // Check if enabled for this site
-  const hostname = window.location.hostname;
-  if (!config || !config.enabled || !config.enabledSites[hostname]) {
-    console.log('[InferShield] Disabled for this site');
-    return;
-  }
-  
-  // Inject based on platform
-  if (hostname.includes('chat.openai.com')) {
-    console.log('[InferShield] Injecting for ChatGPT');
-    injectChatGPT();
-  } else if (hostname.includes('claude.ai')) {
-    console.log('[InferShield] Injecting for Claude');
-    injectClaude();
-  } else if (hostname.includes('gemini.google.com')) {
-    console.log('[InferShield] Injecting for Gemini');
-    injectGemini();
-  } else if (hostname.includes('github.com') && window.location.pathname.includes('/copilot')) {
-    console.log('[InferShield] Injecting for GitHub Copilot');
-    injectGitHubCopilot();
+  try {
+    console.log('🛡️ [InferShield] Init function starting...');
+    
+    // Get configuration
+    const response = await chrome.runtime.sendMessage({ action: 'getConfig' });
+    console.log('🛡️ [InferShield] Got response from background:', response);
+    
+    if (response.success) {
+      config = response.config;
+      console.log('[InferShield] Config loaded:', config);
+    } else {
+      console.error('🛡️ [InferShield] Failed to load config:', response);
+      return;
+    }
+    
+    // Check if enabled for this site
+    const hostname = window.location.hostname;
+    console.log('🛡️ [InferShield] Checking if enabled for:', hostname);
+    console.log('🛡️ [InferShield] Config enabled:', config.enabled);
+    console.log('🛡️ [InferShield] Enabled sites:', config.enabledSites);
+    
+    if (!config || !config.enabled || !config.enabledSites[hostname]) {
+      console.log('[InferShield] Disabled for this site');
+      return;
+    }
+    
+    // Inject based on platform
+    if (hostname.includes('chat.openai.com')) {
+      console.log('[InferShield] Injecting for ChatGPT');
+      injectChatGPT();
+    } else if (hostname.includes('claude.ai')) {
+      console.log('[InferShield] Injecting for Claude');
+      injectClaude();
+    } else if (hostname.includes('gemini.google.com')) {
+      console.log('[InferShield] Injecting for Gemini');
+      injectGemini();
+    } else if (hostname.includes('github.com') && window.location.pathname.includes('/copilot')) {
+      console.log('[InferShield] Injecting for GitHub Copilot');
+      injectGitHubCopilot();
+    }
+  } catch (error) {
+    console.error('🛡️ [InferShield] CRITICAL ERROR in init:', error);
+    console.error('🛡️ [InferShield] Error stack:', error.stack);
   }
 })();
 
