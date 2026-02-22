@@ -61,6 +61,12 @@ let isScanning = false;
   } catch (error) {
     console.error('🛡️ [InferShield] CRITICAL ERROR in init:', error);
     console.error('🛡️ [InferShield] Error stack:', error.stack);
+    
+    // If extension context was invalidated, show a notification
+    if (error.message && error.message.includes('Extension context invalidated')) {
+      console.warn('🛡️ [InferShield] Extension was reloaded. Page reload required for protection.');
+      // Don't show modal during init - user will see it when they try to send a message
+    }
   }
 })();
 
@@ -132,13 +138,13 @@ function injectChatGPT() {
       sendButton.addEventListener('click', async (e) => {
         if (isScanning) return;
         
-        const textarea = findTextarea();
-        if (textarea && textarea.value.trim()) {
+        const input = findInput();
+        const text = getTextContent(input);
+        if (input && text && text.trim()) {
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation();
           
-          const text = textarea.value;
           const shouldSend = await scanAndConfirm(text, 'ChatGPT');
           
           if (shouldSend) {
@@ -343,10 +349,20 @@ async function scanAndConfirm(text, platform) {
     
   } catch (error) {
     console.error('[InferShield] Scan error:', error);
-    showModal({
-      type: 'error',
-      message: 'Failed to scan message: ' + error.message
-    });
+    
+    // Check if extension context was invalidated (extension reload/update)
+    if (error.message && error.message.includes('Extension context invalidated')) {
+      showModal({
+        type: 'error',
+        message: '⚠️ InferShield extension was updated. Please reload this page to continue protection.'
+      });
+    } else {
+      showModal({
+        type: 'error',
+        message: 'Failed to scan message: ' + error.message
+      });
+    }
+    
     isScanning = false;
     return false;
   }
