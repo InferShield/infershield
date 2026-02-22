@@ -66,20 +66,37 @@ let isScanning = false;
 
 // ChatGPT injection
 function injectChatGPT() {
-  // Find the textarea
-  const findTextarea = () => document.querySelector('textarea[placeholder*="Message"]') || 
-                               document.querySelector('#prompt-textarea');
+  console.log('🛡️ [InferShield] Setting up ChatGPT injection...');
+  
+  // Find the textarea (ChatGPT uses contenteditable divs, not textareas)
+  const findTextarea = () => {
+    // Try multiple selectors for different ChatGPT versions
+    return document.querySelector('textarea[data-id="root"]') || 
+           document.querySelector('textarea') ||
+           document.querySelector('[contenteditable="true"]') ||
+           document.querySelector('#prompt-textarea');
+  };
+  
+  // Get text content from element (works for both textarea and contenteditable)
+  const getTextContent = (element) => {
+    if (!element) return '';
+    return element.value || element.textContent || element.innerText || '';
+  };
   
   // Intercept Enter key
   const handleKeydown = async (e) => {
     if (e.key === 'Enter' && !e.shiftKey && !isScanning) {
       const textarea = findTextarea();
-      if (textarea && textarea.value.trim()) {
+      const text = getTextContent(textarea);
+      
+      console.log('🛡️ [InferShield] Enter pressed, textarea:', textarea);
+      console.log('🛡️ [InferShield] Text content:', text);
+      
+      if (textarea && text.trim()) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
         
-        const text = textarea.value;
         const shouldSend = await scanAndConfirm(text, 'ChatGPT');
         
         if (shouldSend) {
