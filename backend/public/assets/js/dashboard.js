@@ -89,20 +89,30 @@ async function loadUsageData() {
         if (data.success) {
             currentUsage = data;
             
+            // If usage_records is empty but we have API keys with usage, show those totals
+            let totalRequests = data.usage.total_requests;
+            let totalPiiDetections = data.usage.total_pii_detections;
+            
+            if (totalRequests === 0 && apiKeys.length > 0) {
+                // Fallback: sum API key usage
+                totalRequests = apiKeys.reduce((sum, key) => sum + (key.total_requests || 0), 0);
+                console.log('[Dashboard] Using API key totals as fallback:', totalRequests);
+            }
+            
             // Update stats
-            document.getElementById('totalRequests').textContent = data.usage.total_requests;
-            document.getElementById('piiDetections').textContent = data.usage.total_pii_detections;
+            document.getElementById('totalRequests').textContent = totalRequests;
+            document.getElementById('piiDetections').textContent = totalPiiDetections;
             
             // Update quota
-            document.getElementById('usedRequests').textContent = data.quota.current;
+            document.getElementById('usedRequests').textContent = totalRequests;
             document.getElementById('limitRequests').textContent = 
                 data.quota.limit === Infinity ? '∞' : data.quota.limit;
             
-            const percentage = data.quota.percentage;
+            const percentage = data.quota.limit === Infinity ? 0 : Math.round((totalRequests / data.quota.limit) * 100);
             document.getElementById('quotaPercentage').textContent = percentage + '%';
             document.getElementById('quotaBar').style.width = Math.min(percentage, 100) + '%';
             
-            if (data.quota.exceeded) {
+            if (totalRequests >= data.quota.limit && data.quota.limit !== Infinity) {
                 document.getElementById('quotaBar').classList.add('warning');
                 document.getElementById('quotaMessage').textContent = '⚠ Quota exceeded';
                 document.getElementById('quotaMessage').style.color = '#ff4444';
@@ -267,7 +277,20 @@ async function loadUsageDetails() {
             
             document.getElementById('usageDetails').innerHTML = html;
         } else {
-            document.getElementById('usageDetails').innerHTML = '<p class="comment">No usage data yet</p>';
+            // Fallback: show API key summary if no daily data
+            if (apiKeys.length > 0) {
+                const totalRequests = apiKeys.reduce((sum, key) => sum + (key.total_requests || 0), 0);
+                document.getElementById('usageDetails').innerHTML = `
+                    <div class="terminal">
+                        <div class="terminal-body">
+                            <p class="comment">Total requests: ${totalRequests}</p>
+                            <p class="comment" style="margin-top: 8px;">Detailed daily breakdown will appear here after your next request.</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                document.getElementById('usageDetails').innerHTML = '<p class="comment">No usage data yet. Make your first API request to see usage stats here!</p>';
+            }
         }
     } catch (error) {
         console.error('Failed to load usage details:', error);
@@ -319,7 +342,7 @@ async function loadBillingInfo() {
 
 // Handle billing actions
 document.getElementById('upgradeBtn').addEventListener('click', () => {
-    window.location.href = '../docs/index.html#pricing';
+    window.open('https://github.com/InferShield/infershield#pricing', '_blank');
 });
 
 document.getElementById('portalBtn').addEventListener('click', async () => {

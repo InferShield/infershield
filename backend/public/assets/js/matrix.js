@@ -75,7 +75,9 @@ function addDemoLog() {
     }
 }
 
-addDemoLog();
+if (demoOutput) {
+    addDemoLog();
+}
 
 // Waitlist Form Handling
 const waitlistForm = document.getElementById('waitlist-form');
