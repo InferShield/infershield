@@ -1,4 +1,4 @@
-const httpMitmProxy = require('http-mitm-proxy');
+const Proxy = require('http-mitm-proxy').Proxy;
 const fs = require('fs');
 const path = require('path');
 const { scanRequest, scanResponse } = require('./interceptor');
@@ -6,7 +6,7 @@ const { ensureCertificate } = require('./cert-manager');
 
 const config = require('./config');
 
-const proxy = httpMitmProxy();
+const proxy = new Proxy();
 
 // Ensure certificate exists
 ensureCertificate();
