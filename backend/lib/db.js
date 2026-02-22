@@ -6,6 +6,25 @@ const DB_PATH = path.join(__dirname, '../database.db');
 const db = new sqlite3.Database(DB_PATH);
 
 /**
+ * Check if a column exists in a table
+ * @param {string} tableName - Table name
+ * @param {string} columnName - Column name
+ * @returns {Promise<boolean>}
+ */
+function columnExists(tableName, columnName) {
+  return new Promise((resolve, reject) => {
+    db.all(`PRAGMA table_info(${tableName})`, (err, rows) => {
+      if (err) {
+        reject(err);
+      } else {
+        const exists = rows.some(row => row.name === columnName);
+        resolve(exists);
+      }
+    });
+  });
+}
+
+/**
  * Initialize database tables if they don't exist
  */
 function initDatabase() {
@@ -24,21 +43,49 @@ function initDatabase() {
         user_id INTEGER,
         api_key_id INTEGER
       )
-    `);
+    `, (err) => {
+      if (err) {
+        console.error('[DB] Error creating api_requests table:', err);
+      } else {
+        // Add new columns if they don't exist (safe migration)
+        columnExists('api_requests', 'request_id').then(exists => {
+          if (!exists) {
+            db.run(`ALTER TABLE api_requests ADD COLUMN request_id TEXT`, (err) => {
+              if (err) {
+                console.error('[DB] Error adding request_id column:', err);
+              } else {
+                console.log('[DB] Added request_id column to api_requests');
+              }
+            });
+          }
+        });
+
+        columnExists('api_requests', 'latency_ms').then(exists => {
+          if (!exists) {
+            db.run(`ALTER TABLE api_requests ADD COLUMN latency_ms INTEGER`, (err) => {
+              if (err) {
+                console.error('[DB] Error adding latency_ms column:', err);
+              } else {
+                console.log('[DB] Added latency_ms column to api_requests');
+              }
+            });
+          }
+        });
+      }
+    });
 
     // PII detections table
     db.run(`
       CREATE TABLE IF NOT EXISTS pii_detections (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        request_id INTEGER,
+        request_id TEXT,
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
         detection_type TEXT NOT NULL,
         pattern TEXT NOT NULL,
         severity TEXT NOT NULL,
         description TEXT,
         provider TEXT,
-        redacted_value TEXT,
-        FOREIGN KEY (request_id) REFERENCES api_requests(id)
+        redacted_value TEXT
       )
     `);
 
@@ -49,31 +96,33 @@ function initDatabase() {
 /**
  * Log an API request
  * @param {Object} data - Request data
- * @returns {Promise<number>} Request ID
+ * @returns {Promise<number>} Request ID (integer primary key)
  */
 function logRequest(data) {
   return new Promise((resolve, reject) => {
     const {
+      requestId = null,
       url,
       method = 'UNKNOWN',
       requestBody = '',
       responseBody = '',
       riskScore = 0,
       blocked = false,
+      latencyMs = null,
       userId = null,
       apiKeyId = null
     } = data;
 
     db.run(
-      `INSERT INTO api_requests (url, method, request_body, response_body, risk_score, blocked, user_id, api_key_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [url, method, requestBody, responseBody, riskScore, blocked ? 1 : 0, userId, apiKeyId],
+      `INSERT INTO api_requests (request_id, url, method, request_body, response_body, risk_score, blocked, latency_ms, user_id, api_key_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [requestId, url, method, requestBody, responseBody, riskScore, blocked ? 1 : 0, latencyMs, userId, apiKeyId],
       function(err) {
         if (err) {
           console.error('[DB] Error logging request:', err);
           reject(err);
         } else {
-          console.log(`[DB] Request logged (ID: ${this.lastID})`);
+          console.log(`[DB] Request logged (ID: ${this.lastID}, request_id: ${requestId})`);
           resolve(this.lastID);
         }
       }
@@ -83,7 +132,7 @@ function logRequest(data) {
 
 /**
  * Log PII detections
- * @param {number} requestId - Associated request ID
+ * @param {string|number} requestId - Associated request_id (string UUID) or legacy integer ID
  * @param {Array} detections - Array of detection objects
  * @returns {Promise<void>}
  */
@@ -103,7 +152,7 @@ function logDetections(requestId, detections) {
       const redactedValue = detection.value ? detection.value.substring(0, 8) + '••••••' : null;
       
       stmt.run(
-        requestId,
+        String(requestId), // Convert to string for compatibility
         detection.type,
         detection.pattern,
         detection.severity,
@@ -183,5 +232,6 @@ module.exports = {
   logDetections,
   getRecentRequests,
   getStats,
+  columnExists,
   db
 };
