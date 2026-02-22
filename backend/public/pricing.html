@@ -192,12 +192,18 @@ Shield
         // Upgrade to Pro
         document.getElementById('upgradeProBtn').addEventListener('click', async () => {
             // Only check auth when clicking upgrade button
-            if (!isAuthenticated()) {
+            const token = getAuthToken();
+            console.log('[Pricing] Auth token exists:', !!token);
+            console.log('[Pricing] Token preview:', token ? token.substring(0, 20) + '...' : 'null');
+            
+            if (!token) {
+                console.log('[Pricing] No token found, redirecting to login');
                 window.location.href = '/login.html?redirect=/pricing.html';
                 return;
             }
 
             try {
+                console.log('[Pricing] Making checkout API call...');
                 const btn = document.getElementById('upgradeProBtn');
                 btn.disabled = true;
                 btn.textContent = 'Processing...';
@@ -210,15 +216,19 @@ Shield
                     })
                 });
 
+                console.log('[Pricing] API response status:', response.status);
                 const result = await response.json();
+                console.log('[Pricing] API response:', result);
 
                 if (result.success && result.url) {
                     // Redirect to Stripe checkout
+                    console.log('[Pricing] Redirecting to Stripe:', result.url);
                     window.location.href = result.url;
                 } else {
                     throw new Error(result.error || 'Failed to create checkout session');
                 }
             } catch (error) {
+                console.error('[Pricing] Checkout failed:', error);
                 alert('Failed to start upgrade: ' + error.message);
                 const btn = document.getElementById('upgradeProBtn');
                 btn.disabled = false;
