@@ -1,3 +1,22 @@
+// Global error handlers for debugging Railway crashes
+process.on('uncaughtException', (error) => {
+  console.error('💥 UNCAUGHT EXCEPTION:', error);
+  console.error('Stack:', error.stack);
+  process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('💥 UNHANDLED REJECTION at:', promise);
+  console.error('Reason:', reason);
+  process.exit(1);
+});
+
+console.log('🚀 Starting InferShield server...');
+console.log('📁 Working directory:', process.cwd());
+console.log('🔧 NODE_ENV:', process.env.NODE_ENV);
+console.log('🗄️ DATABASE_URL:', process.env.DATABASE_URL ? 'Set ✓' : 'Missing ✗');
+console.log('🔑 JWT_SECRET:', process.env.JWT_SECRET ? 'Set ✓' : 'Missing ✗');
+
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
