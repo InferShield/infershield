@@ -79,8 +79,12 @@ async function loadUserData() {
 // Load usage data
 async function loadUsageData() {
     try {
+        console.log('[Dashboard] Fetching usage data from:', `${API_BASE}/usage/current`);
         const response = await apiRequest('/usage/current');
+        
+        console.log('[Dashboard] Usage response status:', response.status);
         const data = await response.json();
+        console.log('[Dashboard] Usage data:', data);
         
         if (data.success) {
             currentUsage = data;
@@ -107,9 +111,14 @@ async function loadUsageData() {
                 document.getElementById('quotaMessage').textContent = '⚠ Approaching limit';
                 document.getElementById('quotaMessage').style.color = '#ffaa00';
             }
+            
+            console.log('[Dashboard] Usage stats updated successfully');
+        } else {
+            console.error('[Dashboard] Usage API returned success=false:', data);
         }
     } catch (error) {
-        console.error('Failed to load usage:', error);
+        console.error('[Dashboard] Failed to load usage:', error);
+        console.error('[Dashboard] Error stack:', error.stack);
     }
 }
 
