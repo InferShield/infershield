@@ -175,9 +175,9 @@ app.use(morgan('dev'));
 const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Basic route
+// Root route - redirect to login
 app.get('/', (req, res) => {
-  res.json({ status: 'running', message: 'InferShield Backend API' });
+  res.redirect('/login.html');
 });
 
 // Health check endpoint for Railway
