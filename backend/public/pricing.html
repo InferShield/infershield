@@ -156,15 +156,10 @@ Shield
             return localStorage.getItem('token');
         }
 
-        // Check if user is logged in
-        function checkAuth() {
+        // Check if user is logged in (silent check, no alert)
+        function isAuthenticated() {
             const token = getAuthToken();
-            if (!token) {
-                alert('Please log in to upgrade your plan');
-                window.location.href = '/login.html';
-                return false;
-            }
-            return true;
+            return !!token;
         }
 
         // API request helper
@@ -196,7 +191,11 @@ Shield
 
         // Upgrade to Pro
         document.getElementById('upgradeProBtn').addEventListener('click', async () => {
-            if (!checkAuth()) return;
+            // Only check auth when clicking upgrade button
+            if (!isAuthenticated()) {
+                window.location.href = '/login.html?redirect=/pricing.html';
+                return;
+            }
 
             try {
                 const btn = document.getElementById('upgradeProBtn');
@@ -233,7 +232,11 @@ Shield
         const closeBtn = document.getElementById('closeModal');
 
         contactBtn.addEventListener('click', () => {
-            if (!checkAuth()) return;
+            // Only check auth when clicking contact sales
+            if (!isAuthenticated()) {
+                window.location.href = '/login.html?redirect=/pricing.html';
+                return;
+            }
             
             modal.style.display = 'block';
             
@@ -289,11 +292,6 @@ Shield
             } catch (error) {
                 alert('Failed to send message: ' + error.message);
             }
-        });
-
-        // Check auth on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            checkAuth();
         });
     </script>
 </body>
