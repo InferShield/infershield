@@ -45,8 +45,8 @@ async function apiRequest(endpoint, options = {}) {
     return response;
 }
 
-// Check authentication on page load
-if (!getToken()) {
+// Check authentication on page load (unless in demo mode)
+if (!getToken() && !(window.InferShieldDemoMode && window.InferShieldDemoMode.isActive())) {
     window.location.href = 'login.html';
 }
 
@@ -57,6 +57,20 @@ let apiKeys = [];
 
 // Load user data
 async function loadUserData() {
+    // Check demo mode first
+    if (window.InferShieldDemoMode && window.InferShieldDemoMode.isActive()) {
+        const demoData = await window.InferShieldDemoMode.getData();
+        if (demoData && demoData.user) {
+            currentUser = demoData.user;
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userPlan').textContent = currentUser.plan;
+            document.getElementById('accountEmail').value = currentUser.email;
+            document.getElementById('accountName').value = currentUser.name || '';
+            document.getElementById('accountCompany').value = currentUser.company || '';
+        }
+        return;
+    }
+    
     try {
         const response = await apiRequest('/auth/me');
         const data = await response.json();
@@ -78,6 +92,32 @@ async function loadUserData() {
 
 // Load usage data
 async function loadUsageData() {
+    // Check demo mode first
+    if (window.InferShieldDemoMode && window.InferShieldDemoMode.isActive()) {
+        const demoData = await window.InferShieldDemoMode.getData();
+        if (demoData && demoData.stats) {
+            const stats = demoData.stats;
+            document.getElementById('totalRequests').textContent = stats.totalRequests;
+            document.getElementById('piiDetections').textContent = stats.piiDetections;
+            document.getElementById('usedRequests').textContent = stats.quotaUsed;
+            document.getElementById('limitRequests').textContent = stats.quotaLimit;
+            document.getElementById('quotaPercentage').textContent = Math.round(stats.quotaPercentage) + '%';
+            document.getElementById('quotaBar').style.width = Math.min(stats.quotaPercentage, 100) + '%';
+            
+            const percentage = stats.quotaPercentage;
+            if (percentage >= 100) {
+                document.getElementById('quotaBar').classList.add('warning');
+                document.getElementById('quotaMessage').textContent = '⚠ Quota exceeded';
+                document.getElementById('quotaMessage').style.color = '#ff4444';
+            } else if (percentage > 80) {
+                document.getElementById('quotaBar').classList.add('warning');
+                document.getElementById('quotaMessage').textContent = '⚠ Approaching limit';
+                document.getElementById('quotaMessage').style.color = '#ffaa00';
+            }
+        }
+        return;
+    }
+    
     try {
         console.log('[Dashboard] Fetching usage data from:', `${API_BASE}/usage/current`);
         const response = await apiRequest('/usage/current');
@@ -134,6 +174,25 @@ async function loadUsageData() {
 
 // Load API keys
 async function loadAPIKeys() {
+    // Check demo mode first
+    if (window.InferShieldDemoMode && window.InferShieldDemoMode.isActive()) {
+        const demoData = await window.InferShieldDemoMode.getData();
+        if (demoData && demoData.apiKeys) {
+            apiKeys = demoData.apiKeys.map(key => ({
+                id: key.id,
+                name: key.name,
+                description: key.description,
+                key_prefix: key.key_preview,
+                created_at: key.created_at,
+                last_used_at: key.last_used,
+                total_requests: key.usage_count,
+                status: 'active'
+            }));
+            renderAPIKeys();
+        }
+        return;
+    }
+    
     try {
         const response = await apiRequest('/keys');
         const data = await response.json();

@@ -1,0 +1,151 @@
+{
+  "user": {
+    "id": "demo_user_001",
+    "email": "demo@infershield.io",
+    "name": "Demo User",
+    "company": "InferShield Demo",
+    "plan": "PRO",
+    "created_at": "2026-01-15T10:30:00Z"
+  },
+  "stats": {
+    "totalRequests": 487,
+    "quotaUsed": 487,
+    "quotaLimit": 10000,
+    "quotaPercentage": 4.87,
+    "piiDetections": 23,
+    "threatsBlocked": 18,
+    "currentMonth": "February 2026"
+  },
+  "apiKeys": [
+    {
+      "id": "key_demo_001",
+      "name": "Production API Key",
+      "key": "sk_demo_1234567890abcdef",
+      "key_preview": "sk_demo_...cdef",
+      "description": "Main API key for production environment",
+      "created_at": "2026-02-01T09:00:00Z",
+      "last_used": "2026-02-22T14:30:00Z",
+      "usage_count": 312
+    },
+    {
+      "id": "key_demo_002",
+      "name": "Development Key",
+      "key": "sk_demo_0987654321fedcba",
+      "key_preview": "sk_demo_...dcba",
+      "description": "Testing and development",
+      "created_at": "2026-02-10T11:45:00Z",
+      "last_used": "2026-02-21T16:20:00Z",
+      "usage_count": 175
+    }
+  ],
+  "usage": {
+    "daily": [
+      { "date": "2026-02-15", "requests": 23, "pii_detected": 2, "threats_blocked": 1 },
+      { "date": "2026-02-16", "requests": 31, "pii_detected": 1, "threats_blocked": 1 },
+      { "date": "2026-02-17", "requests": 19, "pii_detected": 0, "threats_blocked": 0 },
+      { "date": "2026-02-18", "requests": 45, "pii_detected": 3, "threats_blocked": 2 },
+      { "date": "2026-02-19", "requests": 52, "pii_detected": 4, "threats_blocked": 3 },
+      { "date": "2026-02-20", "requests": 38, "pii_detected": 2, "threats_blocked": 1 },
+      { "date": "2026-02-21", "requests": 67, "pii_detected": 5, "threats_blocked": 4 },
+      { "date": "2026-02-22", "requests": 89, "pii_detected": 6, "threats_blocked": 6 }
+    ],
+    "monthly": {
+      "current_month": "2026-02",
+      "total_requests": 487,
+      "pii_detected": 23,
+      "threats_blocked": 18,
+      "top_threats": [
+        { "type": "api_key", "count": 8, "percentage": 44.4 },
+        { "type": "email", "count": 6, "percentage": 33.3 },
+        { "type": "credit_card", "count": 3, "percentage": 16.7 },
+        { "type": "ssn", "count": 1, "percentage": 5.6 }
+      ]
+    }
+  },
+  "recentScans": [
+    {
+      "id": "scan_demo_001",
+      "timestamp": "2026-02-22T15:45:00Z",
+      "site": "chat.openai.com",
+      "threat_detected": true,
+      "threat_type": "api_key",
+      "risk_score": 95,
+      "action": "blocked",
+      "text_preview": "Here's my OpenAI API key: sk-..."
+    },
+    {
+      "id": "scan_demo_002",
+      "timestamp": "2026-02-22T15:30:00Z",
+      "site": "claude.ai",
+      "threat_detected": false,
+      "threat_type": null,
+      "risk_score": 0,
+      "action": "allowed",
+      "text_preview": "Explain how neural networks work"
+    },
+    {
+      "id": "scan_demo_003",
+      "timestamp": "2026-02-22T15:15:00Z",
+      "site": "gemini.google.com",
+      "threat_detected": true,
+      "threat_type": "email",
+      "risk_score": 75,
+      "action": "warned",
+      "text_preview": "Send the report to john.doe@company.com"
+    },
+    {
+      "id": "scan_demo_004",
+      "timestamp": "2026-02-22T14:50:00Z",
+      "site": "chat.openai.com",
+      "threat_detected": true,
+      "threat_type": "credit_card",
+      "risk_score": 98,
+      "action": "blocked",
+      "text_preview": "My card number is 4532-1234-5678-9012"
+    },
+    {
+      "id": "scan_demo_005",
+      "timestamp": "2026-02-22T14:30:00Z",
+      "site": "github.com",
+      "threat_detected": false,
+      "threat_type": null,
+      "risk_score": 0,
+      "action": "allowed",
+      "text_preview": "function calculateTotal(items) { ... }"
+    }
+  ],
+  "billing": {
+    "current_plan": "PRO",
+    "price": "$99.00/month",
+    "billing_cycle": "monthly",
+    "next_billing_date": "2026-03-01",
+    "payment_method": "•••• •••• •••• 4242",
+    "invoices": [
+      {
+        "id": "inv_demo_001",
+        "date": "2026-02-01",
+        "amount": "$99.00",
+        "status": "paid",
+        "download_url": "#"
+      },
+      {
+        "id": "inv_demo_002",
+        "date": "2026-01-01",
+        "amount": "$99.00",
+        "status": "paid",
+        "download_url": "#"
+      }
+    ]
+  },
+  "integrations": {
+    "chrome_extension": {
+      "installed": true,
+      "version": "0.7.0",
+      "last_sync": "2026-02-22T15:50:00Z"
+    },
+    "github_copilot": {
+      "configured": true,
+      "repo_count": 12
+    }
+  }
+}

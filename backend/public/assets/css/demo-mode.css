@@ -1,0 +1,258 @@
+/**
+ * InferShield Demo Mode Styles
+ * Styling for "Try Example" feature and demo mode indicators
+ */
+
+/* Demo Mode Banner (Dashboard) */
+.demo-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(255, 165, 0, 0.95);
+  color: #0a0a0f;
+  padding: 12px 20px;
+  z-index: 10000;
+  border-bottom: 2px solid #ffa500;
+  box-shadow: 0 2px 10px rgba(255, 165, 0, 0.3);
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+}
+
+.demo-banner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.demo-badge {
+  background: #0a0a0f;
+  color: #ffa500;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border: 1px solid #ffa500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.demo-badge .prompt {
+  font-size: 16px;
+}
+
+.demo-text {
+  color: #0a0a0f;
+}
+
+.demo-text .link {
+  color: #0a0a0f;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.demo-text .link:hover {
+  color: #fff;
+}
+
+/* Adjust dashboard layout when banner is present */
+body:has(.demo-banner) .dashboard-layout {
+  padding-top: 50px;
+}
+
+body:has(.demo-banner) .auth-container {
+  padding-top: 60px;
+}
+
+/* Try Example Section (Login/Signup) */
+.try-example-section {
+  margin: 24px 0;
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(0, 255, 65, 0.3);
+}
+
+.divider-text {
+  position: relative;
+  display: inline-block;
+  background: #0a0a0f;
+  padding: 0 16px;
+  color: rgba(0, 255, 65, 0.6);
+  font-size: 12px;
+  font-style: italic;
+}
+
+.try-example-hint {
+  text-align: center;
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(0, 255, 65, 0.6);
+}
+
+/* Demo Mode Button Styling */
+.btn.btn-demo {
+  background: transparent;
+  border: 2px solid #ffa500;
+  color: #ffa500;
+  text-shadow: 0 0 5px rgba(255, 165, 0, 0.5);
+}
+
+.btn.btn-demo:hover {
+  background: rgba(255, 165, 0, 0.1);
+  box-shadow: 0 0 15px rgba(255, 165, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn.btn-demo .prompt {
+  margin-right: 8px;
+}
+
+/* Demo Mode Indicator in Stats */
+.demo-indicator {
+  display: inline-block;
+  background: rgba(255, 165, 0, 0.2);
+  border: 1px solid #ffa500;
+  color: #ffa500;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  margin-left: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Demo Data Watermark (Subtle) */
+.demo-watermark {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  opacity: 0.3;
+  font-size: 11px;
+  color: #ffa500;
+  pointer-events: none;
+  z-index: 9999;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  text-shadow: 0 0 5px rgba(255, 165, 0, 0.5);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .demo-banner {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
+  
+  .demo-banner-content {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .demo-badge {
+    padding: 3px 10px;
+    font-size: 11px;
+  }
+  
+  .demo-text {
+    font-size: 11px;
+    text-align: center;
+  }
+  
+  .try-example-section {
+    margin: 16px 0;
+  }
+  
+  .demo-watermark {
+    bottom: 10px;
+    right: 10px;
+    font-size: 9px;
+  }
+}
+
+/* Animation for demo banner */
+@keyframes demo-banner-slide {
+  from {
+    transform: translateY(-100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.demo-banner {
+  animation: demo-banner-slide 0.3s ease-out;
+}
+
+/* Pulsing effect for demo badge */
+@keyframes demo-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255, 165, 0, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(255, 165, 0, 0);
+  }
+}
+
+.demo-badge {
+  animation: demo-pulse 2s infinite;
+}
+
+/* Warning style for demo limitations */
+.demo-warning {
+  background: rgba(255, 165, 0, 0.1);
+  border: 1px solid rgba(255, 165, 0, 0.3);
+  border-left: 4px solid #ffa500;
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 4px;
+  color: #ffa500;
+  font-size: 13px;
+}
+
+.demo-warning strong {
+  color: #ffa500;
+  font-weight: bold;
+}
+
+/* Demo mode overlay for disabled features */
+.demo-disabled {
+  position: relative;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.demo-disabled::after {
+  content: '🔒 Upgrade to unlock';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 165, 0, 0.95);
+  color: #0a0a0f;
+  padding: 8px 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+  white-space: nowrap;
+  z-index: 10;
+}
