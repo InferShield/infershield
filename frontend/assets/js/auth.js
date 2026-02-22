@@ -27,7 +27,7 @@ function setToken(token) {
 
 // Get token
 function getToken() {
-    return localStorage.setItem('infershield_token');
+    return localStorage.getItem('infershield_token');
 }
 
 // Clear token
