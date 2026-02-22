@@ -18,10 +18,20 @@ router.post('/checkout', async (req, res) => {
     let stripe_customer_id = req.user.stripe_customer_id;
     
     if (!stripe_customer_id) {
+      if (!process.env.STRIPE_SECRET_KEY) {
+        console.error('[Billing] STRIPE_SECRET_KEY not configured');
+        return res.status(500).json({
+          success: false,
+          error: 'Payment system not configured. Please contact support.'
+        });
+      }
+
       const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
       const db = require('../database/db');
       
       try {
+        console.log(`[Billing] Creating Stripe customer for user ${req.user.id} (${req.user.email})`);
+        
         const customer = await stripe.customers.create({
           email: req.user.email,
           name: req.user.name,
@@ -41,7 +51,8 @@ router.post('/checkout', async (req, res) => {
         
         console.log(`[Billing] Created Stripe customer ${stripe_customer_id} for user ${req.user.id}`);
       } catch (stripeError) {
-        console.error('[Billing] Failed to create Stripe customer:', stripeError);
+        console.error('[Billing] Failed to create Stripe customer:', stripeError.message);
+        console.error('[Billing] Stripe error details:', stripeError);
         return res.status(500).json({
           success: false,
           error: 'Failed to set up payment. Please contact support.'
