@@ -40,7 +40,7 @@ let isScanning = false;
     }
     
     // Inject based on platform
-    if (hostname.includes('chat.openai.com')) {
+    if (hostname.includes('chat.openai.com') || hostname.includes('chatgpt.com')) {
       console.log('[InferShield] Injecting for ChatGPT');
       injectChatGPT();
     } else if (hostname.includes('claude.ai')) {

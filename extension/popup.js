@@ -11,6 +11,7 @@ const DEFAULT_CONFIG = {
   enabled: true,
   enabledSites: {
     'chat.openai.com': true,
+    'chatgpt.com': true,
     'claude.ai': true,
     'gemini.google.com': true,
     'github.com': true
@@ -41,8 +42,10 @@ async function loadSettings() {
     document.getElementById('mode').value = config.mode || 'warn';
     document.getElementById('enabled').checked = config.enabled !== false;
     
-    // Site checkboxes
-    document.getElementById('site-chatgpt').checked = config.enabledSites?.['chat.openai.com'] !== false;
+    // Site checkboxes (ChatGPT covers both chat.openai.com and chatgpt.com)
+    document.getElementById('site-chatgpt').checked = 
+      (config.enabledSites?.['chat.openai.com'] !== false) || 
+      (config.enabledSites?.['chatgpt.com'] !== false);
     document.getElementById('site-claude').checked = config.enabledSites?.['claude.ai'] !== false;
     document.getElementById('site-gemini').checked = config.enabledSites?.['gemini.google.com'] !== false;
     document.getElementById('site-github').checked = config.enabledSites?.['github.com'] !== false;
@@ -69,6 +72,7 @@ async function saveSettings() {
       enabled: document.getElementById('enabled').checked,
       enabledSites: {
         'chat.openai.com': document.getElementById('site-chatgpt').checked,
+        'chatgpt.com': document.getElementById('site-chatgpt').checked,
         'claude.ai': document.getElementById('site-claude').checked,
         'gemini.google.com': document.getElementById('site-gemini').checked,
         'github.com': document.getElementById('site-github').checked
