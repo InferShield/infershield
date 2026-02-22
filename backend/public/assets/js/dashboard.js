@@ -342,7 +342,7 @@ async function loadBillingInfo() {
 
 // Handle billing actions
 document.getElementById('upgradeBtn').addEventListener('click', () => {
-    window.open('https://github.com/InferShield/infershield#pricing', '_blank');
+    window.location.href = '/pricing.html';
 });
 
 document.getElementById('portalBtn').addEventListener('click', async () => {

@@ -110,4 +110,39 @@ router.get('/subscription', async (req, res) => {
   }
 });
 
+/**
+ * POST /api/billing/contact
+ * Handle enterprise sales contact form
+ */
+router.post('/contact', async (req, res) => {
+  try {
+    const { name, email, company, volume, message } = req.body;
+
+    // TODO: Implement email notification to sales team
+    // For now, log the inquiry
+    console.log('[Sales Inquiry]', {
+      name,
+      email,
+      company,
+      volume,
+      message,
+      user_id: req.user.id,
+      timestamp: new Date().toISOString()
+    });
+
+    // TODO: Send email via SendGrid/Postmark/etc
+    // await sendSalesNotification({ name, email, company, volume, message });
+
+    res.json({
+      success: true,
+      message: 'Thank you! Our sales team will contact you within 24 hours.'
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
 module.exports = router;
