@@ -218,6 +218,15 @@ function scanRequest(ctx, callback) {
           // Mark context as blocked so response handler can skip
           ctx.isBlocked = true;
           
+          // Abort upstream connection if it exists
+          try {
+            if (ctx.proxyToServerRequest) {
+              ctx.proxyToServerRequest.destroy();
+            }
+          } catch (err) {
+            // Ignore destroy errors
+          }
+          
           ctx.proxyToClientResponse.writeHead(403, {
             'Content-Type': 'application/json',
             'X-InferShield-Blocked': 'true',
@@ -288,8 +297,12 @@ function scanResponse(ctx, callback) {
     const chunks = [];
 
     ctx.onResponseData((ctx, chunk, cb) => {
-      chunks.push(chunk);
-      return cb(null, chunk);
+      try {
+        chunks.push(chunk);
+        return cb(null, chunk);
+      } catch (err) {
+        return cb(err);
+      }
     });
 
     ctx.onResponseEnd(async (ctx, cb) => {
@@ -307,7 +320,7 @@ function scanResponse(ctx, callback) {
 
         cb();
       } catch (error) {
-        console.error('[Interceptor] Error in scanResponse:', error);
+        console.error('[Interceptor] Error in scanResponse onResponseEnd:', error);
         cb();
       }
     });

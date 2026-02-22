@@ -24,6 +24,12 @@ proxy.onRequest((ctx, callback) => {
 
 // Intercept responses
 proxy.onResponse((ctx, callback) => {
+  // Skip if request was blocked (no upstream response exists)
+  if (ctx.isBlocked) {
+    callback();
+    return;
+  }
+  
   console.log(`📥 [Response] ${ctx.serverToProxyResponse.statusCode}`);
   scanResponse(ctx, callback);
 });
