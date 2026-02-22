@@ -33,6 +33,26 @@ class AuthService {
     // Generate verification token
     const verification_token = crypto.randomBytes(32).toString('hex');
 
+    // Create Stripe customer
+    let stripe_customer_id = null;
+    if (process.env.STRIPE_SECRET_KEY) {
+      try {
+        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+        const customer = await stripe.customers.create({
+          email,
+          name,
+          metadata: {
+            company: company || '',
+            source: 'infershield_signup'
+          }
+        });
+        stripe_customer_id = customer.id;
+      } catch (stripeError) {
+        console.error('Stripe customer creation failed:', stripeError.message);
+        // Continue without Stripe - user can still use free plan
+      }
+    }
+
     // Create user
     const [user] = await db('users').insert({
       email,
@@ -41,7 +61,8 @@ class AuthService {
       company,
       verification_token,
       verification_sent_at: db.fn.now(),
-      status: 'active'
+      status: 'active',
+      stripe_customer_id
     }).returning('*');
 
     // Remove sensitive fields

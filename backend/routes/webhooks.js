@@ -1,6 +1,7 @@
 const express = require('express');
 const { verifyWebhookSignature } = require('../services/stripe-service');
 const { logSecurity } = require('../utils/logger');
+const db = require('../database/db');
 
 const router = express.Router();
 
@@ -80,25 +81,25 @@ router.post('/stripe', express.raw({ type: 'application/json' }), async (req, re
 async function handleCheckoutCompleted(session) {
   console.log(`[Stripe] Checkout completed for customer: ${session.customer}`);
   
-  // TODO: Update database with customer subscription
-  // - Get user by customer_id
-  // - Update user plan
-  // - Reset usage counters
-  // - Send welcome email
-  
   const subscription_id = session.subscription;
   const customer_id = session.customer;
   
   console.log(`   Customer: ${customer_id}`);
   console.log(`   Subscription: ${subscription_id}`);
   
-  // Example database update (implement with your DB):
-  // await db.users.update({
-  //   stripe_customer_id: customer_id,
-  //   stripe_subscription_id: subscription_id,
-  //   plan: 'PRO',
-  //   subscription_status: 'active'
-  // });
+  // Update user with subscription ID
+  const updated = await db('users')
+    .where({ stripe_customer_id: customer_id })
+    .update({
+      stripe_subscription_id: subscription_id,
+      updated_at: db.fn.now()
+    });
+  
+  if (updated) {
+    console.log(`   ✓ Updated user record`);
+  } else {
+    console.warn(`   ⚠ No user found with customer_id: ${customer_id}`);
+  }
 }
 
 /**
@@ -115,13 +116,21 @@ async function handleSubscriptionCreated(subscription) {
   console.log(`   Plan: ${plan}`);
   console.log(`   Status: ${status}`);
   
-  // TODO: Update database
-  // await db.users.update({
-  //   stripe_customer_id: customer_id,
-  //   stripe_subscription_id: subscription.id,
-  //   plan: plan,
-  //   subscription_status: status
-  // });
+  // Update user plan and status
+  const updated = await db('users')
+    .where({ stripe_customer_id: customer_id })
+    .update({
+      stripe_subscription_id: subscription.id,
+      plan: plan.toLowerCase(),
+      status: status === 'active' || status === 'trialing' ? 'active' : 'suspended',
+      updated_at: db.fn.now()
+    });
+  
+  if (updated) {
+    console.log(`   ✓ Updated user to ${plan} plan`);
+  } else {
+    console.warn(`   ⚠ No user found with customer_id: ${customer_id}`);
+  }
 }
 
 /**
@@ -138,12 +147,20 @@ async function handleSubscriptionUpdated(subscription) {
   console.log(`   Plan: ${plan}`);
   console.log(`   Status: ${status}`);
   
-  // TODO: Update database
-  // await db.users.update({
-  //   stripe_subscription_id: subscription.id,
-  //   plan: plan,
-  //   subscription_status: status
-  // });
+  // Update user plan and status
+  const updated = await db('users')
+    .where({ stripe_customer_id: customer_id })
+    .update({
+      plan: plan.toLowerCase(),
+      status: status === 'active' || status === 'trialing' ? 'active' : 'suspended',
+      updated_at: db.fn.now()
+    });
+  
+  if (updated) {
+    console.log(`   ✓ Updated user to ${plan} plan (status: ${status})`);
+  } else {
+    console.warn(`   ⚠ No user found with customer_id: ${customer_id}`);
+  }
 }
 
 /**
@@ -157,15 +174,21 @@ async function handleSubscriptionDeleted(subscription) {
   console.log(`   Customer: ${customer_id}`);
   console.log(`   Downgrading to FREE tier`);
   
-  // TODO: Downgrade user to FREE tier
-  // await db.users.update({
-  //   stripe_subscription_id: null,
-  //   plan: 'FREE',
-  //   subscription_status: 'cancelled'
-  // });
+  // Downgrade user to FREE tier
+  const updated = await db('users')
+    .where({ stripe_customer_id: customer_id })
+    .update({
+      stripe_subscription_id: null,
+      plan: 'free',
+      status: 'active', // Keep account active on free plan
+      updated_at: db.fn.now()
+    });
   
-  // Send cancellation email
-  // await sendEmail(user.email, 'subscription_cancelled', {...});
+  if (updated) {
+    console.log(`   ✓ User downgraded to FREE plan`);
+  } else {
+    console.warn(`   ⚠ No user found with customer_id: ${customer_id}`);
+  }
 }
 
 /**
@@ -180,16 +203,17 @@ async function handlePaymentSucceeded(invoice) {
   console.log(`   Customer: ${customer_id}`);
   console.log(`   Amount: $${amount_paid}`);
   
-  // TODO: Log payment, send receipt
-  // await db.payments.create({
-  //   stripe_customer_id: customer_id,
-  //   invoice_id: invoice.id,
-  //   amount: amount_paid,
-  //   status: 'succeeded'
-  // });
+  // Ensure user is active after successful payment
+  const updated = await db('users')
+    .where({ stripe_customer_id: customer_id })
+    .update({
+      status: 'active',
+      updated_at: db.fn.now()
+    });
   
-  // Send receipt email
-  // await sendEmail(user.email, 'payment_receipt', {amount: amount_paid});
+  if (updated) {
+    console.log(`   ✓ User reactivated`);
+  }
 }
 
 /**
@@ -203,14 +227,22 @@ async function handlePaymentFailed(invoice) {
   
   console.log(`   Customer: ${customer_id}`);
   console.log(`   Amount due: $${amount_due}`);
+  console.log(`   Attempt: ${invoice.attempt_count}`);
   
-  // TODO: Notify user, suspend account after retries
-  // await sendEmail(user.email, 'payment_failed', {amount: amount_due});
-  
-  // If this is final attempt, downgrade to FREE
+  // If this is final attempt (3rd), downgrade to FREE
   if (invoice.attempt_count >= 3) {
     console.log(`   Final payment attempt failed - downgrading to FREE`);
-    // await db.users.update({plan: 'FREE', subscription_status: 'past_due'});
+    
+    await db('users')
+      .where({ stripe_customer_id: customer_id })
+      .update({
+        plan: 'free',
+        stripe_subscription_id: null,
+        status: 'active', // Keep active on free plan
+        updated_at: db.fn.now()
+      });
+    
+    console.log(`   ✓ User downgraded to FREE plan`);
   }
 }
 
