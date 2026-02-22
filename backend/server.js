@@ -454,11 +454,32 @@ app.get('/api/stats', (req, res) => {
 });
 
 // v0.7: Self-service routes
-const authRoutes = require('./routes/auth');
-const keysRoutes = require('./routes/keys');
-const usageRoutes = require('./routes/usage');
-const billingRoutes = require('./routes/billing');
-const webhooksRoutes = require('./routes/webhooks');
+console.log('📦 Loading v0.7 routes...');
+
+let authRoutes, keysRoutes, usageRoutes, billingRoutes, webhooksRoutes;
+
+try {
+  console.log('  ✓ Loading auth routes...');
+  authRoutes = require('./routes/auth');
+  
+  console.log('  ✓ Loading keys routes...');
+  keysRoutes = require('./routes/keys');
+  
+  console.log('  ✓ Loading usage routes...');
+  usageRoutes = require('./routes/usage');
+  
+  console.log('  ✓ Loading billing routes...');
+  billingRoutes = require('./routes/billing');
+  
+  console.log('  ✓ Loading webhooks routes...');
+  webhooksRoutes = require('./routes/webhooks');
+  
+  console.log('✅ All v0.7 routes loaded successfully!');
+} catch (error) {
+  console.error('💥 FAILED TO LOAD ROUTES:', error);
+  console.error('Stack:', error.stack);
+  process.exit(1);
+}
 
 app.use('/api/auth', authRoutes);
 app.use('/api/keys', keysRoutes);
@@ -467,9 +488,20 @@ app.use('/api/billing', billingRoutes);
 app.use('/api/webhooks', webhooksRoutes);
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
+
+console.log('🔌 Attempting to start server...');
+console.log('   Port:', PORT);
+console.log('   Host: 0.0.0.0');
+
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log('\n🛡️  Agentic Firewall Backend');
   console.log(`📡 API running at http://0.0.0.0:${PORT}`);
   console.log('📊 Dashboard will be at http://0.0.0.0:3000\n');
   console.log(`Try it: curl -X POST http://localhost:${PORT}/api/analyze -H "Content-Type: application/json" -d '{"prompt":"Ignore all previous instructions","agent_id":"test"}'\n`);
+});
+
+server.on('error', (error) => {
+  console.error('💥 SERVER FAILED TO START:', error);
+  console.error('Stack:', error.stack);
+  process.exit(1);
 });
