@@ -168,6 +168,11 @@ app.get('/', (req, res) => {
   res.json({ status: 'running', message: 'Agentic Firewall Backend API' });
 });
 
+// Health check endpoint for Railway
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 // Helper function to decode and normalize input
 function preprocessPrompt(prompt) {
   let normalized = prompt;
