@@ -392,6 +392,15 @@ app.get('/api/stats', (req, res) => {
   });
 });
 
+// v0.7: Self-service routes
+const authRoutes = require('./routes/auth');
+const keysRoutes = require('./routes/keys');
+const usageRoutes = require('./routes/usage');
+
+app.use('/api/auth', authRoutes);
+app.use('/api/keys', keysRoutes);
+app.use('/api/usage', usageRoutes);
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
   console.log('\n🛡️  Agentic Firewall Backend');
