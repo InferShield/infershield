@@ -142,6 +142,22 @@ Shield
             </div>
         </div>
 
+        <!-- Notification Modal (replaces ugly alerts) -->
+        <div id="notificationModal" style="display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8);">
+            <div class="terminal" style="margin: 20vh auto; max-width: 500px; width: 90%;">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">notification.sh</span>
+                </div>
+                <div class="terminal-body">
+                    <p id="notificationMessage" style="color: #e0e0e0; margin-bottom: 20px;"></p>
+                    <button id="notificationOk" class="btn btn-primary btn-full">OK</button>
+                </div>
+            </div>
+        </div>
+
         <div style="margin-top: 60px; text-align: center;">
             <a href="dashboard.html" class="link">← Back to Dashboard</a>
         </div>
@@ -150,6 +166,31 @@ Shield
     <script src="assets/js/matrix.js"></script>
     <script>
         const API_BASE = window.location.origin + '/api';
+
+        // Styled notification modal (replaces ugly alerts)
+        function showNotification(message, isError = false) {
+            const modal = document.getElementById('notificationModal');
+            const messageEl = document.getElementById('notificationMessage');
+            
+            messageEl.textContent = message;
+            messageEl.style.color = isError ? '#ff4444' : '#e0e0e0';
+            
+            modal.style.display = 'block';
+        }
+
+        function closeNotification() {
+            document.getElementById('notificationModal').style.display = 'none';
+        }
+
+        // Notification OK button
+        document.getElementById('notificationOk').addEventListener('click', closeNotification);
+
+        // Close on background click
+        document.getElementById('notificationModal').addEventListener('click', (e) => {
+            if (e.target.id === 'notificationModal') {
+                closeNotification();
+            }
+        });
 
         // Get auth token from localStorage
         function getAuthToken() {
@@ -180,9 +221,11 @@ Shield
             });
 
             if (response.status === 401) {
-                localStorage.removeItem('token');
-                alert('Your session has expired. Please log in again.');
-                window.location.href = '/login.html';
+                localStorage.removeItem('infershield_token');
+                showNotification('Your session has expired. Please log in again.', true);
+                setTimeout(() => {
+                    window.location.href = '/login.html';
+                }, 2000);
                 throw new Error('Authentication required');
             }
 
@@ -229,7 +272,7 @@ Shield
                 }
             } catch (error) {
                 console.error('[Pricing] Checkout failed:', error);
-                alert('Failed to start upgrade: ' + error.message);
+                showNotification(error.message || 'Failed to start upgrade. Please try again.', true);
                 const btn = document.getElementById('upgradeProBtn');
                 btn.disabled = false;
                 btn.textContent = 'Upgrade to Pro';
@@ -293,14 +336,14 @@ Shield
                 const result = await response.json();
 
                 if (result.success) {
-                    alert('Thank you! Our sales team will contact you within 24 hours.');
+                    showNotification('Thank you! Our sales team will contact you within 24 hours.');
                     modal.style.display = 'none';
                     document.getElementById('contactForm').reset();
                 } else {
                     throw new Error(result.error || 'Failed to send message');
                 }
             } catch (error) {
-                alert('Failed to send message: ' + error.message);
+                showNotification(error.message || 'Failed to send message. Please try again.', true);
             }
         });
     </script>

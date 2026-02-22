@@ -14,11 +14,39 @@ router.post('/checkout', async (req, res) => {
   try {
     const { plan } = req.body; // 'pro' or 'enterprise'
 
-    if (!req.user.stripe_customer_id) {
-      return res.status(400).json({
-        success: false,
-        error: 'No Stripe customer associated with account'
-      });
+    // Create Stripe customer if one doesn't exist
+    let stripe_customer_id = req.user.stripe_customer_id;
+    
+    if (!stripe_customer_id) {
+      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+      const db = require('../database/db');
+      
+      try {
+        const customer = await stripe.customers.create({
+          email: req.user.email,
+          name: req.user.name,
+          metadata: {
+            user_id: req.user.id,
+            company: req.user.company || '',
+            source: 'upgrade_flow'
+          }
+        });
+        
+        stripe_customer_id = customer.id;
+        
+        // Update user record with Stripe customer ID
+        await db('users')
+          .where({ id: req.user.id })
+          .update({ stripe_customer_id });
+        
+        console.log(`[Billing] Created Stripe customer ${stripe_customer_id} for user ${req.user.id}`);
+      } catch (stripeError) {
+        console.error('[Billing] Failed to create Stripe customer:', stripeError);
+        return res.status(500).json({
+          success: false,
+          error: 'Failed to set up payment. Please contact support.'
+        });
+      }
     }
 
     // Get price ID from environment
@@ -45,7 +73,7 @@ router.post('/checkout', async (req, res) => {
     const cancelUrl = `${process.env.FRONTEND_URL || 'https://app.infershield.io'}/pricing.html`;
 
     const session = await stripeService.createCheckoutSession(
-      req.user.stripe_customer_id,
+      stripe_customer_id,
       priceId,
       successUrl,
       cancelUrl
