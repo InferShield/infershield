@@ -44,9 +44,5 @@ USER nodejs
 # Expose port (Railway overrides with $PORT env var)
 EXPOSE 5000
 
-# Note: Health check disabled for Railway (uses HTTP endpoint checking)
-# Railway will check the public URL /health endpoint
-
-# Start application (use exec form with shell to support env vars)
-# Note: Railway's start command overrides this
-CMD ["sh", "-c", "node server.js"]
+# Use startup script with explicit logging
+CMD ["sh", "./start.sh"]
