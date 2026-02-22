@@ -10,6 +10,7 @@ console.log('[InferShield] Content script loaded on:', window.location.hostname)
 
 let config = null;
 let isScanning = false;
+let bypassNextScan = false; // Flag to skip scan after redaction
 
 // Initialize
 (async function init() {
@@ -107,8 +108,16 @@ function injectChatGPT() {
       console.log('🛡️ [InferShield] Text content:', text);
       console.log('🛡️ [InferShield] Text length:', text.length);
       console.log('🛡️ [InferShield] Text type:', typeof text);
+      console.log('🛡️ [InferShield] bypassNextScan:', bypassNextScan);
       
       if (input && text && text.trim()) {
+        // Check if we should bypass this scan (after redaction)
+        if (bypassNextScan) {
+          console.log('🛡️ [InferShield] Bypassing scan after redaction');
+          bypassNextScan = false;
+          return; // Allow the message to send
+        }
+        
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
@@ -117,6 +126,7 @@ function injectChatGPT() {
         
         if (shouldSend) {
           // Allow the send
+          bypassNextScan = true; // Skip the next scan (recursive Enter dispatch)
           isScanning = false;
           // Trigger the original behavior
           input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
@@ -140,7 +150,16 @@ function injectChatGPT() {
         
         const input = findInput();
         const text = getTextContent(input);
+        console.log('🛡️ [InferShield] Send button clicked, bypassNextScan:', bypassNextScan);
+        
         if (input && text && text.trim()) {
+          // Check if we should bypass this scan (after redaction)
+          if (bypassNextScan) {
+            console.log('🛡️ [InferShield] Bypassing scan after redaction (send button)');
+            bypassNextScan = false;
+            return; // Allow the click to proceed
+          }
+          
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation();
@@ -148,6 +167,7 @@ function injectChatGPT() {
           const shouldSend = await scanAndConfirm(text, 'ChatGPT');
           
           if (shouldSend) {
+            bypassNextScan = true; // Skip the next scan (recursive click)
             isScanning = false;
             sendButton.click();
           }
@@ -171,6 +191,13 @@ function injectClaude() {
     if (e.key === 'Enter' && !e.shiftKey && !isScanning) {
       const input = findInput();
       if (input && input.textContent.trim()) {
+        // Check if we should bypass this scan
+        if (bypassNextScan) {
+          console.log('🛡️ [InferShield] Bypassing scan after redaction (Claude)');
+          bypassNextScan = false;
+          return;
+        }
+        
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
@@ -179,6 +206,7 @@ function injectClaude() {
         const shouldSend = await scanAndConfirm(text, 'Claude');
         
         if (shouldSend) {
+          bypassNextScan = true;
           isScanning = false;
           input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
         }
@@ -199,6 +227,13 @@ function injectClaude() {
         
         const input = findInput();
         if (input && input.textContent.trim()) {
+          // Check if we should bypass this scan
+          if (bypassNextScan) {
+            console.log('🛡️ [InferShield] Bypassing scan after redaction (Claude button)');
+            bypassNextScan = false;
+            return;
+          }
+          
           e.preventDefault();
           e.stopPropagation();
           e.stopImmediatePropagation();
@@ -207,6 +242,7 @@ function injectClaude() {
           const shouldSend = await scanAndConfirm(text, 'Claude');
           
           if (shouldSend) {
+            bypassNextScan = true;
             isScanning = false;
             sendButton.click();
           }
@@ -228,6 +264,13 @@ function injectGemini() {
     if (e.key === 'Enter' && !e.shiftKey && !isScanning) {
       const textarea = findTextarea();
       if (textarea && textarea.textContent.trim()) {
+        // Check if we should bypass this scan
+        if (bypassNextScan) {
+          console.log('🛡️ [InferShield] Bypassing scan after redaction (Gemini)');
+          bypassNextScan = false;
+          return;
+        }
+        
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
@@ -236,6 +279,7 @@ function injectGemini() {
         const shouldSend = await scanAndConfirm(text, 'Gemini');
         
         if (shouldSend) {
+          bypassNextScan = true;
           isScanning = false;
           textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
         }
@@ -255,6 +299,13 @@ function injectGitHubCopilot() {
     if (e.key === 'Enter' && !e.shiftKey && !isScanning) {
       const textarea = findTextarea();
       if (textarea && textarea.value.trim()) {
+        // Check if we should bypass this scan
+        if (bypassNextScan) {
+          console.log('🛡️ [InferShield] Bypassing scan after redaction (GitHub Copilot)');
+          bypassNextScan = false;
+          return;
+        }
+        
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
@@ -263,6 +314,7 @@ function injectGitHubCopilot() {
         const shouldSend = await scanAndConfirm(text, 'GitHub Copilot');
         
         if (shouldSend) {
+          bypassNextScan = true;
           isScanning = false;
           textarea.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
         }
