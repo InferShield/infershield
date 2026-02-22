@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "InferShield - AI Chat PII Protection",
+  "name": "InferShield - AI Security Guard",
   "version": "0.8.0",
   "description": "Detect and prevent PII, API keys, and credentials from leaking to ChatGPT, Claude, Gemini, and GitHub Copilot.",
   "author": "HoZyne Inc",
