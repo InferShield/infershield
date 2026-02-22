@@ -214,7 +214,7 @@ Time:        0.778 s
 
 ### Backend Server ✅ RUNNING
 ```
-🛡️  Agentic Firewall Backend
+🛡️  InferShield Backend
 📡 API running at http://0.0.0.0:5000
 ```
 

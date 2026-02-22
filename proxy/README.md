@@ -1,4 +1,4 @@
-# Agentic Firewall - OpenAI Proxy
+# InferShield - OpenAI Proxy
 
 Drop-in OpenAI API proxy that adds security monitoring, prompt injection detection, and audit logging.
 
@@ -7,7 +7,7 @@ Drop-in OpenAI API proxy that adds security monitoring, prompt injection detecti
 Acts as a transparent proxy between your application and OpenAI:
 
 ```
-Your App → Agentic Firewall Proxy → Analysis → OpenAI API
+Your App → InferShield Proxy → Analysis → OpenAI API
                  ↓
             Dashboard Logs
 ```
@@ -44,7 +44,7 @@ Proxy will run on `http://localhost:8000`
 
 ### 4. Make Sure Backend is Running
 
-The proxy needs the Agentic Firewall backend running:
+The proxy needs the InferShield backend running:
 
 ```bash
 # In another terminal
@@ -200,7 +200,7 @@ Edit `.env`:
 # Your OpenAI API key
 OPENAI_API_KEY=sk-proj-xxx
 
-# Agentic Firewall backend URL
+# InferShield backend URL
 FIREWALL_ENDPOINT=http://localhost:5000
 
 # Port to run proxy on

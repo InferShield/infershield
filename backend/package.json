@@ -1,7 +1,7 @@
 {
   "name": "agentic-firewall-backend",
   "version": "1.0.0",
-  "description": "Agentic Firewall MVP Backend",
+  "description": "InferShield MVP Backend",
   "main": "index.js",
   "scripts": {
     "start": "echo '🚀 npm start called' && echo 'PWD:' && pwd && echo 'Files:' && ls -la && echo 'Starting node...' && node server.js",

@@ -81,7 +81,7 @@ app.post('/v1/chat/completions', async (req, res) => {
     console.log(`[${agentId}] ❌ BLOCKED - Risk: ${analysis.risk_score}`);
     return res.status(403).json({
       error: {
-        message: `Request blocked by Agentic Firewall: ${analysis.threats.join(', ')}`,
+        message: `Request blocked by InferShield: ${analysis.threats.join(', ')}`,
         type: 'firewall_block',
         risk_score: analysis.risk_score,
         threats: analysis.threats
@@ -140,7 +140,7 @@ app.post('/v1/completions', async (req, res) => {
   if (analysis.status === 'blocked') {
     return res.status(403).json({
       error: {
-        message: `Request blocked by Agentic Firewall: ${analysis.threats.join(', ')}`,
+        message: `Request blocked by InferShield: ${analysis.threats.join(', ')}`,
         type: 'firewall_block'
       }
     });
@@ -224,7 +224,7 @@ app.get('/health', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🛡️  Agentic Firewall OpenAI Proxy`);
+  console.log(`\n🛡️  InferShield OpenAI Proxy`);
   console.log(`📡 Listening on http://0.0.0.0:${PORT}`);
   console.log(`🔒 Firewall: ${FIREWALL_ENDPOINT}`);
   console.log(`🤖 OpenAI: ${OPENAI_BASE}\n`);

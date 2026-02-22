@@ -55,7 +55,7 @@ if (policies.count === 0) {
 
 // Basic route
 app.get('/', (req, res) => {
-  res.json({ status: 'running', message: 'Agentic Firewall Backend API' });
+  res.json({ status: 'running', message: 'InferShield Backend API' });
 });
 
 // Analyze prompt endpoint
@@ -158,6 +158,6 @@ app.get('/api/stats', (req, res) => {
 // Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🛡️  Agentic Firewall Backend running on http://0.0.0.0:${PORT}`);
+  console.log(`🛡️  InferShield Backend running on http://0.0.0.0:${PORT}`);
   console.log(`📊 Dashboard will be available at http://0.0.0.0:3000`);
 });
