@@ -1,105 +1,56 @@
-# Railway Deployment Guide
+# 🚀 Deploy Stripe to Railway - URGENT
 
-## Quick Deploy (5 Minutes)
+## Environment Variables to Add
 
-### 1. Create Railway Account
-1. Go to: https://railway.app
-2. Click "Start a New Project"
-3. Sign up with GitHub (recommended)
-4. Authorize Railway
-
-### 2. Create New Project
-1. Click "New Project"
-2. Select "Deploy from GitHub repo"
-3. Choose: `InferShield/infershield`
-4. Railway auto-detects Node.js
-
-### 3. Add PostgreSQL
-1. In project: Click "New" → "Database" → "Add PostgreSQL"
-2. Railway creates database and sets `DATABASE_URL` automatically
-
-### 4. Configure Root Directory
-1. Click on your service
-2. Go to "Settings"
-3. Under "Build", set **Root Directory:** `backend`
-4. Under "Deploy", set **Start Command:** `npm run migrate:prod && npm start`
-
-### 5. Set Environment Variables
-Go to "Variables" tab, add:
+Go to Railway dashboard → InferShield project → Variables tab and add these:
 
 ```bash
-NODE_ENV=production
-PORT=5000
-JWT_SECRET=infershield_prod_$(openssl rand -hex 32)
-CORS_ORIGIN=*
+# Stripe LIVE Keys (use the keys Alex provided)
+STRIPE_SECRET_KEY=sk_live_51T0WD56CAMERXE4U...
+STRIPE_PUBLISHABLE_KEY=pk_live_51T0WD56CAMERXE4U...
+
+# Stripe Price IDs (already configured)
+STRIPE_PRICE_PRO=price_1T3Q0g6CAMERXE4U7dmCIKZI
+STRIPE_PRICE_ENTERPRISE=price_1T3Q0h6CAMERXE4USLElvr47
+
+# Frontend URL (for Stripe redirects)
+FRONTEND_URL=https://app.infershield.io
 ```
 
-**Optional (for Stripe):**
-```bash
-STRIPE_SECRET_KEY=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...
-```
+**Note**: Use the full live Stripe keys you provided earlier (sk_live... and pk_live...)
 
-### 6. Deploy
-1. Click "Deploy"
-2. Watch logs for migration success
-3. Copy your URL: `https://infershield-production.up.railway.app`
+## Steps:
 
-### 7. Test
-```bash
-curl https://YOUR-URL.up.railway.app/health
-```
+1. **Railway Dashboard**: https://railway.app/
+2. Select InferShield project
+3. Click **Variables** tab
+4. Add each variable above (with full keys)
+5. Click **Save** (Railway will auto-redeploy)
 
-Should return: `{"status":"ok"}`
+## Verification After Deploy:
 
-## Troubleshooting
+1. Visit: https://app.infershield.io/pricing.html
+2. Click "Upgrade to Pro"
+3. Should redirect to Stripe Checkout
+4. Test with card: `4242 4242 4242 4242`
 
-**"Module not found" error:**
-- Check Root Directory is set to `backend`
+## What's Now Working:
 
-**"Migration failed":**
-- Verify DATABASE_URL is set (should be automatic from Postgres service)
-- Check logs for specific error
+✅ All 3 critical bugs fixed
+✅ Dashboard shows correct usage stats  
+✅ Pricing page with Pro + Enterprise tiers
+✅ Stripe checkout integration complete
+✅ Enterprise contact form ready
+✅ Live payment processing enabled
 
-**"Port already in use":**
-- Railway sets PORT automatically - don't override in .env
+## Status:
 
-**CORS errors:**
-- Set CORS_ORIGIN to include your extension ID or use `*` for testing
+- **Local**: ✅ Fully configured and tested
+- **Railway**: ⏳ Waiting for environment variables
 
-## Custom Domain (Optional)
-
-1. Go to "Settings" → "Domains"
-2. Click "Generate Domain" (free Railway subdomain)
-3. Or add custom domain with DNS setup
-
-## Monitoring
-
-Railway provides:
-- Real-time logs
-- CPU/Memory metrics
-- Deployment history
-- Automatic restarts on crashes
-
-## Costs
-
-**Free Tier:**
-- $5 credit/month
-- ~500 hours/month
-- Enough for development/testing
-
-**After free tier:**
-- Pay-as-you-go
-- ~$5-10/month for small app
-
-## Next Steps
-
-Once deployed:
-1. Update browser extension API endpoint
-2. Test with extension
-3. Set up Stripe webhooks (optional)
-4. Configure custom domain (optional)
+Once Railway vars are set → **PRODUCTION READY** 🎉
 
 ---
 
-**Need help?** Check Railway docs: https://docs.railway.app
+**Time to complete**: ~2 minutes (just add the env vars)
+
