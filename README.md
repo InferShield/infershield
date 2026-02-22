@@ -85,15 +85,9 @@ Now visit:
 
 ---
 
-## Screenshots
-
-<!-- TODO: Add production screenshots once deployed -->
 
 **Dashboard Overview:**  
-![Dashboard Screenshot](https://via.placeholder.com/800x400?text=Dashboard+Screenshot+Coming+Soon)
 
-**Real-Time Threat Detection:**  
-![Threat Detection](https://via.placeholder.com/800x400?text=Threat+Detection+Screenshot+Coming+Soon)
 
 ---
 
