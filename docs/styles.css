@@ -918,6 +918,72 @@ section {
     border-bottom-color: #00ffff;
 }
 
+/* How It Works Section - Steps Grid */
+.steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 50px;
+}
+
+.step-card {
+    background: rgba(0, 217, 255, 0.03);
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 8px;
+    padding: 30px;
+    transition: all 0.3s;
+}
+
+.step-card:hover {
+    border-color: #00d9ff;
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.2);
+    transform: translateY(-5px);
+}
+
+.step-number {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    font-weight: bold;
+    font-size: 20px;
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.step-card h3 {
+    color: #00d9ff;
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.step-card p {
+    color: #a0a0a0;
+    line-height: 1.6;
+    margin-bottom: 20px;
+}
+
+.code-snippet {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    border-radius: 4px;
+    padding: 12px 15px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #00d9ff;
+    overflow-x: auto;
+}
+
+/* Call to Action Section - Center alignment */
+.call-to-action .meta {
+    text-align: center;
+    margin-top: 30px;
+}
+
 /* Footer Text */
 .footer-text {
     color: #a0a0a0;
