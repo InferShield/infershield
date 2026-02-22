@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InferShield - PII Detection Warning</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .modal {
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            border: 2px solid #00ff00;
+            border-radius: 4px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.3);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        .modal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #00ff00;
+        }
+        .warning-icon {
+            font-size: 40px;
+            margin-right: 15px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff3333;
+            text-shadow: 0 0 10px #ff3333;
+        }
+        .modal-body {
+            margin-bottom: 25px;
+            line-height: 1.8;
+        }
+        .detection-info {
+            background: rgba(0, 255, 0, 0.1);
+            border-left: 4px solid #00ff00;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .detection-info strong {
+            color: #00ff00;
+            text-transform: uppercase;
+        }
+        .risk-badge {
+            display: inline-block;
+            background: #ff3333;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .modal-footer {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: 2px solid #00ff00;
+            background: transparent;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: #00ff00;
+            color: #1a1a1a;
+        }
+        .btn-danger {
+            border-color: #ff3333;
+            color: #ff3333;
+        }
+        .btn-danger:hover {
+            background: #ff3333;
+            color: white;
+        }
+        .detected-text {
+            background: rgba(255, 51, 51, 0.2);
+            padding: 10px;
+            border-radius: 3px;
+            margin: 10px 0;
+            font-size: 13px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="warning-icon">⚠️</div>
+                <div class="modal-title">🛡️ SECURITY WARNING</div>
+            </div>
+            <div class="modal-body">
+                <p style="font-size: 16px; margin-bottom: 15px;">
+                    <strong>InferShield detected sensitive information!</strong>
+                </p>
+                <div class="detection-info">
+                    <p><strong>Type:</strong> OpenAI API Key <span class="risk-badge">CRITICAL</span></p>
+                    <p><strong>Risk Level:</strong> 95/100</p>
+                    <p><strong>Location:</strong> Text input field</p>
+                </div>
+                <div class="detected-text">
+                    <strong>Detected:</strong> sk-proj-1234567890abcdefghij...
+                </div>
+                <p style="margin-top: 15px; color: #ffaa00;">
+                    ⚡ <strong>WARNING:</strong> Exposing API keys can lead to unauthorized access, data breaches, and financial loss.
+                </p>
+                <p style="margin-top: 10px; font-size: 13px;">
+                    Consider using environment variables or secure key management systems instead.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="alert('Feature: Redaction applied')">Redact & Continue</button>
+                <button class="btn btn-danger" onclick="alert('Feature: Clear sensitive data')">Clear Input</button>
+                <button class="btn" onclick="alert('Feature: Acknowledged')">I Understand</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

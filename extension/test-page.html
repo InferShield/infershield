@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InferShield Extension Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            font-size: 14px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        .hint {
+            margin-top: 15px;
+            padding: 10px;
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            color: #1976D2;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛡️ InferShield Extension Test Page</h1>
+        <p>Type sensitive data below to test PII detection:</p>
+        <textarea id="testInput" placeholder="Try typing:
+- API keys (sk-1234567890abcdefghij1234567890)
+- Credit card numbers (4532-1234-5678-9010)
+- SSN (123-45-6789)
+- Email addresses (user@example.com)
+- Phone numbers ((555) 123-4567)
+
+The InferShield extension will detect and warn you in real-time!"></textarea>
+        <div class="hint">
+            💡 <strong>Tip:</strong> As you type sensitive information, InferShield will display a warning modal showing the detected PII type and risk level.
+        </div>
+    </div>
+</body>
+</html>

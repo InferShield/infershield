@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InferShield - Settings</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .settings-panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .logo {
+            font-size: 36px;
+            margin-right: 15px;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+            font-weight: 600;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        label {
+            display: block;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: 'Courier New', monospace;
+        }
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .toggle-group:last-child {
+            border-bottom: none;
+        }
+        .toggle-label {
+            flex: 1;
+        }
+        .toggle-label h3 {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .toggle-label p {
+            font-size: 13px;
+            color: #666;
+        }
+        .toggle-switch {
+            width: 50px;
+            height: 28px;
+            background: #667eea;
+            border-radius: 14px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .toggle-switch.off {
+            background: #ccc;
+        }
+        .toggle-knob {
+            width: 22px;
+            height: 22px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            transition: right 0.3s;
+        }
+        .toggle-switch.off .toggle-knob {
+            right: 25px;
+        }
+        .status-bar {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            border-radius: 4px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-bar span {
+            color: #2e7d32;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .btn-save {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: transform 0.2s;
+        }
+        .btn-save:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-panel">
+        <div class="header">
+            <div class="logo">🛡️</div>
+            <div>
+                <h1>InferShield Settings</h1>
+                <div class="subtitle">Configure your security preferences</div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="api-key">InferShield API Key</label>
+            <input type="text" id="api-key" value="sk_live_••••••••••••••••••••••••" placeholder="Enter your API key">
+        </div>
+
+        <div class="form-group">
+            <label for="sensitivity">Detection Sensitivity</label>
+            <select id="sensitivity">
+                <option value="high" selected>High - Maximum protection</option>
+                <option value="medium">Medium - Balanced</option>
+                <option value="low">Low - Minimal alerts</option>
+            </select>
+        </div>
+
+        <div style="margin: 20px 0;">
+            <label style="margin-bottom: 15px;">Features</label>
+            
+            <div class="toggle-group">
+                <div class="toggle-label">
+                    <h3>Real-time Scanning</h3>
+                    <p>Monitor all text inputs for PII</p>
+                </div>
+                <div class="toggle-switch">
+                    <div class="toggle-knob"></div>
+                </div>
+            </div>
+
+            <div class="toggle-group">
+                <div class="toggle-label">
+                    <h3>Auto-Redaction</h3>
+                    <p>Automatically mask sensitive data</p>
+                </div>
+                <div class="toggle-switch">
+                    <div class="toggle-knob"></div>
+                </div>
+            </div>
+
+            <div class="toggle-group">
+                <div class="toggle-label">
+                    <h3>API Key Detection</h3>
+                    <p>Detect OpenAI, Anthropic, and other API keys</p>
+                </div>
+                <div class="toggle-switch">
+                    <div class="toggle-knob"></div>
+                </div>
+            </div>
+
+            <div class="toggle-group">
+                <div class="toggle-label">
+                    <h3>Credit Card Protection</h3>
+                    <p>Warn when entering payment information</p>
+                </div>
+                <div class="toggle-switch">
+                    <div class="toggle-knob"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="status-bar">
+            <span>✓</span>
+            <span>Connected to InferShield API</span>
+        </div>
+
+        <button class="btn-save">Save Settings</button>
+    </div>
+</body>
+</html>

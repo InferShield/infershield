@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InferShield - Redaction Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 900px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .header h1 {
+            font-size: 28px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+        .panel {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            border: 2px solid #e0e0e0;
+        }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        .panel-header h3 {
+            font-size: 18px;
+            color: #333;
+        }
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-danger {
+            background: #ffebee;
+            color: #c62828;
+        }
+        .badge-safe {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        .text-content {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.8;
+            min-height: 200px;
+            border: 1px solid #ddd;
+        }
+        .sensitive {
+            background: #ffcdd2;
+            padding: 2px 4px;
+            border-radius: 3px;
+            color: #b71c1c;
+            font-weight: bold;
+        }
+        .redacted {
+            background: #424242;
+            color: #424242;
+            padding: 2px 8px;
+            border-radius: 3px;
+            user-select: none;
+            position: relative;
+            cursor: help;
+        }
+        .redacted::after {
+            content: '[REDACTED]';
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9e9e9e;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .arrow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            color: #667eea;
+            grid-column: 1 / -1;
+        }
+        .stats {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f3e5f5;
+            border-radius: 8px;
+            border-left: 4px solid #9c27b0;
+        }
+        .stats h4 {
+            color: #6a1b9a;
+            margin-bottom: 10px;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            color: #333;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🛡️ InferShield Auto-Redaction</h1>
+            <p>See how InferShield protects your sensitive information</p>
+        </div>
+
+        <div class="comparison">
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>❌ Before Protection</h3>
+                    <span class="badge badge-danger">EXPOSED</span>
+                </div>
+                <div class="text-content">
+                    Hey team, here's the API key for testing:<br>
+                    <span class="sensitive">sk-proj-1234567890abcdefghij1234567890</span><br><br>
+                    
+                    My contact details:<br>
+                    Email: <span class="sensitive">john.doe@company.com</span><br>
+                    SSN: <span class="sensitive">123-45-6789</span><br><br>
+                    
+                    Credit card for expenses:<br>
+                    <span class="sensitive">4532-1234-5678-9010</span><br>
+                    CVV: <span class="sensitive">123</span>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <h3>✅ After Protection</h3>
+                    <span class="badge badge-safe">SECURED</span>
+                </div>
+                <div class="text-content">
+                    Hey team, here's the API key for testing:<br>
+                    <span class="redacted">sk-proj-1234567890abcdefghij1234567890</span><br><br>
+                    
+                    My contact details:<br>
+                    Email: <span class="redacted">john.doe@company.com</span><br>
+                    SSN: <span class="redacted">123-45-6789</span><br><br>
+                    
+                    Credit card for expenses:<br>
+                    <span class="redacted">4532-1234-5678-9010</span><br>
+                    CVV: <span class="redacted">123</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats">
+            <h4>🔒 Protection Summary</h4>
+            <div class="stat-row">
+                <span><strong>Items Detected:</strong></span>
+                <span>5 sensitive fields</span>
+            </div>
+            <div class="stat-row">
+                <span><strong>Risk Level:</strong></span>
+                <span>Critical (95/100)</span>
+            </div>
+            <div class="stat-row">
+                <span><strong>Types Found:</strong></span>
+                <span>API Keys, Email, SSN, Credit Card</span>
+            </div>
+            <div class="stat-row">
+                <span><strong>Action Taken:</strong></span>
+                <span>Auto-redacted all sensitive data</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
