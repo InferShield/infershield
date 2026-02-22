@@ -1,244 +1,275 @@
 # InferShield 🛡️
 
-**Open source security for LLM inference**
+**Open-source security for LLM inference — detect threats, block PII, audit everything.**
 
-InferShield is a self-hosted security proxy that sits between your application and any LLM provider (OpenAI, Anthropic, Google, etc.), providing real-time threat detection, policy enforcement, and complete audit trails.
+InferShield is a self-hosted security platform that protects your AI applications from prompt injection, data exfiltration, and PII leaks. Works with any LLM provider (OpenAI, Anthropic, Google, local models) through a drop-in proxy, browser extension, or direct API integration.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Security: Active](https://img.shields.io/badge/Security-Active-success.svg)](https://github.com/infershield/infershield)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Security: Active](https://img.shields.io/badge/Security-Active-success.svg)](./SECURITY.md)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
-## 🚨 The Problem
+---
 
-- **Prompt injection attacks** bypass traditional security tools
-- **Data exfiltration** through LLM responses goes undetected
-- **Compliance requirements** (SOC 2, HIPAA, GDPR) can't be met
-- **No visibility** into what your LLMs are actually doing
+## What is InferShield?
 
-## ✨ The Solution
+InferShield provides enterprise-grade security for LLM applications through **three integrated components**:
 
-InferShield provides enterprise-grade security for LLM integrations:
+🧩 **Browser Extension** — Intercept and analyze LLM requests from any web app (ChatGPT, Claude, etc.)  
+📡 **Security Proxy** — Drop-in OpenAI-compatible proxy for server-side protection (any language/framework)  
+🖥️ **Self-Serve Platform** — User accounts, API key management, usage tracking, and real-time monitoring dashboard
 
-- ✅ **Real-time threat detection** - Block prompt injection, data exfiltration, jailbreaks
-- ✅ **Self-hosted** - Your data never leaves your infrastructure
-- ✅ **Provider-agnostic** - Works with OpenAI, Anthropic, Google, local models
-- ✅ **Zero code changes** - Drop-in proxy, just change your API endpoint
-- ✅ **Complete audit logs** - Every request tracked with risk scores
-- ✅ **Open source** - MIT licensed, transparent, community-driven
+**Current Status:**
+- ✅ **Platform v0.7.0** — Production-ready with authentication, API keys, PII detection, and quota management
+- ✅ **Proxy v0.8.1** — Verified on Windows and Linux with advanced threat detection (< 1ms latency)
+- ⏳ **Chrome Extension v1.0** — Submitted to Chrome Web Store (pending review, ~7 days)
 
-## 🚀 Quick Start
+---
 
-### Using Docker (Recommended)
+## Quick Start
+
+### 🧩 Option 1: Browser Extension (Chrome)
+
+**Status:** Pending Chrome Web Store review (available ~March 1, 2026)
+
+Once approved:
+1. Install from Chrome Web Store
+2. Sign up for free account (100 requests/month)
+3. Browse ChatGPT, Claude, or any LLM web interface
+4. View real-time threat detection in extension popup
+
+**Early Access:** Email hello@infershield.io for developer build.
+
+### 📡 Option 2: Security Proxy (Developers)
+
+**Windows:**
+
+```powershell
+# Download the latest release
+curl -o infershield-proxy.exe https://github.com/InferShield/infershield/releases/latest/download/infershield-proxy-windows.exe
+
+# Run the proxy (add your OpenAI key)
+$env:OPENAI_API_KEY="sk-your-key-here"
+.\infershield-proxy.exe
+
+# Proxy running at http://localhost:8000
+```
+
+**Mac/Linux:**
 
 ```bash
-# Pull the image
-docker pull infershield/proxy:latest
+# Clone and run via Docker
+git clone https://github.com/InferShield/infershield.git
+cd infershield
+docker-compose up -d
 
-# Run the proxy
-docker run -p 8000:8000 \
-  -e OPENAI_API_KEY=sk-your-key-here \
-  infershield/proxy
+# Or run directly with Node.js
+cd proxy
+npm install
+OPENAI_API_KEY=sk-your-key-here npm start
+```
 
-# Update your code (one line change)
+**Update your code (one line):**
+
+```python
 # Before:
-client = OpenAI(base_url="https://api.openai.com/v1")
+from openai import OpenAI
+client = OpenAI()
 
 # After:
 client = OpenAI(base_url="http://localhost:8000/v1")
 ```
 
-### Using Docker Compose
-
-```bash
-git clone https://github.com/infershield/infershield.git
-cd infershield
-cp .env.example .env  # Add your API keys
-docker-compose up -d
-```
-
 Now visit:
-- **Proxy:** http://localhost:8000
 - **Dashboard:** http://localhost:3000
-- **Backend API:** http://localhost:5000
+- **API:** http://localhost:5000
 
-## 📊 Architecture
+---
 
-```
-┌─────────────┐      ┌──────────────────┐      ┌─────────────┐
-│  Your App   │ ───> │  InferShield     │ ───> │   Any LLM   │
-│             │      │  Proxy           │      │  Provider   │
-│ app.py      │      │  localhost:8000  │      │ OpenAI/etc  │
-└─────────────┘      └──────────────────┘      └─────────────┘
-                             │
-                             │ logs/metrics
-                             ▼
-                     ┌──────────────────┐
-                     │  Dashboard       │
-                     │  localhost:3000  │
-                     └──────────────────┘
-```
+## Screenshots
 
-## 🛡️ Security Features
+<!-- TODO: Add production screenshots once deployed -->
 
-### Threat Detection
+**Dashboard Overview:**  
+![Dashboard Screenshot](https://via.placeholder.com/800x400?text=Dashboard+Screenshot+Coming+Soon)
 
-- **Prompt Injection** - Detects attempts to override system instructions
-- **Data Exfiltration** - Blocks requests trying to extract sensitive data
-- **Jailbreak Attempts** - Identifies evasion techniques (encoding, obfuscation)
-- **SQL Injection** - Catches database attack patterns
-- **PII Leakage** - Detects personally identifiable information
+**Real-Time Threat Detection:**  
+![Threat Detection](https://via.placeholder.com/800x400?text=Threat+Detection+Screenshot+Coming+Soon)
 
-### Advanced Detection Methods
+---
 
-- **Multi-encoding detection** - Base64, hex, URL, Unicode escaping
-- **Nested encoding** - Handles chained obfuscation (Base64 of hex, etc.)
-- **Synonym expansion** - Catches evasion via alternative phrasing
-- **Context-aware scoring** - Reduces false positives with proximity analysis
-- **Custom policies** - Define your own threat detection rules
+## Security Model
 
-### Audit & Compliance
+### What InferShield Protects Against
 
-- **Complete request logs** - Every prompt and response recorded
-- **Risk scoring** - 0-100 scale for every request
-- **Policy enforcement** - Block high-risk requests automatically
-- **Export capabilities** - JSON/CSV for compliance reporting
-- **Timestamped trails** - Forensic-ready audit logs
+- ✅ **Prompt Injection** — Detects attempts to override system instructions
+- ✅ **Data Exfiltration** — Blocks requests trying to extract sensitive data
+- ✅ **PII Leakage** — Identifies 15+ types of personally identifiable information (SSN, credit cards, emails, etc.)
+- ✅ **Jailbreak Attempts** — Catches evasion techniques (encoding, obfuscation, role-play attacks)
+- ✅ **SQL Injection** — Prevents database attack patterns in prompts
+- ✅ **Secrets Exposure** — Detects API keys, passwords, tokens in requests
 
-## 📦 Components
+### What Data is Logged
 
-### 1. Proxy (`/proxy`)
+**Logged by default:**
+- Request metadata (timestamp, user ID, API key ID, model, risk score)
+- Prompt text (for threat analysis)
+- Response text (for threat analysis)
+- Detected threats and policy violations
 
-OpenAI-compatible security proxy server.
+**NOT logged:**
+- User passwords (stored as bcrypt hashes only)
+- API keys in plaintext (stored as bcrypt hashes only)
+- Payment information (handled by Stripe)
 
-- Drop-in replacement for any OpenAI SDK
-- Forwards to configured LLM provider
-- Real-time threat detection
-- < 1ms latency overhead
+**PII Redaction:** Optionally enable automatic PII redaction in logs (SSN, credit cards, etc. replaced with `[REDACTED]`). See [Configuration Guide](./docs/QUICKSTART.md).
 
-[Proxy Documentation →](./proxy/README.md)
+### Blocked Requests
 
-### 2. Backend (`/backend`)
+When a high-risk request is detected (configurable threshold, default ≥80):
+- ❌ Request is **blocked before reaching the LLM provider**
+- 📊 Full request details logged for forensic analysis
+- 🔔 API key owner notified (if configured)
+- 🚫 User receives error response with risk explanation
 
-Threat detection engine and API.
+**Self-hosted = Your data never leaves your infrastructure.**
 
-- 12+ detection policies
-- Risk scoring algorithm
-- Audit log storage
-- REST API for dashboard
+---
 
-[Backend Documentation →](./backend/README.md)
+## Features
 
-### 3. Dashboard (`/dashboard`)
+### Platform (v0.7.0)
 
-Real-time monitoring interface.
+- 🔐 **User Authentication** — Self-service signup, JWT sessions, email verification
+- 🔑 **API Key Management** — Generate unlimited keys, tag by environment, track usage
+- 📊 **Usage Tracking** — Real-time metering, quota enforcement (100 req/month free tier)
+- 🛡️ **PII Detection** — 15+ patterns (SSN, credit cards, phone, email, medical records, etc.)
+- 🎭 **Demo Mode** — Try InferShield without signup (10 requests, no registration)
+- 📈 **Monitoring** — Sentry integration, Prometheus metrics, health checks
+- 🗄️ **Database** — PostgreSQL backend with Prisma ORM, automated migrations
 
-- Live request stream
-- Threat analytics
-- Risk score trends
-- Audit log viewer
+### Proxy (v0.8.1)
 
-[Dashboard Documentation →](./dashboard/README.md)
+- ⚡ **< 1ms Latency** — Minimal overhead per request
+- 🔌 **OpenAI-Compatible** — Drop-in replacement for any OpenAI SDK (Python, Node.js, etc.)
+- 🌐 **Multi-Provider** — OpenAI, Anthropic, Google, Cohere, local models (via LiteLLM)
+- 🛡️ **12+ Detection Policies** — Prompt injection, data exfiltration, encoding attacks, etc.
+- 🔍 **Advanced Obfuscation Detection** — Base64, hex, URL encoding, nested encodings
+- 🚦 **Risk Scoring** — 0-100 scale for every request with configurable thresholds
+- 📋 **Complete Audit Logs** — Forensic-ready request/response logging
 
-## 🔧 Configuration
+### Browser Extension (v1.0 — pending review)
 
-Create a `.env` file:
+- 🌐 **Universal Coverage** — Works on ChatGPT, Claude, Gemini, and any LLM web interface
+- 🔴 **Real-Time Alerts** — Popup notifications for detected threats
+- 📊 **Per-Site Stats** — Track risk scores by domain
+- ⚙️ **Configurable** — Set your own risk thresholds and policies
+- 🔒 **Privacy-First** — Requests analyzed locally, only metadata sent to platform (optional)
 
-```env
-# LLM Provider API Keys
-OPENAI_API_KEY=sk-your-key-here
-ANTHROPIC_API_KEY=sk-ant-your-key-here
+---
 
-# InferShield Backend
-BACKEND_URL=http://localhost:5000
+## Roadmap
 
-# Security Settings
-RISK_THRESHOLD=70
-BLOCK_HIGH_RISK=true
-```
+### Q1 2026 (Now)
 
-See [Configuration Guide →](./docs/configuration.md) for all options.
+- ✅ Platform v0.7.0 — Self-service platform with API keys and PII detection
+- ✅ Proxy v0.8.1 — Windows/Linux verified, advanced obfuscation detection
+- ⏳ Chrome Extension v1.0 — Chrome Web Store approval (~March 1)
 
-## 📈 Performance
+### Q2 2026
 
-- **Latency:** < 1ms overhead per request
-- **Throughput:** 1000+ requests/second (single instance)
-- **Memory:** ~50MB base usage
-- **Storage:** ~1KB per logged request
+- 🦊 Firefox & Safari extensions
+- 🤖 ML-based detection models (behavioral analysis)
+- 🏢 Team accounts and role-based access control
+- 📊 Custom dashboards and reporting
+- 🔗 Zapier/Make.com integrations
 
-## 🧪 Validation Results
+### Q3 2026
 
-InferShield has been red-team tested with 25+ attack vectors:
+- 📋 SOC 2, HIPAA, GDPR compliance packs
+- ☁️ Managed cloud hosting option
+- 🔬 Red team simulation tools
+- 📱 Mobile app (iOS/Android)
 
-- ✅ **95%+ detection rate** across all threat types
-- ✅ **< 5% false positive rate** on legitimate queries
-- ✅ **100% blocking** of known bypass techniques (encoding, obfuscation)
+### Future
 
-See [Security Validation Report →](./docs/validation.md)
+- 🌐 Multi-language support (Spanish, French, German, etc.)
+- 🧪 Custom policy builder (no-code threat detection)
+- 🎓 Security training mode (educational feedback on risky prompts)
 
-## 🏢 Enterprise Features
+[Full Roadmap →](https://github.com/InferShield/infershield/projects)
 
-Looking for advanced capabilities?
+---
 
-**InferShield Enterprise** includes:
+## Documentation
 
-- 🔬 **ML-based detection** - Advanced behavioral analysis
-- 📋 **Compliance packs** - SOC 2, HIPAA, GDPR templates
-- 🔗 **SSO/SAML** - Enterprise authentication
-- 📊 **Custom dashboards** - Tailored reporting
-- ☁️ **Managed hosting** - Fully managed cloud deployment
-- 🆘 **24/7 support** - Dedicated security hotline
+- 📖 [Quickstart Guide](./docs/QUICKSTART.md) — Get running in 5 minutes
+- 🪟 [Windows Setup](./docs/QUICKSTART_WINDOWS.md) — Windows-specific instructions
+- 🔧 [Manual Integration](./docs/MANUAL_INTEGRATION.md) — API integration guide
+- 🛡️ [PII Redaction](./docs/PII_REDACTION.md) — Configure PII detection
+- 🏗️ [OAuth Architecture](./docs/OAUTH_ARCHITECTURE.md) — Authentication internals
+- 🚀 [Deployment Guides](./docs/deployment/) — Railway, AWS, GCP, Azure
+- 🧪 [Testing & Validation](./docs/development/TESTING.md) — Security validation
+- 📊 [Stripe Setup](./docs/STRIPE_SETUP.md) — Payment integration (enterprise)
 
-[Learn more about Enterprise →](https://infershield.io)
+**More docs:** See [`/docs`](./docs/) directory for complete documentation.
 
-## 🤝 Contributing
+---
 
-We welcome contributions! See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+## Contributing
+
+We welcome contributions! InferShield is MIT-licensed and community-driven.
 
 **Quick ways to contribute:**
 
-- 🐛 Report bugs via [GitHub Issues](https://github.com/infershield/infershield/issues)
-- 💡 Suggest features in [Discussions](https://github.com/infershield/infershield/discussions)
-- 🔧 Submit pull requests (see [Development Guide](./docs/development.md))
-- 📝 Improve documentation
-- 🧪 Add detection policies
+- 🐛 **Report bugs** — [GitHub Issues](https://github.com/InferShield/infershield/issues/new?template=bug_report.yml)
+- 💡 **Suggest features** — [Feature Requests](https://github.com/InferShield/infershield/issues/new?template=feature_request.yml)
+- 🔧 **Submit PRs** — See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines
+- 📝 **Improve docs** — Fix typos, add examples, write guides
+- 🧪 **Add detection policies** — New threat detection patterns always welcome
 
-## 📚 Documentation
+**Developer setup:** See [CONTRIBUTING.md](./CONTRIBUTING.md) for local development instructions.
 
-- [Installation Guide](./docs/installation.md)
-- [Configuration Reference](./docs/configuration.md)
-- [API Documentation](./docs/api.md)
-- [Custom Policies](./docs/policies.md)
-- [Security Validation](./docs/validation.md)
-- [Troubleshooting](./docs/troubleshooting.md)
+---
 
-## 📝 License
+## Community & Support
 
-InferShield is MIT licensed. See [LICENSE](./LICENSE) for details.
+- 🌐 **Website:** [infershield.io](https://infershield.io)
+- 💬 **GitHub Discussions:** [Ask questions, share ideas](https://github.com/InferShield/infershield/discussions)
+- 🐛 **Report Issues:** [Bug reports](https://github.com/InferShield/infershield/issues)
+- 🔒 **Security:** [security@infershield.io](mailto:security@infershield.io) (private vulnerability reports)
+- 📧 **General:** [hello@infershield.io](mailto:hello@infershield.io)
 
-**Free forever. No strings attached.**
+**Coming soon:**
+- Discord community server
+- Twitter/X (@infershield)
+- Monthly office hours
 
-## 🌐 Community
+---
 
-- **Website:** [infershield.io](https://infershield.io)
-- **GitHub:** [github.com/infershield](https://github.com/infershield)
-- **Discord:** Coming soon
-- **Twitter:** Coming soon
-- **Email:** security@infershield.io
+## License
 
-## ⭐ Star History
+InferShield is [MIT licensed](./LICENSE). Free forever, no strings attached.
+
+**Commercial use:** Fully permitted. Enterprise support available via [infershield.io](https://infershield.io).
+
+---
+
+## Acknowledgments
+
+Built with inputs from security leaders in finance, healthcare, and government. Special thanks to the open-source community for security research and feedback.
+
+**Security researchers:** See [SECURITY.md](./SECURITY.md) for our vulnerability disclosure policy.
+
+---
+
+## Star History
 
 If InferShield helps secure your LLM infrastructure, consider giving us a star! ⭐
 
-## 🙏 Acknowledgments
-
-Built with inputs from security leaders in:
-- Finance (banking, fintech)
-- Healthcare (HIPAA-regulated orgs)
-- Government (federal/state agencies)
-
-Special thanks to the open source community for security research and feedback.
+[![Star History Chart](https://api.star-history.com/svg?repos=InferShield/infershield&type=Date)](https://star-history.com/#InferShield/infershield&Date)
 
 ---
 
 **Built for security teams, by security engineers.**
 
-© 2026 InferShield · Secure every inference
+© 2026 InferShield · Secure every inference · [infershield.io](https://infershield.io)

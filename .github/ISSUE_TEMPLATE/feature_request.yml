@@ -1,0 +1,171 @@
+name: 💡 Feature Request
+description: Suggest a new feature or enhancement for InferShield
+title: "[Feature]: "
+labels: ["enhancement", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please fill out the form below to help us understand your idea.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight Checklist
+      description: Please ensure you've completed these steps before submitting.
+      options:
+        - label: I have searched existing issues and discussions to ensure this hasn't been suggested
+          required: true
+        - label: I have checked the roadmap to see if this is already planned
+          required: true
+        - label: This is a feature request, not a bug report or usage question
+          required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component would this feature affect?
+      options:
+        - Proxy
+        - Platform (Backend/API)
+        - Dashboard (Frontend)
+        - Extension (Chrome/Firefox)
+        - Documentation
+        - Infrastructure/DevOps
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? Be specific.
+      placeholder: |
+        I'm always frustrated when...
+        My team needs...
+        Currently it's difficult to...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How would you like this problem to be solved?
+      placeholder: |
+        Describe your ideal solution in detail.
+        Include examples, mockups, or pseudocode if helpful.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: What other approaches have you considered?
+      placeholder: |
+        I also thought about...
+        Another option would be...
+
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: Describe a real-world scenario where this feature would be useful.
+      placeholder: |
+        As a [type of user], I want to [do something] so that [benefit].
+        
+        Example workflow:
+        1. User does X
+        2. System responds with Y
+        3. User benefits from Z
+    validations:
+      required: true
+
+  - type: dropdown
+    id: user-type
+    attributes:
+      label: User Type
+      description: Who would primarily benefit from this feature?
+      options:
+        - Individual developer
+        - Small team (2-10 people)
+        - Medium team (10-50 people)
+        - Enterprise (50+ people)
+        - Security team
+        - Compliance/audit team
+        - All users
+      multiple: true
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Critical (blocker for adoption)
+        - High (would significantly improve my workflow)
+        - Medium (nice to have)
+        - Low (minor improvement)
+    validations:
+      required: true
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current Workaround
+      description: How are you currently solving this problem (if at all)?
+      placeholder: |
+        Right now I...
+        My workaround is...
+        I can't currently do this.
+
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Impact Areas
+      description: What areas would this feature affect?
+      options:
+        - label: Security (threat detection, policy enforcement)
+        - label: Performance (speed, latency, throughput)
+        - label: User experience (UI, workflow, ease of use)
+        - label: Compliance (audit logs, reporting, certifications)
+        - label: Integration (APIs, SDKs, third-party tools)
+        - label: Documentation (guides, examples, API docs)
+        - label: Other (explain in additional context)
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context, mockups, or examples about the feature request.
+      placeholder: |
+        Add screenshots, diagrams, links to similar features in other tools, etc.
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to submit a PR to implement this feature
+        - label: I can help with documentation for this feature
+        - label: I can help test this feature
+
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: Breaking Change
+      description: Would this feature require breaking changes to existing APIs or configs?
+      options:
+        - "No, fully backward compatible"
+        - "Maybe, depends on implementation"
+        - "Yes, would require migration"
+        - "Not sure"
+    validations:
+      required: true

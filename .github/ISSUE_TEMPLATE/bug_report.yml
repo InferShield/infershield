@@ -1,0 +1,150 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior in InferShield
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this bug! Please fill out the form below to help us investigate.
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Preflight Checklist
+      description: Please ensure you've completed these steps before submitting.
+      options:
+        - label: I have searched existing issues to ensure this bug hasn't already been reported
+          required: true
+        - label: I am using the latest version of InferShield
+          required: true
+        - label: I have read the documentation and this is not a usage question
+          required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component is affected?
+      options:
+        - Proxy
+        - Platform (Backend/API)
+        - Dashboard (Frontend)
+        - Extension (Chrome/Firefox)
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: What version of InferShield are you using?
+      placeholder: "e.g., v0.8.1, v0.7.0, main branch"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of the bug.
+      placeholder: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the issue.
+      placeholder: |
+        1. Start the proxy with '...'
+        2. Send a request with '...'
+        3. Observe error '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Details about your environment.
+      placeholder: |
+        - OS: [e.g., Ubuntu 22.04, Windows 11, macOS 13]
+        - Node.js version: [e.g., v20.10.0]
+        - Database: [e.g., PostgreSQL 14.5]
+        - Deployment: [e.g., Docker, Railway, local]
+      value: |
+        - OS: 
+        - Node.js version: 
+        - Database: 
+        - Deployment: 
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant Logs
+      description: Include any error messages, stack traces, or relevant log output.
+      placeholder: Paste logs here...
+      render: shell
+
+  - type: textarea
+    id: config
+    attributes:
+      label: Configuration
+      description: Relevant parts of your configuration (redact sensitive values).
+      placeholder: |
+        # .env settings (redact secrets)
+        RISK_THRESHOLD=70
+        BLOCK_HIGH_RISK=true
+      render: bash
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context, screenshots, or information about the problem.
+      placeholder: Add any other context here...
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: How severe is this bug?
+      options:
+        - Critical (prevents core functionality, data loss, security issue)
+        - High (major feature broken, workaround difficult)
+        - Medium (feature partially broken, workaround exists)
+        - Low (minor issue, easy workaround)
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: security
+    attributes:
+      label: Security Impact
+      description: Does this bug have security implications?
+      options:
+        - label: This bug has security implications (I will also email security@infershield.io)
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to submit a PR to fix this bug
