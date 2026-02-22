@@ -383,7 +383,7 @@ function showModal(options) {
       <div class="infershield-modal-content">
         <h2>❌ InferShield Error</h2>
         <p>${options.message}</p>
-        <button class="infershield-btn infershield-btn-primary" onclick="this.closest('.infershield-modal').remove()">
+        <button class="infershield-btn infershield-btn-primary" id="infershield-error-close">
           Close
         </button>
       </div>
@@ -447,6 +447,8 @@ function showModal(options) {
       // TODO: Implement disable for site
       alert('Feature coming soon! Use the extension popup to disable for this site.');
     });
+  } else if (options.type === 'error') {
+    document.getElementById('infershield-error-close')?.addEventListener('click', hideModal);
   }
 }
 
