@@ -3,8 +3,8 @@
 
 import * as Sentry from "@sentry/browser";
 
-// Sentry DSN (will be set after project creation)
-const SENTRY_DSN = process.env.SENTRY_DSN || 'https://YOUR_DSN_HERE@o0.ingest.sentry.io/0';
+// Sentry DSN (InferShield Extension - Production)
+const SENTRY_DSN = 'https://56fd71c2883661c251841841d02ece8d@o4510930403065856.ingest.us.sentry.io/4510930409357312';
 
 // Initialize Sentry with privacy-safe configuration
 export function initSentry() {
