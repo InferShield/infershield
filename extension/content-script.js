@@ -80,19 +80,21 @@ function injectChatGPT() {
   // Get text content from element (works for both textarea and contenteditable)
   const getTextContent = (element) => {
     if (!element) return '';
-    return element.value || element.textContent || element.innerText || '';
+    const text = element.value || element.textContent || element.innerText || '';
+    return typeof text === 'string' ? text : '';
   };
   
   // Intercept Enter key
   const handleKeydown = async (e) => {
     if (e.key === 'Enter' && !e.shiftKey && !isScanning) {
       const textarea = findTextarea();
-      const text = getTextContent(textarea);
+      const text = getTextContent(textarea) || '';  // Extra safety
       
       console.log('🛡️ [InferShield] Enter pressed, textarea:', textarea);
       console.log('🛡️ [InferShield] Text content:', text);
+      console.log('🛡️ [InferShield] Text type:', typeof text);
       
-      if (textarea && text.trim()) {
+      if (textarea && text && text.trim()) {
         e.preventDefault();
         e.stopPropagation();
         e.stopImmediatePropagation();
