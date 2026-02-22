@@ -29,6 +29,8 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const { detectPII, redactPII } = require('./services/pii-redactor');
+const { optionalAuth } = require('./middleware/auth');
+const usageService = require('./services/usage-service');
 
 const app = express();
 
@@ -284,8 +286,8 @@ function preprocessPrompt(prompt) {
   };
 }
 
-// Analyze prompt endpoint
-app.post('/api/analyze', (req, res) => {
+// Analyze prompt endpoint (with authentication & usage tracking)
+app.post('/api/analyze', optionalAuth, async (req, res) => {
   const { prompt, agent_id, metadata } = req.body;
   
   if (!prompt) {
@@ -293,6 +295,27 @@ app.post('/api/analyze', (req, res) => {
       success: false,
       error: 'Prompt is required' 
     });
+  }
+  
+  // Check quota if user is authenticated
+  if (req.user) {
+    try {
+      const quota = await usageService.checkQuota(req.user.id, req.user.plan);
+      if (quota.exceeded) {
+        return res.status(429).json({
+          success: false,
+          error: 'Monthly quota exceeded',
+          quota: {
+            current: quota.current,
+            limit: quota.limit,
+            plan: req.user.plan
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error checking quota:', error);
+      // Continue without quota check (graceful degradation)
+    }
   }
   
   const startTime = Date.now();
@@ -363,7 +386,8 @@ app.post('/api/analyze', (req, res) => {
     status,
     risk_score: total_risk,
     threats: all_threats.length,
-    metadata: metadata || {}
+    metadata: metadata || {},
+    user_id: req.user?.id || null
   };
   logs.unshift(log);
   
@@ -386,7 +410,26 @@ app.post('/api/analyze', (req, res) => {
   
   const scanDuration = Date.now() - startTime;
   
-  // Step 7: Return response
+  // Step 7: Record usage if user is authenticated
+  if (req.user) {
+    try {
+      await usageService.recordRequest(
+        req.user.id,
+        req.apiKey?.id || null,
+        {
+          provider: metadata?.provider || 'unknown',
+          pii_detections: piiThreats.length,
+          pii_redactions: redactedResult.redacted !== prompt ? 1 : 0
+        }
+      );
+      console.log(`✅ Usage recorded for user ${req.user.id}`);
+    } catch (error) {
+      console.error('Error recording usage:', error);
+      // Don't fail the request if usage recording fails
+    }
+  }
+  
+  // Step 8: Return response
   res.json({
     success: true,
     threat_detected,
