@@ -3,8 +3,8 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
+# Copy package files from backend
+COPY backend/package*.json ./
 
 # Install dependencies
 RUN npm ci --only=production
@@ -35,8 +35,8 @@ RUN addgroup -g 1001 -S nodejs && \
 # Copy dependencies from builder
 COPY --from=builder /app/node_modules ./node_modules
 
-# Copy application code
-COPY --chown=nodejs:nodejs . .
+# Copy backend application code
+COPY --chown=nodejs:nodejs backend/ .
 
 # Switch to non-root user
 USER nodejs
