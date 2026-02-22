@@ -1,13 +1,21 @@
-// InferShield Background Service Worker
+// InferShield Background Service Worker  
 // Handles API calls to InferShield backend
+// Now with Sentry error monitoring (CDN bundle approach)
+
+// Load Sentry configuration
+// Note: Sentry Browser Bundle loaded via importScripts in background.js
+self.importScripts('https://browser.sentry-cdn.com/7.99.0/bundle.min.js', 'sentry-config-simple.js');
+
+// Initialize Sentry
+initSentry();
 
 console.log('[InferShield] Background service worker loaded');
 
 // Default configuration
 const DEFAULT_CONFIG = {
-  apiEndpoint: 'https://app.infershield.io', // Cloud API (self-hosters can change to localhost:5000)
+  apiEndpoint: 'https://app.infershield.io',
   apiKey: '',
-  mode: 'warn', // 'block' or 'warn'
+  mode: 'warn',
   enabled: true,
   enabledSites: {
     'chat.openai.com': true,
@@ -17,39 +25,79 @@ const DEFAULT_CONFIG = {
   }
 };
 
+// Global error handlers
+self.addEventListener('error', (event) => {
+  console.error('[InferShield] Uncaught error:', event.error);
+  captureError(event.error, {
+    component: 'background',
+    action: 'uncaught_error'
+  });
+});
+
+self.addEventListener('unhandledrejection', (event) => {
+  console.error('[InferShield] Unhandled rejection:', event.reason);
+  captureError(event.reason, {
+    component: 'background',
+    action: 'unhandled_rejection'
+  });
+});
+
 // Initialize storage on install
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('[InferShield] Extension installed');
-  chrome.storage.sync.get(['config'], (result) => {
-    if (!result.config) {
-      chrome.storage.sync.set({ config: DEFAULT_CONFIG });
-      console.log('[InferShield] Default config saved');
-    }
-  });
+  try {
+    console.log('[InferShield] Extension installed');
+    addBreadcrumb('Extension installed', { component: 'background', action: 'install' });
+    
+    chrome.storage.sync.get(['config'], (result) => {
+      if (!result.config) {
+        chrome.storage.sync.set({ config: DEFAULT_CONFIG });
+        console.log('[InferShield] Default config saved');
+        captureMessage('Extension installed with default config', 'info', { component: 'background' });
+      }
+    });
+  } catch (error) {
+    console.error('[InferShield] Install error:', error);
+    captureError(error, { component: 'background', action: 'install' });
+  }
 });
 
 // Listen for messages from content scripts
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log('[InferShield] Message received:', request.action);
-  
-  if (request.action === 'scanText') {
-    handleScanText(request.data, sendResponse);
-    return true; // Keep channel open for async response
-  }
-  
-  if (request.action === 'getConfig') {
-    handleGetConfig(sendResponse);
-    return true;
-  }
-  
-  if (request.action === 'updateBadge') {
-    handleUpdateBadge(request.data);
-    sendResponse({ success: true });
+  try {
+    console.log('[InferShield] Message received:', request.action);
+    addBreadcrumb('Message received', {
+      component: 'background',
+      action: request.action
+    });
+    
+    if (request.action === 'scanText') {
+      handleScanText(request.data, sendResponse);
+      return true;
+    }
+    
+    if (request.action === 'getConfig') {
+      handleGetConfig(sendResponse);
+      return true;
+    }
+    
+    if (request.action === 'updateBadge') {
+      handleUpdateBadge(request.data);
+      sendResponse({ success: true });
+    }
+  } catch (error) {
+    console.error('[InferShield] Message handler error:', error);
+    captureError(error, {
+      component: 'background',
+      action: 'message_handler'
+    });
+    sendResponse({ success: false, error: error.message });
   }
 });
 
 // Handle text scanning
 async function handleScanText(data, sendResponse) {
+  const startTime = Date.now();
+  
   try {
     const config = await getConfig();
     
@@ -63,6 +111,13 @@ async function handleScanText(data, sendResponse) {
     }
     
     if (!config.apiKey) {
+      const error = new Error('API key not configured');
+      captureError(error, {
+        component: 'background',
+        action: 'scan',
+        level: 'warning'
+      });
+      
       sendResponse({ 
         success: false, 
         error: 'API key not configured. Click the extension icon to set it up.' 
@@ -70,12 +125,12 @@ async function handleScanText(data, sendResponse) {
       return;
     }
     
-    console.log('[InferShield] Scanning text...', {
-      textLength: data.text.length,
-      endpoint: config.apiEndpoint
+    console.log('[InferShield] Scanning text...');
+    addBreadcrumb('Starting scan', {
+      component: 'background',
+      action: 'scan_start'
     });
     
-    // Call InferShield API
     const response = await fetch(`${config.apiEndpoint}/api/analyze`, {
       method: 'POST',
       headers: {
@@ -89,23 +144,46 @@ async function handleScanText(data, sendResponse) {
           site: data.site,
           url: data.url
         }
-      })
+      }),
+      signal: AbortSignal.timeout(30000)
     });
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('[InferShield] API error:', response.status, errorText);
+      console.error('[InferShield] API error:', response.status);
+      
+      const apiError = new Error(`API error: ${response.status}`);
+      captureError(apiError, {
+        component: 'background',
+        action: 'api_call',
+        status: response.status
+      });
+      
       sendResponse({ 
         success: false, 
-        error: `API error: ${response.status} - ${errorText}` 
+        error: `API error: ${response.status}` 
       });
       return;
     }
     
     const result = await response.json();
-    console.log('[InferShield] Scan result:', result);
+    const scanDuration = Date.now() - startTime;
     
-    // Update badge
+    console.log('[InferShield] Scan completed', `(${scanDuration}ms)`);
+    
+    addBreadcrumb('Scan completed', {
+      component: 'background',
+      action: 'scan_complete',
+      status: 'success'
+    });
+    
+    if (scanDuration > 1000) {
+      captureMessage('Slow scan detected', 'warning', {
+        component: 'background',
+        action: 'scan'
+      });
+    }
+    
     if (result.threat_detected) {
       setBadge('⚠️', '#ff4444', 'Threat detected');
     } else {
@@ -120,9 +198,23 @@ async function handleScanText(data, sendResponse) {
     
   } catch (error) {
     console.error('[InferShield] Scan error:', error);
+    
+    let errorType = 'unknown';
+    if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+      errorType = 'timeout';
+    } else if (error.message.includes('fetch')) {
+      errorType = 'network';
+    }
+    
+    captureError(error, {
+      component: 'background',
+      action: 'scan',
+      error_type: errorType
+    });
+    
     sendResponse({ 
       success: false, 
-      error: error.message || 'Network error. Is InferShield backend running?' 
+      error: error.message || 'Network error' 
     });
   }
 }
@@ -134,37 +226,47 @@ async function handleGetConfig(sendResponse) {
     sendResponse({ success: true, config });
   } catch (error) {
     console.error('[InferShield] Config error:', error);
+    captureError(error, { component: 'background', action: 'get_config' });
     sendResponse({ success: false, error: error.message });
   }
 }
 
 // Handle badge update
 function handleUpdateBadge(data) {
-  setBadge(data.text, data.color, data.title);
+  try {
+    setBadge(data.text, data.color, data.title);
+  } catch (error) {
+    console.error('[InferShield] Badge update error:', error);
+    captureError(error, { component: 'background', action: 'update_badge' });
+  }
 }
 
 // Get configuration from storage
 function getConfig() {
-  return new Promise((resolve) => {
-    chrome.storage.sync.get(['config'], (result) => {
-      resolve(result.config || DEFAULT_CONFIG);
-    });
+  return new Promise((resolve, reject) => {
+    try {
+      chrome.storage.sync.get(['config'], (result) => {
+        if (chrome.runtime.lastError) {
+          reject(new Error(chrome.runtime.lastError.message));
+          return;
+        }
+        resolve(result.config || DEFAULT_CONFIG);
+      });
+    } catch (error) {
+      reject(error);
+    }
   });
 }
 
 // Set extension badge
 function setBadge(text, color, title) {
-  chrome.action.setBadgeText({ text });
-  chrome.action.setBadgeBackgroundColor({ color });
-  if (title) {
-    chrome.action.setTitle({ title: `InferShield: ${title}` });
+  try {
+    chrome.action.setBadgeText({ text });
+    chrome.action.setBadgeBackgroundColor({ color });
+    if (title) {
+      chrome.action.setTitle({ title: `InferShield: ${title}` });
+    }
+  } catch (error) {
+    console.warn('[InferShield] Badge update failed:', error);
   }
-}
-
-// Clear badge after delay
-function clearBadgeAfterDelay(delay = 3000) {
-  setTimeout(() => {
-    chrome.action.setBadgeText({ text: '' });
-    chrome.action.setTitle({ title: 'InferShield' });
-  }, delay);
 }
