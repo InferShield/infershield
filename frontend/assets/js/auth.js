@@ -1,6 +1,12 @@
 // API base URL
-const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname.startsWith('192.168.') || window.location.hostname.startsWith('127.'))
-    ? 'http://localhost:5000/api'
+// In development (local IPs), use same host as frontend, port 5000
+// In production, use /api (proxied to backend)
+const API_BASE = (window.location.hostname === 'localhost' || 
+                  window.location.hostname.startsWith('192.168.') || 
+                  window.location.hostname.startsWith('127.') ||
+                  window.location.hostname.startsWith('10.') ||
+                  window.location.hostname.startsWith('172.'))
+    ? `http://${window.location.hostname}:5000/api`
     : '/api';
 
 // Show error message
