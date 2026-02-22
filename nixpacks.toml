@@ -5,7 +5,7 @@ nixPkgs = ['nodejs_20']
 cmds = ['cd backend && npm ci']
 
 [phases.build]
-cmds = ['cd backend && npm run migrate:prod || true']
+cmds = ['cd backend && npx knex migrate:latest --env production || true']
 
 [start]
 cmd = 'cd backend && npm start'
