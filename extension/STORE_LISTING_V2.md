@@ -188,7 +188,7 @@ Click "Add to Chrome" → Extension icon appears in your toolbar
 
 **Enterprise ($499/month):**
 - 100,000 scans/month
-- Team management & SSO
+- Team management
 - Audit logs & compliance reports
 - Custom threat patterns
 - Dedicated support

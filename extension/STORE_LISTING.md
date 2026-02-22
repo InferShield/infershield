@@ -188,7 +188,7 @@ Click "Add to Chrome" → Extension icon appears in toolbar
 **Enterprise ($499/month):**
 - 100,000 scans/month
 - Custom PII patterns
-- SSO integration
+- SSO integration (Planned Q2 2026)
 - Audit logs
 
 **Self-Hosting (Free):**

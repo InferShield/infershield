@@ -134,7 +134,7 @@ Open source (MIT license). Run your own backend for full control. Perfect for en
 10,000 scans/month, advanced patterns, priority support
 
 **Enterprise ($499/month):**  
-100,000 scans/month, SSO, audit logs, custom patterns
+100,000 scans/month, audit logs, custom patterns
 
 **Self-Hosting:**  
 Free & open source (MIT license). Unlimited scans. Full control.
@@ -178,7 +178,7 @@ Free & open source (MIT license). Unlimited scans. Full control.
 **🚧 Coming Soon (v0.8.0 - Q2 2026):**
 - Proxy mode (intercept ALL AI traffic, not just browser)
 - Firefox & Edge extensions
-- Team management & SSO
+- Team management
 - Custom threat patterns
 
 **🔮 Future:**
@@ -314,7 +314,7 @@ Coming soon: Perplexity, Mistral, Poe, HuggingChat
 ```
 For Enterprise ($499/mo), we offer:
 - 100k scans/month
-- SSO (SAML/OAuth)
+- SSO (SAML/OAuth) - Planned Q2 2026
 - Audit logs
 - Custom threat patterns
 - Dedicated support

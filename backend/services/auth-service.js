@@ -3,7 +3,10 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const db = require('../database/db');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+if (!process.env.JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
+const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = '7d';
 const BCRYPT_ROUNDS = 10;
 

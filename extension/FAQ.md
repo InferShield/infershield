@@ -114,7 +114,7 @@ You choose what to do next.
 ### Q: How much does Pro cost?
 **A:**
 - **Pro:** $99/month (10,000 scans)
-- **Enterprise:** $499/month (100,000 scans + SSO + custom patterns)
+- **Enterprise:** $499/month (100,000 scans + custom patterns)
 
 ### Q: Can I self-host for free?
 **A:** Yes! InferShield is open source. Host your own backend and point the extension to your API endpoint. Unlimited scans, full control. See: https://github.com/InferShield/infershield
@@ -213,7 +213,7 @@ Updates are automatic via Chrome Web Store.
 - More AI platforms (Perplexity, Poe, etc.)
 - Custom PII patterns (Enterprise feature)
 - Webhooks for security teams
-- SSO integration (Google, Okta)
+- SSO integration (Planned Q2 2026)
 
 Vote on features: https://github.com/InferShield/infershield/discussions
 
@@ -225,7 +225,7 @@ Vote on features: https://github.com/InferShield/infershield/discussions
 **A:** Yes! Enterprise plan includes:
 - 100,000 scans/month
 - Custom PII patterns
-- SSO integration
+- SSO integration (Planned Q2 2026)
 - Audit logs
 - Priority support
 - Dedicated account manager

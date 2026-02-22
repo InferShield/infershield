@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>InferShield - Stop AI Data Leaks Before They Happen</title>
-    <meta name="description" content="Open-source data leak prevention (DLP) for AI systems. Detect and redact PII before it reaches LLMs. HIPAA, GDPR, PCI-DSS compliant.">
+    <meta name="description" content="Open-source data leak prevention (DLP) for AI systems. Detect and redact PII before it reaches LLMs. Supports HIPAA, GDPR, and PCI compliance workflows.">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -23,24 +23,24 @@
 ╚═╝╚═╝  ╚═══╝╚═╝     ╚══════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝ 
             </div>
             
-            <h1 class="glow">STOP AI DATA LEAKS BEFORE THEY HAPPEN</h1>
+            <h1 class="glow">SECURE YOUR AI. PROTECT YOUR DATA.</h1>
             
             <p class="tagline">
-                <span class="prompt">></span> Open-source DLP gateway for LLM workflows
+                <span class="prompt">></span> Enterprise security for LLM applications — detect threats, block PII, audit everything
             </p>
             
             <div class="badges">
-                <span class="badge">✓ PII DETECTION</span>
-                <span class="badge">✓ COMPLIANCE</span>
+                <span class="badge">✓ BROWSER EXTENSION</span>
+                <span class="badge">✓ SECURITY PROXY</span>
                 <span class="badge">✓ SELF-HOSTED</span>
             </div>
             
             <div class="cta-buttons">
                 <a href="https://app.infershield.io" class="btn btn-primary" style="background: linear-gradient(90deg, #667eea, #764ba2); font-size: larger;">START FREE TRIAL</a>
-                <a href="https://app.infershield.io/pricing.html" class="btn btn-secondary">VIEW PRICING</a>
+                <a href="https://github.com/InferShield/infershield" class="btn btn-secondary">VIEW ON GITHUB</a>
             </div>
             
-            <p class="meta">// v0.5.0 | MIT Licensed | HIPAA · GDPR · PCI-DSS</p>
+            <p class="meta">// Platform v0.7.0 · Proxy v0.8.1 · Extension v1.0 (pending review) | MIT Licensed | Supports HIPAA, GDPR, PCI compliance workflows</p>
         </section>
 
         <!-- Version Notice -->
@@ -48,44 +48,150 @@
             <div class="notice-banner">
                 <div class="notice-icon">🚀</div>
                 <div class="notice-content">
-                    <h3>Now Live: v0.7.0</h3>
-                    <p><strong>What's new:</strong> Self-service signup platform now available! Chrome Extension coming soon.</p>
-                    <p>Explore features like real-time PII detection and seamless deployment. — <a href="https://github.com/InferShield/infershield/releases" class="notice-link">View changelog →</a></p>
+                    <h3>Now Live: Platform v0.7.0 + Proxy v0.8.1</h3>
+                    <p><strong>What's new:</strong> Self-service platform with API key management, PII detection, quota tracking, and Sentry monitoring. Proxy v0.8.1 verified on Windows and Linux with &lt;1ms latency.</p>
+                    <p><strong>Chrome Extension v1.0</strong> submitted to Chrome Web Store (expected approval ~March 1, 2026). — <a href="https://github.com/InferShield/infershield/blob/main/CHANGELOG.md" class="notice-link">View changelog →</a></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Three Components -->
+        <section class="solution-section">
+            <h2 class="section-title">
+                <span class="comment">// THREE WAYS TO PROTECT YOUR LLM APPLICATIONS</span>
+            </h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card highlight">
+                    <h3>🧩 Browser Extension</h3>
+                    <div class="feature-status">Status: Pending Chrome Web Store review (~7 days)</div>
+                    <ul>
+                        <li><strong>Universal Coverage:</strong> Works on ChatGPT, Claude, Gemini, any LLM web app</li>
+                        <li><strong>Real-Time Alerts:</strong> Popup notifications for detected threats</li>
+                        <li><strong>Privacy-First:</strong> Analysis runs locally, optional cloud sync</li>
+                        <li><strong>Zero Config:</strong> Install, sign up, browse — it just works</li>
+                        <li><strong>Early Access:</strong> Email hello@infershield.io for dev build</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card highlight">
+                    <h3>📡 Security Proxy (v0.8.1)</h3>
+                    <div class="feature-status">Status: Production-ready on Windows and Linux</div>
+                    <ul>
+                        <li><strong>Drop-In Replacement:</strong> OpenAI-compatible, one-line code change</li>
+                        <li><strong>Advanced Detection:</strong> Blocks PII, prompt injection, data exfiltration</li>
+                        <li><strong>Multi-Provider:</strong> OpenAI, Anthropic, Google, Cohere, local models</li>
+                        <li><strong>< 1ms Latency:</strong> Minimal overhead, production-grade performance</li>
+                        <li><strong>Self-Hosted:</strong> Your data never leaves your infrastructure</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card highlight">
+                    <h3>🖥️ Platform (v0.7.0)</h3>
+                    <div class="feature-status">Status: Production-ready with Sentry monitoring</div>
+                    <ul>
+                        <li><strong>Self-Service Onboarding:</strong> Sign up, generate API keys, start protecting</li>
+                        <li><strong>API Key Management:</strong> Unlimited keys, environment tagging, usage tracking</li>
+                        <li><strong>Usage Quotas:</strong> Free tier (100 req/month), track consumption in real-time</li>
+                        <li><strong>Demo Mode:</strong> Try InferShield without signup (10 requests)</li>
+                        <li><strong>Real-Time Dashboard:</strong> Monitor threats, view audit logs, track risk scores</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
         <!-- Live PII Detection Demo -->
         <section class="demo-section">
+            <h2 class="section-title">
+                <span class="comment">// LIVE PII DETECTION</span>
+            </h2>
             <div class="terminal">
                 <div class="terminal-header">
                     <span class="dot red"></span>
                     <span class="dot yellow"></span>
                     <span class="dot green"></span>
-                    <span class="terminal-title">infershield-proxy@localhost:8000 - PII Detection</span>
+                    <span class="terminal-title">infershield-proxy@localhost:8000 - v0.8.1</span>
                 </div>
                 <div class="terminal-body" id="demo-output">
-                    <div class="log-line"><span class="timestamp">[00:12:03]</span> <span class="info">INFO</span> PII detection enabled (14 pattern types)</div>
-                    <div class="log-line"><span class="timestamp">[00:12:05]</span> <span class="info">INFO</span> Connected to OpenAI API</div>
-                    <div class="log-line"><span class="timestamp">[00:12:08]</span> <span class="success">PASS</span> Request ID: req_abc123 | Risk: 0 | PII: 0</div>
-                    <div class="log-line"><span class="timestamp">[00:12:12]</span> <span class="warning">DETECT</span> PII detected in prompt</div>
+                    <div class="log-line"><span class="timestamp">[00:12:03]</span> <span class="info">INFO</span> PII detection enabled (15 pattern types)</div>
+                    <div class="log-line"><span class="timestamp">[00:12:05]</span> <span class="info">INFO</span> Connected to OpenAI API (gpt-4)</div>
+                    <div class="log-line"><span class="timestamp">[00:12:08]</span> <span class="success">PASS</span> Request ID: req_abc123 | Risk: 12 | PII: 0 | Latency: 0.8ms</div>
+                    <div class="log-line"><span class="timestamp">[00:12:12]</span> <span class="warning">DETECT</span> PII detected in prompt (3 instances)</div>
                     <div class="log-line threat-detail">
-                        <span class="prompt">    └─></span> Type: SSN (123-45-6789)<br>
-                        <span class="prompt">    └─></span> Type: Credit Card (4532-****-****-6467)<br>
-                        <span class="prompt">    └─></span> Type: Email (user@example.com)<br>
-                        <span class="prompt">    └─></span> Action: REDACTED (PARTIAL strategy)
+                        <span class="prompt">    └─></span> Type: SSN (123-45-6789) — Action: REDACTED → XXX-XX-6789<br>
+                        <span class="prompt">    └─></span> Type: Credit Card (4532-1488-0343-6467) — Action: REDACTED → [CC_REDACTED]<br>
+                        <span class="prompt">    └─></span> Type: Email (patient@hospital.com) — Action: REDACTED → [EMAIL_REDACTED]
                     </div>
-                    <div class="log-line"><span class="timestamp">[00:12:13]</span> <span class="success">PASS</span> Request ID: req_def456 | PII: 3 redacted | Latency: 42ms</div>
-                    <div class="log-line"><span class="timestamp">[00:12:15]</span> <span class="warning">DETECT</span> Medical record number detected</div>
+                    <div class="log-line"><span class="timestamp">[00:12:13]</span> <span class="success">PASS</span> Request ID: req_def456 | Risk: 45 | PII: 3 redacted | Latency: 0.9ms</div>
+                    <div class="log-line"><span class="timestamp">[00:12:15]</span> <span class="warning">DETECT</span> Medical record number + API key detected</div>
                     <div class="log-line threat-detail">
-                        <span class="prompt">    └─></span> Type: MRN (MRN-123456)<br>
-                        <span class="prompt">    └─></span> Severity: CRITICAL<br>
-                        <span class="prompt">    └─></span> Compliance: HIPAA<br>
-                        <span class="prompt">    └─></span> Action: BLOCKED
+                        <span class="prompt">    └─></span> Type: MRN (MRN-987654) — Severity: CRITICAL (HIPAA)<br>
+                        <span class="prompt">    └─></span> Type: API Key (sk-proj-...) — Severity: CRITICAL (Secrets)<br>
+                        <span class="prompt">    └─></span> Risk Score: 92/100<br>
+                        <span class="prompt">    └─></span> Action: <span class="danger">BLOCKED</span>
                     </div>
-                    <div class="log-line"><span class="timestamp">[00:12:16]</span> <span class="danger">BLOCK</span> Request ID: req_ghi789 | PII: 1 critical | Compliance: HIPAA</div>
+                    <div class="log-line"><span class="timestamp">[00:12:16]</span> <span class="danger">BLOCK</span> Request ID: req_ghi789 | Risk: 92 | PII: 2 critical | Compliance: HIPAA</div>
                 </div>
                 <div class="scanline"></div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works-section">
+            <h2 class="section-title">
+                <span class="comment">// HOW IT WORKS</span>
+            </h2>
+            
+            <div class="architecture">
+                <div class="arch-box">
+                    <div class="arch-label">YOUR APP</div>
+                    <div class="arch-code">Sends LLM request with SSN, credit card, etc.</div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box highlight">
+                    <div class="arch-label">INFERSHIELD PROXY</div>
+                    <div class="arch-code">localhost:8000 (v0.8.1)</div>
+                    <div class="arch-features">
+                        ✓ Detect threats<br>
+                        ✓ Block PII/secrets<br>
+                        ✓ Log & audit
+                    </div>
+                </div>
+                <div class="arch-arrow">→</div>
+                <div class="arch-box">
+                    <div class="arch-label">LLM PROVIDER</div>
+                    <div class="arch-code">OpenAI, Anthropic, Google, etc.</div>
+                </div>
+            </div>
+            
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Install InferShield</h3>
+                    <p>Choose your deployment: Browser extension (Chrome), security proxy (Docker/npm), or platform (self-hosted).</p>
+                    <div class="code-snippet">docker run -p 8000:8000 infershield/proxy</div>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>Configure Detection</h3>
+                    <p>Set your risk threshold, choose PII redaction strategy, enable compliance mode (HIPAA/GDPR/PCI).</p>
+                    <div class="code-snippet">RISK_THRESHOLD=80 BLOCK_HIGH_RISK=true</div>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Update Your Code</h3>
+                    <p>Change your API endpoint to point to InferShield proxy. One line change, zero refactoring.</p>
+                    <div class="code-snippet">base_url="http://localhost:8000/v1"</div>
+                </div>
+                
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>Monitor & Audit</h3>
+                    <p>View real-time threat detection in dashboard. Export audit logs for compliance. Block high-risk requests automatically.</p>
+                    <div class="code-snippet">Dashboard: localhost:3000</div>
+                </div>
             </div>
         </section>
 
@@ -152,134 +258,6 @@
             </div>
         </section>
 
-        <!-- How It Works -->
-        <section class="solution-section">
-            <h2 class="section-title">
-                <span class="comment">// HOW PII DETECTION WORKS</span>
-            </h2>
-            
-            <div class="architecture">
-                <div class="arch-box">
-                    <div class="arch-label">YOUR APP</div>
-                    <div class="arch-code">Sends: "SSN: 123-45-6789"</div>
-                </div>
-                <div class="arch-arrow">→</div>
-                <div class="arch-box highlight">
-                    <div class="arch-label">INFERSHIELD PROXY</div>
-                    <div class="arch-code">localhost:8000</div>
-                    <div class="arch-features">
-                        ✓ Detect PII (14 types)<br>
-                        ✓ Redact: XXX-XX-6789<br>
-                        ✓ Log & Audit
-                    </div>
-                </div>
-                <div class="arch-arrow">→</div>
-                <div class="arch-box">
-                    <div class="arch-label">LLM</div>
-                    <div class="arch-code">Receives: "SSN: XXX-XX-6789"</div>
-                </div>
-            </div>
-            
-            <div class="terminal">
-                <div class="terminal-header">
-                    <span class="dot red"></span>
-                    <span class="dot yellow"></span>
-                    <span class="dot green"></span>
-                    <span class="terminal-title">quick-start.sh</span>
-                </div>
-                <div class="terminal-body">
-                    <div class="code-line"><span class="comment"># Install InferShield (< 60 seconds)</span></div>
-                    <div class="code-line"><span class="prompt">$</span> docker pull infershield/proxy:latest</div>
-                    <div class="code-line"><span class="prompt">$</span> docker run -p 8000:8000 \\</div>
-                    <div class="code-line">    -e OPENAI_API_KEY=sk-xxx \\</div>
-                    <div class="code-line">    -e PII_REDACTION_ENABLED=true \\</div>
-                    <div class="code-line">    infershield/proxy</div>
-                    <div class="code-line">&nbsp;</div>
-                    <div class="code-line"><span class="comment"># Update your code (one line change)</span></div>
-                    <div class="code-line"><span class="strike">client = OpenAI(base_url="https://api.openai.com/v1")</span></div>
-                    <div class="code-line"><span class="success-text">client = OpenAI(base_url="http://localhost:8000/v1")</span></div>
-                    <div class="code-line">&nbsp;</div>
-                    <div class="code-line"><span class="success-text">✓ Done. All PII automatically detected and redacted.</span></div>
-                </div>
-            </div>
-            
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <h3>🛡️ 14 PII Types Detected</h3>
-                    <ul>
-                        <li><strong>Critical:</strong> SSN, credit cards, medical records, bank accounts, API keys</li>
-                        <li><strong>High:</strong> Email addresses, driver's licenses, passports</li>
-                        <li><strong>Medium:</strong> Phone numbers, IP addresses, dates of birth</li>
-                        <li>&lt;5ms detection speed | &lt;1ms latency overhead</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🔒 5 Redaction Strategies</h3>
-                    <ul>
-                        <li><strong>MASK:</strong> Replace with [SSN_REDACTED]</li>
-                        <li><strong>PARTIAL:</strong> Show last 4 (XXX-XX-6789)</li>
-                        <li><strong>HASH:</strong> One-way hash ([a3f5c2d1])</li>
-                        <li><strong>TOKEN:</strong> Reversible encryption (Enterprise)</li>
-                        <li><strong>REMOVE:</strong> Complete removal</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>✅ Compliance Coverage</h3>
-                    <ul>
-                        <li><strong>HIPAA:</strong> Protected Health Information (PHI)</li>
-                        <li><strong>GDPR:</strong> Personal data protection</li>
-                        <li><strong>PCI-DSS:</strong> Payment card data</li>
-                        <li><strong>SOC 2:</strong> Enterprise security controls</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>📊 Real-Time Monitoring</h3>
-                    <ul>
-                        <li>Live threat detection dashboard</li>
-                        <li>Compliance audit trails</li>
-                        <li>Prometheus metrics + Grafana</li>
-                        <li>Slack/PagerDuty alerting</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🚀 Production Ready</h3>
-                    <ul>
-                        <li>Kubernetes Helm charts</li>
-                        <li>Auto-scaling (2-10 pods)</li>
-                        <li>Zero-downtime deployments</li>
-                        <li>CI/CD automation (18 min to prod)</li>
-                    </ul>
-                </div>
-                
-                <div class="feature-card">
-                    <h3>🔓 Open Source</h3>
-                    <ul>
-                        <li>MIT licensed | Full source code</li>
-                        <li>Self-host anywhere (Docker, K8s)</li>
-                        <li>No vendor lock-in</li>
-                        <li>Community-driven development</li>
-                    </ul>
-                </div>
-            </div>
-        </section>
-
-        <!-- Extensions Section -->
-        <section class="extensions-section">
-            <h2 class="section-title">
-                <span class="comment">// COMING SOON</span>
-            </h2>
-            <div class="extensions-grid">
-                <div class="extension-card">
-                    <h3>Chrome Extension</h3>
-                    <p>Browser extension for real-time PII detection in ChatGPT, Claude, Gemini, and GitHub Copilot. Pending Chrome Web Store approval.</p>
-                </div>
-            </div>
-        </section>
-
         <!-- Pricing Section -->
         <section class="pricing-section" id="pricing">
             <h2 class="section-title">
@@ -298,7 +276,7 @@
                         <li>✓ Self-hosted deployment</li>
                         <li>✓ MIT licensed source code</li>
                     </ul>
-                    <a href="https://app.infershield.io/login.html" class="btn btn-secondary">Get Started</a>
+                    <a href="https://app.infershield.io" class="btn btn-secondary">Get Started</a>
                 </div>
                 
                 <div class="pricing-card highlight">
@@ -307,13 +285,13 @@
                     <div class="price">$99<span class="period">/month</span></div>
                     <ul class="pricing-features">
                         <li>✓ 10,000 requests/month</li>
-                        <li>✓ All 14 PII types</li>
+                        <li>✓ All 15 PII types</li>
                         <li>✓ PARTIAL + HASH redaction</li>
                         <li>✓ Compliance reports</li>
                         <li>✓ Email support</li>
                         <li>✓ Prometheus metrics</li>
                     </ul>
-                    <a href="https://app.infershield.io/login.html" class="btn btn-primary">Start Free Trial</a>
+                    <a href="https://app.infershield.io" class="btn btn-primary">Start Free Trial</a>
                 </div>
                 
                 <div class="pricing-card">
@@ -324,7 +302,7 @@
                         <li>✓ Everything in Pro</li>
                         <li>✓ TOKEN + REMOVE strategies</li>
                         <li>✓ Custom PII patterns</li>
-                        <li>✓ SSO (SAML, OAuth)</li>
+                        <li>⏳ SSO (SAML, OAuth) <em style="color: #888;">(Planned Q2 2026)</em></li>
                         <li>✓ SLA + Dedicated support</li>
                     </ul>
                     <a href="mailto:sales@infershield.io" class="btn btn-secondary">Contact Sales</a>
@@ -336,70 +314,37 @@
             </p>
         </section>
 
-        <!-- Use Cases -->
-        <section class="use-cases-section">
-            <h2 class="section-title">
-                <span class="comment">// USE CASES</span>
-            </h2>
-            
-            <div class="use-case-grid">
-                <div class="use-case-card">
-                    <h3>🏥 Healthcare</h3>
-                    <p><strong>Challenge:</strong> Doctors want to use AI assistants, but patient data (SSN, MRN, diagnoses) would violate HIPAA.</p>
-                    <p><strong>Solution:</strong> InferShield detects and redacts PHI in real-time. Doctors get AI benefits while staying compliant.</p>
-                    <div class="use-case-result">Result: HIPAA-compliant AI without data exposure</div>
-                </div>
-                
-                <div class="use-case-card">
-                    <h3>💳 Financial Services</h3>
-                    <p><strong>Challenge:</strong> Customer service teams use AI for support, but credit card numbers and account details leak to LLM providers.</p>
-                    <p><strong>Solution:</strong> InferShield strips payment data before it reaches the LLM. PCI-DSS compliance maintained.</p>
-                    <div class="use-case-result">Result: PCI-DSS audit pass, zero payment data leaks</div>
-                </div>
-                
-                <div class="use-case-card">
-                    <h3>⚖️ Legal Firms</h3>
-                    <p><strong>Challenge:</strong> Lawyers want AI research assistants, but client names and case details would breach attorney-client privilege.</p>
-                    <p><strong>Solution:</strong> InferShield redacts names, emails, and sensitive identifiers. Privilege maintained.</p>
-                    <div class="use-case-result">Result: AI-powered legal research without privilege breach</div>
-                </div>
-                
-                <div class="use-case-card">
-                    <h3>🏢 Enterprise SaaS</h3>
-                    <p><strong>Challenge:</strong> Developers use Copilot, but API keys, database credentials, and customer data leak through code suggestions.</p>
-                    <p><strong>Solution:</strong> InferShield detects API keys and credentials before they reach GitHub Copilot. Security maintained.</p>
-                    <div class="use-case-result">Result: SOC 2 audit pass, zero credential leaks</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Social Proof / Waitlist -->
+        <!-- Call to Action -->
         <section class="call-to-action" id="start-now">
             <h2 class="section-title">
                 <span class="comment">// GET STARTED TODAY</span>
             </h2>
             
             <p class="waitlist-tagline">
-                Start using InferShield immediately with self-service signup. Protect your data and ensure compliance.
+                Built for teams shipping AI applications. Start your free trial today — no credit card required.
             </p>
             
             <div class="cta-buttons">
-                <a href="https://app.infershield.io" class="btn btn-primary" style="background: linear-gradient(90deg, #667eea, #764ba2); font-size: larger;">START FREE TRIAL</a>
+                <a href="https://app.infershield.io" class="btn btn-primary" style="background: linear-gradient(90deg, #667eea, #764ba2); font-size: larger;">START FREE TRIAL (100 REQ/MONTH)</a>
+                <a href="https://github.com/InferShield/infershield" class="btn btn-secondary">SELF-HOST (DOCKER/K8S)</a>
             </div>
+            
+            <p class="meta">// MIT Licensed | Self-hosted or cloud | No vendor lock-in</p>
         </section>
 
         <!-- Footer -->
         <footer class="footer">
             <div class="footer-links">
                 <a href="https://github.com/InferShield/infershield">GitHub</a>
-                <a href="https://github.com/InferShield/infershield/releases">Changelog</a>
-                <a href="https://github.com/InferShield/infershield/blob/main/docs/PII_REDACTION.md">Documentation</a>
+                <a href="https://github.com/InferShield/infershield/blob/main/CHANGELOG.md">Changelog</a>
+                <a href="https://github.com/InferShield/infershield/blob/main/docs/QUICKSTART.md">Documentation</a>
                 <a href="https://github.com/InferShield/infershield/discussions">Community</a>
                 <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a>
             </div>
             <p class="footer-text">
                 InferShield by <a href="https://hozyne.com" class="footer-company">HoZyne Inc</a><br>
                 © 2026 HoZyne Inc. Released under MIT License.<br>
+                Platform v0.7.0 · Proxy v0.8.1 · Extension v1.0 (pending review)<br>
                 <span class="comment">// Built for security teams who refuse to compromise.</span>
             </p>
         </footer>
