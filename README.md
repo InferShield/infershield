@@ -202,8 +202,6 @@ When a high-risk request is detected (configurable threshold, default ≥80):
 - 🛡️ [PII Redaction](./docs/PII_REDACTION.md) — Configure PII detection
 - 🏗️ [OAuth Architecture](./docs/OAUTH_ARCHITECTURE.md) — Authentication internals
 - 🚀 [Deployment Guides](./docs/deployment/) — Railway, AWS, GCP, Azure
-- 🧪 [Testing & Validation](./docs/development/TESTING.md) — Security validation
-- 📊 [Stripe Setup](./docs/STRIPE_SETUP.md) — Payment integration (enterprise)
 
 **More docs:** See [`/docs`](./docs/) directory for complete documentation.
 
