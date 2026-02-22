@@ -1,8 +1,0 @@
-[phases.setup]
-nixPkgs = ['nodejs_20']
-
-[phases.install]
-cmds = ['cd backend && npm ci']
-
-[start]
-cmd = 'cd backend && npx knex migrate:latest --env production && node server.js'
