@@ -269,6 +269,12 @@ function scanRequest(ctx, callback) {
  */
 function scanResponse(ctx, callback) {
   try {
+    // Skip if request was already blocked (headers already sent)
+    if (ctx.proxyToClientResponse && ctx.proxyToClientResponse.headersSent) {
+      callback();
+      return;
+    }
+    
     const url = ctx.clientToProxyRequest.url || '';
 
     if (!isScanningEnabled() || !isAIEndpoint(url)) {
