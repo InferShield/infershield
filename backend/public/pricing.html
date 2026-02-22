@@ -4,129 +4,167 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pricing - InferShield</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/main.css">
 </head>
 <body>
-    <div class="container">
-        <header style="margin-bottom: 40px;">
-            <h1>🦞 InferShield</h1>
-            <p class="subtitle">Choose Your Plan</p>
+    <!-- Matrix Background -->
+    <canvas id="matrix" class="matrix-bg"></canvas>
+
+    <div class="container" style="padding: 60px 20px;">
+        <header style="margin-bottom: 60px; text-align: center;">
+            <pre class="ascii-logo-small" style="font-size: 14px; color: #00d9ff;">
+ ___      ___     ___
+|_ _|___ |  _|___|_  |
+ | ||   ||  _| -_|  _|
+|___|_|_||_| |___|___|
+Shield
+            </pre>
+            <h1 class="glow" style="margin-top: 20px;">Choose Your Plan</h1>
+            <p class="comment" style="margin-top: 10px;">Protect your AI applications from PII leaks</p>
         </header>
 
-        <div class="pricing-grid">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width: 1200px; margin: 0 auto;">
+            
             <!-- Free Plan -->
-            <div class="pricing-card">
-                <div class="pricing-header">
-                    <h2>Free</h2>
-                    <div class="price">
-                        <span class="amount">$0</span>
-                        <span class="period">/month</span>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="dot green"></span>
+                    <span class="terminal-title">free.plan</span>
+                </div>
+                <div class="terminal-body" style="min-height: 420px; display: flex; flex-direction: column;">
+                    <h2 style="color: #e0e0e0; margin-bottom: 10px;">Free</h2>
+                    <div style="margin-bottom: 30px;">
+                        <span style="font-size: 42px; font-weight: bold; color: #00d9ff;">$0</span>
+                        <span class="comment">/month</span>
                     </div>
-                </div>
-                <div class="pricing-features">
-                    <div class="feature">✓ 100 requests/month</div>
-                    <div class="feature">✓ Basic PII detection</div>
-                    <div class="feature">✓ MASK redaction</div>
-                    <div class="feature">✓ Community support</div>
-                </div>
-                <div class="pricing-footer">
-                    <a href="/dashboard.html" class="btn btn-secondary">Current Plan</a>
+                    <div style="flex: 1;">
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> 100 requests/month</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> Basic PII detection</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> MASK redaction</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> Community support</div>
+                    </div>
+                    <button class="btn btn-secondary btn-full" style="margin-top: 20px;" disabled>Current Plan</button>
                 </div>
             </div>
 
             <!-- Pro Plan -->
-            <div class="pricing-card featured">
-                <div class="badge">Popular</div>
-                <div class="pricing-header">
-                    <h2>Pro</h2>
-                    <div class="price">
-                        <span class="amount">$99</span>
-                        <span class="period">/month</span>
+            <div class="terminal" style="border-color: #00ff88; box-shadow: 0 0 40px rgba(0, 255, 136, 0.3);">
+                <div class="terminal-header" style="background: rgba(0, 255, 136, 0.1);">
+                    <span class="dot green"></span>
+                    <span class="terminal-title">pro.plan</span>
+                    <span style="background: #00ff88; color: #0a0e27; padding: 2px 8px; border-radius: 3px; font-size: 10px; font-weight: bold; margin-left: 10px;">POPULAR</span>
+                </div>
+                <div class="terminal-body" style="min-height: 420px; display: flex; flex-direction: column;">
+                    <h2 style="color: #e0e0e0; margin-bottom: 10px;">Pro</h2>
+                    <div style="margin-bottom: 30px;">
+                        <span style="font-size: 42px; font-weight: bold; color: #00ff88;">$99</span>
+                        <span class="comment">/month</span>
                     </div>
-                </div>
-                <div class="pricing-features">
-                    <div class="feature">✓ 10,000 requests/month</div>
-                    <div class="feature">✓ All PII types</div>
-                    <div class="feature">✓ PARTIAL + HASH redaction</div>
-                    <div class="feature">✓ Compliance reports</div>
-                    <div class="feature">✓ Email support</div>
-                </div>
-                <div class="pricing-footer">
-                    <button id="upgradeProBtn" class="btn btn-primary">Upgrade to Pro</button>
+                    <div style="flex: 1;">
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> 10,000 requests/month</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> All PII types</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> PARTIAL + HASH redaction</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> Compliance reports</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> Email support</div>
+                    </div>
+                    <button id="upgradeProBtn" class="btn btn-primary btn-full" style="margin-top: 20px;">Upgrade to Pro</button>
                 </div>
             </div>
 
             <!-- Enterprise Plan -->
-            <div class="pricing-card">
-                <div class="pricing-header">
-                    <h2>Enterprise</h2>
-                    <div class="price">
-                        <span class="amount">$499</span>
-                        <span class="period">/month</span>
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="dot green"></span>
+                    <span class="terminal-title">enterprise.plan</span>
+                </div>
+                <div class="terminal-body" style="min-height: 420px; display: flex; flex-direction: column;">
+                    <h2 style="color: #e0e0e0; margin-bottom: 10px;">Enterprise</h2>
+                    <div style="margin-bottom: 30px;">
+                        <span style="font-size: 42px; font-weight: bold; color: #00d9ff;">$499</span>
+                        <span class="comment">/month</span>
                     </div>
-                </div>
-                <div class="pricing-features">
-                    <div class="feature">✓ Unlimited requests</div>
-                    <div class="feature">✓ Everything in Pro</div>
-                    <div class="feature">✓ TOKEN + REMOVE strategies</div>
-                    <div class="feature">✓ Custom patterns</div>
-                    <div class="feature">✓ SSO integration</div>
-                    <div class="feature">✓ SLA guarantee</div>
-                    <div class="feature">✓ Dedicated support</div>
-                </div>
-                <div class="pricing-footer">
-                    <button id="contactSalesBtn" class="btn btn-secondary">Contact Sales</button>
+                    <div style="flex: 1;">
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> Unlimited requests</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> Everything in Pro</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> TOKEN + REMOVE strategies</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> Custom patterns</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> SSO integration</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> SLA guarantee</div>
+                        <div style="margin-bottom: 12px;"><span class="prompt">></span> Dedicated support</div>
+                    </div>
+                    <button id="contactSalesBtn" class="btn btn-secondary btn-full" style="margin-top: 20px;">Contact Sales</button>
                 </div>
             </div>
+
         </div>
 
         <!-- Contact Sales Modal -->
-        <div id="contactModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <h2>Contact Sales</h2>
-                <form id="contactForm">
-                    <div class="form-group">
-                        <label>Your Name</label>
-                        <input type="text" id="contactName" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="contactEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Company</label>
-                        <input type="text" id="contactCompany">
-                    </div>
-                    <div class="form-group">
-                        <label>Expected Monthly Volume</label>
-                        <select id="contactVolume">
-                            <option value="10k-50k">10K - 50K requests</option>
-                            <option value="50k-100k">50K - 100K requests</option>
-                            <option value="100k-500k">100K - 500K requests</option>
-                            <option value="500k+">500K+ requests</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Message</label>
-                        <textarea id="contactMessage" rows="4" placeholder="Tell us about your use case..."></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Send Message</button>
-                </form>
+        <div id="contactModal" style="display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.8);">
+            <div class="terminal" style="margin: 80px auto; max-width: 500px; width: 90%;">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">contact_sales.sh</span>
+                    <span id="closeModal" style="margin-left: auto; cursor: pointer; color: #00d9ff; font-size: 20px;">&times;</span>
+                </div>
+                <div class="terminal-body">
+                    <h2 style="color: #00d9ff; margin-bottom: 20px;">Contact Sales</h2>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label class="form-label"><span class="prompt">></span> Your Name</label>
+                            <input type="text" id="contactName" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><span class="prompt">></span> Email</label>
+                            <input type="email" id="contactEmail" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><span class="prompt">></span> Company</label>
+                            <input type="text" id="contactCompany" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><span class="prompt">></span> Expected Monthly Volume</label>
+                            <select id="contactVolume" class="form-input">
+                                <option value="10k-50k">10K - 50K requests</option>
+                                <option value="50k-100k">50K - 100K requests</option>
+                                <option value="100k-500k">100K - 500K requests</option>
+                                <option value="500k+">500K+ requests</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label"><span class="prompt">></span> Message</label>
+                            <textarea id="contactMessage" rows="4" class="form-input" placeholder="Tell us about your use case..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Send Message</button>
+                    </form>
+                </div>
             </div>
         </div>
 
-        <div style="margin-top: 40px; text-align: center;">
-            <a href="/dashboard.html" class="link">← Back to Dashboard</a>
+        <div style="margin-top: 60px; text-align: center;">
+            <a href="dashboard.html" class="link">← Back to Dashboard</a>
         </div>
     </div>
 
+    <script src="assets/js/matrix.js"></script>
     <script>
         const API_BASE = window.location.origin + '/api';
 
         // Get auth token from localStorage
         function getAuthToken() {
             return localStorage.getItem('token');
+        }
+
+        // Check if user is logged in
+        function checkAuth() {
+            const token = getAuthToken();
+            if (!token) {
+                alert('Please log in to upgrade your plan');
+                window.location.href = '/login.html';
+                return false;
+            }
+            return true;
         }
 
         // API request helper
@@ -148,6 +186,7 @@
 
             if (response.status === 401) {
                 localStorage.removeItem('token');
+                alert('Your session has expired. Please log in again.');
                 window.location.href = '/login.html';
                 throw new Error('Authentication required');
             }
@@ -157,6 +196,8 @@
 
         // Upgrade to Pro
         document.getElementById('upgradeProBtn').addEventListener('click', async () => {
+            if (!checkAuth()) return;
+
             try {
                 const btn = document.getElementById('upgradeProBtn');
                 btn.disabled = true;
@@ -180,18 +221,22 @@
                 }
             } catch (error) {
                 alert('Failed to start upgrade: ' + error.message);
-                document.getElementById('upgradeProBtn').disabled = false;
-                document.getElementById('upgradeProBtn').textContent = 'Upgrade to Pro';
+                const btn = document.getElementById('upgradeProBtn');
+                btn.disabled = false;
+                btn.textContent = 'Upgrade to Pro';
             }
         });
 
         // Contact Sales Modal
         const modal = document.getElementById('contactModal');
         const contactBtn = document.getElementById('contactSalesBtn');
-        const closeBtn = document.querySelector('.close');
+        const closeBtn = document.getElementById('closeModal');
 
         contactBtn.addEventListener('click', () => {
+            if (!checkAuth()) return;
+            
             modal.style.display = 'block';
+            
             // Pre-fill email if logged in
             apiRequest('/auth/me')
                 .then(r => r.json())
@@ -245,154 +290,11 @@
                 alert('Failed to send message: ' + error.message);
             }
         });
+
+        // Check auth on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+        });
     </script>
-
-    <style>
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin-bottom: 40px;
-        }
-
-        .pricing-card {
-            background: var(--background-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 32px 24px;
-            position: relative;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .pricing-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
-
-        .pricing-card.featured {
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 12px rgba(70, 130, 180, 0.2);
-        }
-
-        .badge {
-            position: absolute;
-            top: -12px;
-            right: 24px;
-            background: var(--primary-color);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .pricing-header {
-            text-align: center;
-            margin-bottom: 24px;
-            padding-bottom: 24px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .pricing-header h2 {
-            margin: 0 0 16px 0;
-            font-size: 24px;
-        }
-
-        .price {
-            display: flex;
-            align-items: baseline;
-            justify-content: center;
-            gap: 4px;
-        }
-
-        .price .amount {
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .price .period {
-            font-size: 16px;
-            color: var(--text-muted);
-        }
-
-        .pricing-features {
-            margin-bottom: 24px;
-        }
-
-        .feature {
-            padding: 8px 0;
-            color: var(--text-color);
-            font-size: 14px;
-        }
-
-        .pricing-footer {
-            text-align: center;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-        }
-
-        .modal-content {
-            background-color: var(--background-secondary);
-            margin: 5% auto;
-            padding: 32px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            width: 90%;
-            max-width: 500px;
-        }
-
-        .close {
-            color: var(--text-muted);
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-            line-height: 20px;
-        }
-
-        .close:hover {
-            color: var(--text-color);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-color);
-            font-weight: 500;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            background: var(--background-primary);
-            border: 1px solid var(--border-color);
-            border-radius: 4px;
-            color: var(--text-color);
-            font-family: inherit;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-    </style>
 </body>
 </html>
