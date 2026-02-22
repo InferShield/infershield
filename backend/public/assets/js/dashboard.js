@@ -279,7 +279,7 @@ async function loadUsageDetails() {
         } else {
             // Fallback: show API key summary if no daily data
             if (apiKeys.length > 0) {
-                const totalRequests = apiKeys.reduce((sum, key) => sum + (key.total_requests || 0), 0);
+                const totalRequests = apiKeys.reduce((sum, key) => sum + parseInt(key.total_requests || 0, 10), 0);
                 document.getElementById('usageDetails').innerHTML = `
                     <div class="terminal">
                         <div class="terminal-body">

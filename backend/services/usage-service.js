@@ -71,10 +71,26 @@ class UsageService {
       .sum('pii_redactions as total_pii_redactions')
       .first();
 
+    let totalRequests = parseInt(result.total_requests) || 0;
+    let totalPiiDetections = parseInt(result.total_pii_detections) || 0;
+    let totalPiiRedactions = parseInt(result.total_pii_redactions) || 0;
+
+    // Fallback: if usage_records is empty, aggregate from api_keys table
+    if (totalRequests === 0) {
+      const keyUsage = await db('api_keys')
+        .where({ user_id: userId })
+        .sum('total_requests as total_requests')
+        .first();
+      
+      if (keyUsage && keyUsage.total_requests) {
+        totalRequests = parseInt(keyUsage.total_requests) || 0;
+      }
+    }
+
     return {
-      total_requests: parseInt(result.total_requests) || 0,
-      total_pii_detections: parseInt(result.total_pii_detections) || 0,
-      total_pii_redactions: parseInt(result.total_pii_redactions) || 0
+      total_requests: totalRequests,
+      total_pii_detections: totalPiiDetections,
+      total_pii_redactions: totalPiiRedactions
     };
   }
 
