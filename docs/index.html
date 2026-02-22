@@ -371,25 +371,35 @@
                 Get early access to managed cloud hosting, compliance reports, and priority support.
             </p>
             
-            <form action="https://formspree.io/f/mwvnrbpa" method="POST" class="waitlist-form">
-                <div class="form-group">
-                    <input type="email" name="email" placeholder="your-email@company.com" required class="form-input">
+            <div class="terminal">
+                <div class="terminal-header">
+                    <span class="dot red"></span>
+                    <span class="dot yellow"></span>
+                    <span class="dot green"></span>
+                    <span class="terminal-title">waitlist-signup.sh</span>
                 </div>
-                <div class="form-group">
-                    <input type="text" name="company" placeholder="Company Name (optional)" class="form-input">
+                <div class="terminal-body">
+                    <form action="https://formspree.io/f/mwvnrbpa" method="POST" class="waitlist-form">
+                        <div class="form-group">
+                            <input type="email" name="email" placeholder="your-email@company.com" required class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <input type="text" name="company" placeholder="Company Name (optional)" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <select name="use_case" class="form-input">
+                                <option value="">Primary Use Case (optional)</option>
+                                <option value="healthcare">Healthcare (HIPAA)</option>
+                                <option value="finance">Financial Services (PCI-DSS)</option>
+                                <option value="legal">Legal (Attorney-Client)</option>
+                                <option value="enterprise">Enterprise (SOC 2)</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">JOIN WAITLIST</button>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <select name="use_case" class="form-input">
-                        <option value="">Primary Use Case (optional)</option>
-                        <option value="healthcare">Healthcare (HIPAA)</option>
-                        <option value="finance">Financial Services (PCI-DSS)</option>
-                        <option value="legal">Legal (Attorney-Client)</option>
-                        <option value="enterprise">Enterprise (SOC 2)</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">JOIN WAITLIST</button>
-            </form>
+            </div>
             
             <p class="waitlist-note">
                 <span class="comment">// Or start immediately: <a href="https://github.com/InferShield/infershield" class="notice-link">Self-host the open-source version →</a></span>

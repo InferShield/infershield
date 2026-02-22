@@ -855,9 +855,17 @@ section {
     margin: 0 auto 40px;
 }
 
-.waitlist-form {
-    max-width: 500px;
+.waitlist-section .terminal {
+    max-width: 600px;
     margin: 0 auto;
+}
+
+.waitlist-section .terminal-body {
+    padding: 40px;
+}
+
+.waitlist-form {
+    width: 100%;
 }
 
 .form-group {
@@ -867,7 +875,7 @@ section {
 .form-input {
     width: 100%;
     padding: 15px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 217, 255, 0.05);
     border: 1px solid #00d9ff;
     border-radius: 4px;
     color: #fff;
@@ -879,11 +887,17 @@ section {
 .form-input:focus {
     outline: none;
     border-color: #00ffff;
+    background: rgba(0, 217, 255, 0.1);
     box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
 }
 
 .form-input::placeholder {
     color: #666;
+}
+
+.form-input option {
+    background: #0a0e27;
+    color: #fff;
 }
 
 .waitlist-note {
