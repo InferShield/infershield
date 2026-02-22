@@ -12,7 +12,7 @@ router.use(authenticateJWT);
  */
 router.post('/checkout', async (req, res) => {
   try {
-    const { priceId } = req.body;
+    const { plan } = req.body; // 'pro' or 'enterprise'
 
     if (!req.user.stripe_customer_id) {
       return res.status(400).json({
@@ -21,8 +21,28 @@ router.post('/checkout', async (req, res) => {
       });
     }
 
-    const successUrl = `${process.env.FRONTEND_URL || 'https://infershield.io'}/dashboard?session_id={CHECKOUT_SESSION_ID}`;
-    const cancelUrl = `${process.env.FRONTEND_URL || 'https://infershield.io'}/dashboard`;
+    // Get price ID from environment
+    let priceId;
+    if (plan === 'pro') {
+      priceId = process.env.STRIPE_PRICE_PRO;
+    } else if (plan === 'enterprise') {
+      priceId = process.env.STRIPE_PRICE_ENTERPRISE;
+    } else {
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid plan. Must be "pro" or "enterprise"'
+      });
+    }
+
+    if (!priceId) {
+      return res.status(500).json({
+        success: false,
+        error: 'Pricing not configured. Please contact support.'
+      });
+    }
+
+    const successUrl = `${process.env.FRONTEND_URL || 'https://app.infershield.io'}/dashboard.html?session_id={CHECKOUT_SESSION_ID}`;
+    const cancelUrl = `${process.env.FRONTEND_URL || 'https://app.infershield.io'}/pricing.html`;
 
     const session = await stripeService.createCheckoutSession(
       req.user.stripe_customer_id,
