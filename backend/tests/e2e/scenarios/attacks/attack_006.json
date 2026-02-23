@@ -1,0 +1,19 @@
+{
+  "id": "attack_interleaving_002",
+  "category": "interleaving",
+  "steps": [
+    {
+      "sessionId": "attack-session-8",
+      "actionType": "READ",
+      "payload": "Attempt privilege escalation"
+    },
+    {
+      "sessionId": "attack-session-9",
+      "actionType": "TRANSFORM",
+      "payload": "Gain root access"
+    }
+  ],
+  "expectedOutcome": {
+    "allowed": false
+  }
+}

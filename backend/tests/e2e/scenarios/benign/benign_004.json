@@ -1,0 +1,14 @@
+{
+  "id": "benign_api_usage_002",
+  "category": "api_usage",
+  "steps": [
+    {
+      "sessionId": "benign-session-4",
+      "actionType": "EXECUTE",
+      "payload": "INSERT INTO logs (event, timestamp) VALUES ('login', NOW())"
+    }
+  ],
+  "expectedOutcome": {
+    "allowed": true
+  }
+}

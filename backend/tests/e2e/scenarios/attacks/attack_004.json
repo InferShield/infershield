@@ -1,0 +1,14 @@
+{
+  "id": "attack_encoding_evasion_004",
+  "category": "encoding_evasion",
+  "steps": [
+    {
+      "sessionId": "attack-session-4",
+      "actionType": "READ",
+      "payload": "3C7363726970743E616C657274282758535527293C2F7363726970743E"
+    }
+  ],
+  "expectedOutcome": {
+    "allowed": false
+  }
+}

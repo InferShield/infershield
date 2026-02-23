@@ -1,0 +1,14 @@
+{
+  "id": "attack_encoding_evasion_003",
+  "category": "encoding_evasion",
+  "steps": [
+    {
+      "sessionId": "attack-session-3",
+      "actionType": "READ",
+      "payload": "%2526drop%2520table%2520users"
+    }
+  ],
+  "expectedOutcome": {
+    "allowed": false
+  }
+}

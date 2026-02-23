@@ -1,0 +1,19 @@
+{
+  "id": "benign_workflow_001",
+  "category": "normal_workflows",
+  "steps": [
+    {
+      "sessionId": "benign-session-5",
+      "actionType": "READ",
+      "payload": "Upload report file"
+    },
+    {
+      "sessionId": "benign-session-6",
+      "actionType": "PROCESS",
+      "payload": "Analyze file"
+    }
+  ],
+  "expectedOutcome": {
+    "allowed": true
+  }
+}

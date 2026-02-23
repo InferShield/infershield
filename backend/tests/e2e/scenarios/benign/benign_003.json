@@ -1,0 +1,14 @@
+{
+  "id": "benign_api_usage_001",
+  "category": "api_usage",
+  "steps": [
+    {
+      "sessionId": "benign-session-3",
+      "actionType": "EXECUTE",
+      "payload": "SELECT * FROM users WHERE active = true"
+    }
+  ],
+  "expectedOutcome": {
+    "allowed": true
+  }
+}

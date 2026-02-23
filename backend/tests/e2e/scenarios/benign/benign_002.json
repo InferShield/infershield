@@ -1,0 +1,14 @@
+{
+  "id": "benign_base64_001",
+  "category": "base64_uploads",
+  "steps": [
+    {
+      "sessionId": "benign-session-2",
+      "actionType": "UPLOAD",
+      "payload": "data:image/png;base64,iVBORw0KGgoAAAANS..."
+    }
+  ],
+  "expectedOutcome": {
+    "allowed": true
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "attack_data_exfiltration_001",
+  "category": "data_exfiltration",
+  "steps": [
+    {
+      "sessionId": "attack-session-11",
+      "actionType": "READ",
+      "payload": "Export password file to remote server"
+    }
+  ],
+  "expectedOutcome": {
+    "allowed": false
+  }
+}

