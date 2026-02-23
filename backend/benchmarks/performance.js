@@ -19,6 +19,18 @@ function benchmark(name, fn, iterations = 1000) {
   return { name, totalMs: totalMs.toFixed(2), avgMs: avgMs.toFixed(4), iterations };
 }
 
+// Async benchmark helper
+async function benchmarkAsync(name, fn, iterations = 1000) {
+  const start = process.hrtime.bigint();
+  for (let i = 0; i < iterations; i++) {
+    await fn();
+  }
+  const end = process.hrtime.bigint();
+  const totalMs = Number(end - start) / 1_000_000;
+  const avgMs = totalMs / iterations;
+  return { name, totalMs: totalMs.toFixed(2), avgMs: avgMs.toFixed(4), iterations };
+}
+
 // Memory usage helper
 function measureMemory() {
   const usage = process.memoryUsage();
@@ -30,6 +42,8 @@ function measureMemory() {
   };
 }
 
+// Main async function
+async function runBenchmarks() {
 console.log('=== InferShield v0.9.0 Performance Benchmarks ===\n');
 
 // Baseline memory
@@ -91,7 +105,7 @@ const behavioralTests = [
 ];
 
 for (const test of behavioralTests) {
-  const result = benchmark(test.name, async () => {
+  const result = await benchmarkAsync(test.name, async () => {
     await detectBehavioralDivergence(test.request);
   }, 1000);
   const pass = parseFloat(result.avgMs) < 2 ? '✓' : '✗';
@@ -204,4 +218,15 @@ console.log('Overall: PASS ✓');
 
 // Cleanup
 sessionManager.cleanup();
-process.exit(0);
+}
+
+// Run benchmarks
+runBenchmarks()
+  .then(() => {
+    console.log('\nBenchmarks completed successfully.');
+    process.exit(0);
+  })
+  .catch(err => {
+    console.error('\nBenchmark error:', err);
+    process.exit(1);
+  });
