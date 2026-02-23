@@ -140,16 +140,15 @@ const sessionTests = [
     }
   },
   {
-    name: 'End session',
+    name: 'Cleanup expired',
     fn: () => {
-      sessionManager.endSession('test-session-end');
+      sessionManager.cleanupExpiredSessions();
     }
   }
 ];
 
-// Pre-create test sessions for get/end
+// Pre-create test session for get
 sessionManager.createSession('test-session', { user: 'test' });
-sessionManager.createSession('test-session-end', { user: 'test' });
 
 sessionTests.forEach(test => {
   const result = benchmark(test.name, test.fn, 10000);
