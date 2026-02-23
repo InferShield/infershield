@@ -342,16 +342,22 @@ Models are not the root cause. Orchestration is."
 
 ## 14. Release Amplification Mode (ACTIVE)
 
-**STATUS:** ✅ ACTIVE - 12-hour window  
-**START:** 2026-02-23 01:00 UTC  
-**END:** 2026-02-23 13:00 UTC  
+**STATUS:** ✅ ACTIVE - 12-hour rolling window  
+**WINDOW:** 9:00 AM PT - 9:00 PM PT (17:00 UTC - 05:00 UTC next day)  
+**START:** From first release tweet posted within window  
 **RELEASE:** InferShield v0.8.0 (cross-step escalation detection)
 
 ### Posting Sequence
 
-**IF no release tweet posted in last 12 hours:**
+**Timing Rules:**
+- **Only post release tweets between 9:00 AM PT - 9:00 PM PT**
+- If current time is outside this window → **WAIT until 9:00 AM PT**
+- If first release tweet not yet posted → **schedule for next 9:12 AM PT slot**
+- 12-hour rolling window starts from first release tweet timestamp
 
-1. **Post Release Announcement tweet** (finalized version)
+**IF no release tweet posted yet:**
+
+1. **Post Release Announcement tweet** (finalized version) at 9:12 AM PT
 2. Wait 3-4 hours
 3. **Post Mechanism tweet** (finalized version)
 4. Wait 3-4 hours
@@ -361,8 +367,8 @@ Models are not the root cause. Orchestration is."
 **Rules:**
 - Do NOT thread
 - Do NOT batch
-- Respect existing spacing rules (3-4 hours between posts)
-- Respect posting window (9 AM - 9 PM PT / 17:00 - 05:00 UTC)
+- Respect 3-4 hour spacing between release tweets
+- Must stay within 9 AM - 9 PM PT band
 - Each tweet standalone
 
 **Finalized Tweet Content:**
@@ -460,7 +466,7 @@ Your tool-calling thread nailed it. I focus on cross-step patterns. Let's trade 
 
 ### End-of-Window Logging
 
-**At 13:00 UTC (end of 12-hour release window), log:**
+**12 hours after first release tweet posted, log:**
 
 - Tweets posted (which ones, timestamps)
 - High-signal replies (count + quality assessment)
@@ -498,4 +504,4 @@ Your tool-calling thread nailed it. I focus on cross-step patterns. Let's trade 
 
 ---
 
-Last updated: 2026-02-23 01:00 UTC by OpenBak (Release Amplification Mode activated)
+Last updated: 2026-02-23 01:02 UTC by OpenBak (Release timing shifted to high-engagement hours)
