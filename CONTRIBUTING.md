@@ -378,6 +378,197 @@ function detectPII(text, options = {}) {
 - Follow [Keep a Changelog](https://keepachangelog.com/) format
 - Include version number and release date
 
+## Adding New Detection Policies
+
+Detection policies are the core of InferShield's threat detection capabilities. If you want to add a new detection pattern, this section will guide you through the process.
+
+### Where Policy Code Lives
+
+Detection policies are located in the `backend/src/policies` directory. Each policy is implemented as a separate module that exports a detection function.
+
+### Policy Structure
+
+All policies follow a consistent structure:
+
+```javascript
+// backend/src/policies/examplePolicy.js
+
+/**
+ * Example Policy: Detects [specific threat pattern]
+ * @param {Object} request - The request object to analyze
+ * @param {string} request.prompt - The user's prompt text
+ * @param {string} request.response - The LLM's response text (if available)
+ * @param {Object} request.metadata - Additional context (user ID, model, etc.)
+ * @param {Array} request.sessionHistory - Previous requests in this session
+ * @returns {Object} Detection result
+ */
+export async function detectExampleThreat(request) {
+  const findings = [];
+  
+  // Your detection logic here
+  if (containsThreatPattern(request.prompt)) {
+    findings.push({
+      type: 'EXAMPLE_THREAT',
+      severity: 'HIGH',  // LOW, MEDIUM, HIGH, CRITICAL
+      confidence: 0.85,  // 0.0 - 1.0
+      description: 'Description of what was detected',
+      matchedPattern: 'specific pattern that triggered detection',
+      recommendation: 'How to mitigate this threat'
+    });
+  }
+  
+  return {
+    detected: findings.length > 0,
+    findings,
+    riskScore: calculateRiskScore(findings)  // 0-100
+  };
+}
+
+function containsThreatPattern(text) {
+  // Detection implementation
+  return /malicious-pattern/.test(text);
+}
+
+function calculateRiskScore(findings) {
+  // Risk scoring logic
+  return findings.length > 0 ? 75 : 0;
+}
+```
+
+### Adding a New Policy
+
+1. **Create a new file** in `backend/src/policies/`:
+   ```bash
+   touch backend/src/policies/yourPolicyName.js
+   ```
+
+2. **Implement your detection logic** following the structure above.
+
+3. **Register your policy** in `backend/src/policies/index.js`:
+   ```javascript
+   import { detectExampleThreat } from './examplePolicy.js';
+   import { detectYourThreat } from './yourPolicyName.js';  // Add this
+   
+   export const policies = [
+     { name: 'example-threat', detect: detectExampleThreat },
+     { name: 'your-threat', detect: detectYourThreat },  // Add this
+   ];
+   ```
+
+4. **Add configuration** in `backend/src/config/policies.js`:
+   ```javascript
+   export const policyConfig = {
+     'your-threat': {
+       enabled: true,
+       threshold: 0.7,  // Confidence threshold for alerting
+       severity: 'HIGH'
+     }
+   };
+   ```
+
+### Testing Requirements
+
+All new policies must include tests:
+
+```javascript
+// backend/src/policies/__tests__/yourPolicyName.test.js
+
+import { detectYourThreat } from '../yourPolicyName.js';
+
+describe('Your Threat Detection', () => {
+  it('should detect malicious pattern', async () => {
+    const request = {
+      prompt: 'malicious input here',
+      metadata: {}
+    };
+    
+    const result = await detectYourThreat(request);
+    
+    expect(result.detected).toBe(true);
+    expect(result.findings).toHaveLength(1);
+    expect(result.findings[0].type).toBe('YOUR_THREAT');
+  });
+  
+  it('should not flag benign input', async () => {
+    const request = {
+      prompt: 'normal user query',
+      metadata: {}
+    };
+    
+    const result = await detectYourThreat(request);
+    
+    expect(result.detected).toBe(false);
+  });
+  
+  // Add more test cases for edge cases, false positives, etc.
+});
+```
+
+**Run tests:**
+```bash
+cd backend
+npm test -- yourPolicyName.test.js
+```
+
+### Example PR Structure
+
+Your pull request should include:
+
+1. **The policy file**: `backend/src/policies/yourPolicyName.js`
+2. **Registration**: Update to `backend/src/policies/index.js`
+3. **Configuration**: Update to `backend/src/config/policies.js`
+4. **Tests**: `backend/src/policies/__tests__/yourPolicyName.test.js`
+5. **Documentation**: Add entry to `docs/DETECTION_POLICIES.md`
+6. **Changelog**: Update `CHANGELOG.md` under "Unreleased"
+
+**Example PR title and description:**
+
+```
+Title: feat: add detection for [specific threat type]
+
+Description:
+Adds a new detection policy for [threat type] attacks.
+
+Detection approach:
+- [Explain the detection logic]
+- [Mention any patterns or heuristics used]
+
+Test coverage:
+- ✅ Detects malicious patterns
+- ✅ Avoids false positives on benign input
+- ✅ Handles edge cases (empty input, encoding, etc.)
+
+Example detections:
+- [Show 2-3 examples of what this policy catches]
+
+Limitations:
+- [Be honest about what this doesn't catch]
+```
+
+### Policy Design Guidelines
+
+**Good detection policies:**
+- ✅ Have clear, measurable detection criteria
+- ✅ Minimize false positives
+- ✅ Include confidence scores (not just binary detection)
+- ✅ Provide actionable recommendations
+- ✅ Document known limitations
+
+**Avoid:**
+- ❌ Overly broad patterns that flag benign content
+- ❌ Hard-coded keywords without context analysis
+- ❌ Expensive operations (heavy regex, external API calls)
+- ❌ Non-deterministic behavior (unless intentional)
+
+### Getting Feedback
+
+Before investing significant time:
+1. **Open a discussion** describing the threat pattern
+2. **Share examples** of attacks this would catch
+3. **Get feedback** on approach and false positive risk
+
+This helps ensure your contribution aligns with project goals and avoids duplicate work.
+
 ## Community
 
 ### Communication Channels
