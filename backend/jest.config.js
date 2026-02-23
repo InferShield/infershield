@@ -1,6 +1,7 @@
 module.exports = {
   testEnvironment: 'node',
-  testMatch: ['**/tests/**/*.test.js'],
+  testMatch: ['<rootDir>/tests/**/*.test.js'],
+  testPathIgnorePatterns: ['/node_modules/', '/test/'],
   testTimeout: 30000,
   forceExit: true,
   verbose: true
