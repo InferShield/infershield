@@ -1,154 +1,248 @@
-# Attack Scenario Catalog
+# InferShield Attack Catalog
 
-## 1. Polymorphic Injection
-**Description:** This attack involves dynamically changing code structures to bypass signature-based detection mechanisms.
-
-**Preconditions:**
-- Target application accepts user input.
-- Application processes this input without sufficient validation.
-
-**Steps:**
-1. An attacker creates a payload that changes structure (e.g., variable names or non-functional code alterations) with each execution.
-2. Embed the payload into a request.
-3. Send the payload to the target repeatedly, each time with slight variations.
-
-**Expected Outcome:** The application executes the polymorphic payload, leading to unauthorized actions or data access.
-
-**Detection Status:** Mitigated in v0.9.0
-
-**Patch Reference:** IDS engine updated to analyze behavioral patterns rather than static signatures.
+Known attack patterns and detection status for InferShield v0.9.0.
 
 ---
 
-## 2. Encoding Evasion
-**Description:** Attackers encode payloads in different formats to bypass detection mechanisms.
+## 1. Encoding Evasion
+
+**Description:** Malicious payloads encoded (Base64, URL encoding, hex) to bypass signature-based detection.
 
 **Preconditions:**
-- Target system allows encoded input (e.g., Base64, URL encoding).
-- Detection mechanisms do not normalize or decode inputs properly.
+- Detection system analyzes raw input without normalization
+- Application decodes user input before processing
 
-**Steps:**
-1. Encode malicious payload using a supported encoding method.
-2. Send the encoded payload to the target.
-3. Payload is decoded and executed on the server.
+**Step Sequence:**
+1. Attacker encodes malicious payload using supported encoding (Base64, URL, hex)
+2. Encoded payload sent in HTTP request
+3. Application decodes payload and executes malicious content
 
-**Expected Outcome:** Malicious code is executed after decoding, compromising the target system.
+**Detection Status:** Mitigated (v0.9.0)
 
-**Detection Status:** Mitigated in v0.9.0
-
-**Patch Reference:** Input normalization added, with comprehensive decoding before analysis.
+**Notes:** Input normalization added. All inputs decoded before policy evaluation. Handles single and double encoding (Base64 inside URL encoding).
 
 ---
 
-## 3. Interleaving Attacks
-**Description:** Malicious actions split into multiple smaller, seemingly innocuous steps to evade detection.
+## 2. Polymorphic Injection
+
+**Description:** Dynamically varying code structure to evade signature-based detection while maintaining malicious function.
 
 **Preconditions:**
-- Multi-step workflows are parsed individually by the security system.
-- No correlation exists between steps within a session.
+- Detection system relies on static signatures
+- Application executes user-provided code or commands
 
-**Steps:**
-1. Break malicious activity into multiple smaller steps.
-2. Submit each step separately within a session.
-3. Combine steps to achieve the intended malicious goal on the server side.
+**Step Sequence:**
+1. Attacker generates payload with variable structure (different variable names, whitespace, comments)
+2. Payload sent with unique structure each time
+3. Application executes payload despite structural variations
 
-**Expected Outcome:** Full malicious workflow completes undetected.
+**Detection Status:** Partial (v0.9.0)
 
-**Detection Status:** Blocked
-
-**Patch Reference:** Enhanced stateful tracking across session steps.
+**Notes:** Behavioral pattern analysis detects common polymorphic techniques. Advanced obfuscation (semantic equivalence, code mutation) not detected.
 
 ---
 
-## 4. Multi-Session Correlation Gap (Known Limitation)
-**Description:** This involves exploiting detection systems that lack the ability to correlate actions across multiple sessions.
+## 3. Interleaving Attacks (Behavioral Divergence)
+
+**Description:** Malicious actions split across multiple requests, mixing benign and malicious steps to evade single-request analysis.
 
 **Preconditions:**
-- Security system lacks visibility across session boundaries.
+- Detection system analyzes requests in isolation
+- Application maintains session state across requests
 
-**Steps:**
-1. Perform malicious actions incrementally, each in a different session.
-2. Link these actions manually or programmatically on the attacker side to achieve the goal.
+**Step Sequence:**
+1. Attacker performs benign action (e.g., "List all users")
+2. Attacker performs another benign action (e.g., "Format as CSV")
+3. Attacker performs malicious action (e.g., "Send to external URL")
+4. Combined sequence achieves unauthorized data exfiltration
 
-**Expected Outcome:** Attack is successful due to lack of inter-session context.
+**Detection Status:** Blocked (v0.9.0)
 
-**Detection Status:** Known Limitation
-
-**Patch Reference:** N/A
+**Notes:** Session history tracking added. Risk scoring accumulates across requests. READ + TRANSFORM + SEND patterns detected as high-risk.
 
 ---
 
-## 5. Resource Exhaustion
-**Description:** Aimed at consuming system resources, leading to denial-of-service conditions.
+## 4. Cross-Step Exfiltration
+
+**Description:** Multi-step attack using legitimate application workflows to extract sensitive data.
 
 **Preconditions:**
-- Target system has resource usage limits that can be reached.
+- Application exposes data retrieval, transformation, and export functions
+- Detection system does not validate end-to-end workflow outcomes
 
-**Steps:**
-1. Identify a target resource (e.g., CPU, memory, or disk I/O).
-2. Craft requests that consume the target resource.
-3. Send requests in high volumes or with heavy payloads.
+**Step Sequence:**
+1. Request sensitive data (DATABASE_READ action)
+2. Transform data to exportable format (DATA_TRANSFORM action)
+3. Export data to external destination (EXTERNAL_API_CALL action)
 
-**Expected Outcome:** Target becomes unresponsive or slows down significantly.
+**Detection Status:** Blocked (v0.9.0)
 
-**Detection Status:** Mitigated in v0.9.0
-
-**Patch Reference:** Rate-limiting and anomaly detection enhancements added.
+**Notes:** Cross-step escalation policy detects READ + TRANSFORM + SEND sequences. Risk score increases with each step. Final SEND action blocked when risk exceeds threshold.
 
 ---
 
-## 6. API Chaining
-**Description:** Combining multiple APIs in unintended ways to achieve malicious objectives.
+## 5. Privilege Escalation Chains
+
+**Description:** Series of exploits that incrementally increase attacker privileges.
 
 **Preconditions:**
-- APIs expose internal components without sufficient constraints.
+- Application has multiple exploitable vulnerabilities
+- Privileges can be escalated through chained exploits
 
-**Steps:**
-1. Analyze API functionality and responses.
-2. Chain multiple API calls to create an unintended workflow.
-3. Exploit the chained workflow for malicious outcomes.
+**Step Sequence:**
+1. Exploit low-privilege vulnerability to gain initial access
+2. Use initial access to discover additional vulnerabilities
+3. Chain exploits to achieve administrative access
 
-**Expected Outcome:** Unauthorized actions performed by exploiting API calls.
+**Detection Status:** Partial (v0.9.0)
 
-**Detection Status:** Mitigated in v0.9.0
-
-**Patch Reference:** Enhanced API usage analysis, identifying non-standard workflows.
+**Notes:** Behavioral divergence detection identifies gradual privilege increases. Does not detect exploits themselves, only unusual escalation patterns.
 
 ---
 
-## 7. Cross-Step Exfiltration
-**Description:** Leverages existing workflows to extract sensitive data silently.
+## 6. API Chaining Abuse
+
+**Description:** Combining multiple API calls in unintended sequence to achieve unauthorized outcomes.
 
 **Preconditions:**
-- Security system does not validate workflow outcomes beyond individual steps.
+- APIs expose internal functionality without workflow constraints
+- No validation of combined API usage patterns
 
-**Steps:**
-1. Embed exfiltration logic within multiple distinct workflow steps.
-2. Execute steps in sequence to extract data.
-3. Collect exfiltrated data externally.
+**Step Sequence:**
+1. Attacker analyzes API functionality and responses
+2. Chains multiple API calls to create unauthorized workflow
+3. Exploits chained workflow for malicious purpose
 
-**Expected Outcome:** Sensitive data exfiltrated without detection.
+**Detection Status:** Partial (v0.9.0)
 
-**Detection Status:** Blocked
-
-**Patch Reference:** Workflow completion validation ensures consistency with expected outcomes.
+**Notes:** Behavioral divergence detection identifies non-standard API call sequences. Limited to known abuse patterns (no semantic workflow validation).
 
 ---
 
-## 8. Privilege Escalation Chains
-**Description:** Combining a series of exploits to achieve privilege escalation.
+## 7. Resource Exhaustion
+
+**Description:** Consuming system resources (CPU, memory, network) to cause denial of service.
 
 **Preconditions:**
-- Target system has multiple exploitable vulnerabilities.
-- Chained vulnerabilities can escalate attacker privileges.
+- System has finite resources with no hard limits
+- Attacker can generate high-volume or resource-intensive requests
 
-**Steps:**
-1. Exploit the first vulnerability to gain a foothold.
-2. Use the foothold to identify and exploit additional weaknesses.
-3. Achieve administrative or root access.
+**Step Sequence:**
+1. Identify resource bottleneck (CPU, memory, disk I/O)
+2. Craft requests that consume target resource
+3. Send requests in high volume
 
-**Expected Outcome:** Attacker gains unauthorized high-level privileges.
+**Detection Status:** Not Detected (v0.9.0)
 
-**Detection Status:** Mitigated in v0.9.0
+**Notes:** No rate limiting or resource monitoring in v0.9.0. Session tracking provides some visibility but no automatic blocking.
 
-**Patch Reference:** Layered patching of vulnerabilities and privilege boundary checks.
+---
+
+## 8. Multi-Session Correlation Gap
+
+**Description:** Attacks distributed across multiple sessions or user accounts to evade per-session detection.
+
+**Preconditions:**
+- Detection system tracks state per session only
+- Attacker controls multiple sessions or accounts
+
+**Step Sequence:**
+1. Perform part of attack in session A
+2. Perform part of attack in session B
+3. Combine results externally to achieve objective
+
+**Detection Status:** Not Detected (v0.9.0)
+
+**Notes:** Known limitation. InferShield v0.9.0 has no cross-session correlation. Each session analyzed independently.
+
+---
+
+## 9. Prompt Injection
+
+**Description:** Overriding system instructions by injecting attacker-controlled directives into prompts.
+
+**Preconditions:**
+- Application includes user input in LLM prompts
+- No input validation or sanitization
+
+**Step Sequence:**
+1. Attacker crafts prompt with override instructions (e.g., "Ignore all previous instructions")
+2. Malicious prompt sent to LLM
+3. LLM follows attacker instructions instead of system instructions
+
+**Detection Status:** Blocked (v0.9.0)
+
+**Notes:** Pattern-based detection for common prompt injection phrases. Does not detect novel or context-specific injections.
+
+---
+
+## 10. SQL Injection in Prompts
+
+**Description:** SQL syntax injected into prompts to exploit database interactions.
+
+**Preconditions:**
+- Application includes LLM-generated content in SQL queries
+- No parameterized queries or input sanitization
+
+**Step Sequence:**
+1. Attacker includes SQL syntax in prompt (e.g., "'; DROP TABLE users;--")
+2. LLM incorporates SQL syntax in response
+3. Application executes LLM response as SQL query
+
+**Detection Status:** Blocked (v0.9.0)
+
+**Notes:** Pattern-based detection for SQL keywords and metacharacters. May produce false positives for legitimate SQL discussions.
+
+---
+
+## 11. XSS Injection in Prompts
+
+**Description:** HTML/JavaScript injected into prompts to exploit client-side rendering.
+
+**Preconditions:**
+- Application renders LLM responses in web browser
+- No output sanitization or CSP headers
+
+**Step Sequence:**
+1. Attacker includes HTML/JavaScript in prompt (e.g., "<script>alert(1)</script>")
+2. LLM incorporates script in response
+3. Application renders response, executing script
+
+**Detection Status:** Blocked (v0.9.0)
+
+**Notes:** Pattern-based detection for script tags and event handlers. Does not detect obfuscated or context-dependent XSS.
+
+---
+
+## 12. PII Leakage
+
+**Description:** Personally identifiable information included in prompts or responses.
+
+**Preconditions:**
+- User includes PII in prompts (intentionally or accidentally)
+- No PII detection or redaction
+
+**Step Sequence:**
+1. User includes PII in prompt (SSN, credit card, email)
+2. LLM processes prompt and includes PII in response
+3. PII logged or exposed in application
+
+**Detection Status:** Detected (v0.9.0)
+
+**Notes:** Regex-based detection for 15+ PII types. Optional redaction available (replaces with [REDACTED]). May miss obfuscated or contextual PII.
+
+---
+
+## Detection Status Legend
+
+- **Blocked** - Attack is detected and prevented from execution
+- **Mitigated** - Attack is detected, risk reduced but not eliminated
+- **Partial** - Some variants detected, others bypass detection
+- **Detected** - Attack is logged but not prevented
+- **Not Detected** - Attack bypasses detection (known limitation)
+
+---
+
+## Revision History
+
+- **v0.9.0 (2026-02-29)** - Initial attack catalog with session-aware detection
