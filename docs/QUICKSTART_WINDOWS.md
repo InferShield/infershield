@@ -203,7 +203,7 @@ git commit -m "your message"
 
 ```json
 {
-  "version": "2.0.0",
+  "version": "0.9.0",
   "tasks": [
     {
       "label": "InferShield: Scan Current File",
