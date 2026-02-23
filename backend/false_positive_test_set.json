@@ -1,0 +1,7 @@
+[
+    {"type": "legitimate_prompt", "data": "Translate the following text: Hello world!"},
+    {"type": "jwt_token", "data": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"},
+    {"type": "api_key", "data": "sk_test_REDACTED_FOR_TESTING"},
+    {"type": "normal_base64", "data": "VGhpcyBpcyBhIHRlc3Qgc3RyaW5nLg=="},
+    {"type": "benign_sql", "data": "SELECT name FROM employees WHERE id = 1234;"}
+]

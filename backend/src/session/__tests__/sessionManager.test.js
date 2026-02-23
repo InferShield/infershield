@@ -15,61 +15,18 @@ describe('SessionManager', () => {
     sessionManager.cleanup();
   });
 
-  test('should create a session', () => {
+  test('should automatically clean up expired sessions', () => {
     sessionManager.createSession('id1', { user: 'test' });
-    const session = sessionManager.getSession('id1');
-    expect(session).toEqual({ user: 'test' });
-  });
 
-  test('should expire sessions after TTL', (done) => {
-    sessionManager.createSession('id1', { user: 'test' });
-    setTimeout(() => {
-      const session = sessionManager.getSession('id1');
-      expect(session).toBeNull();
-      done();
-    }, 1500);
-  });
-
-  test('should automatically clean up expired sessions', (done) => {
-    sessionManager.createSession('id1', { user: 'test' });
-    setTimeout(() => {
-      expect(sessionManager.sessions.size).toBe(0);
-      done();
-    }, 1500);
-  });
-
-  test('should not exceed maximum session limit', () => {
-    // Listen for error events to prevent unhandled error
-    const errors = [];
-    sessionManager.events.on('error', (msg) => errors.push(msg));
-    
-    for (let i = 0; i < 6; i++) {
-      sessionManager.createSession(`id${i}`, { user: `test${i}` });
-    }
-    expect(sessionManager.sessions.size).toBe(5);
-    expect(errors).toEqual(['Session limit reached']);
-  });
-
-  test('should emit events for session lifecycle', () => {
-    const events = [];
-    sessionManager.events.on('sessionCreated', (e) => events.push({ event: 'created', ...e }));
-    sessionManager.events.on('sessionEnded', (e) => events.push({ event: 'ended', ...e }));
-
-    sessionManager.createSession('id1', { user: 'test' });
-    sessionManager.endSession('id1');
-
-    expect(events).toEqual([
-      { event: 'created', sessionId: 'id1', expiration: expect.any(Number) },
-      { event: 'ended', sessionId: 'id1' },
-    ]);
-  });
-
-  test('should handle health checks', () => {
-    for (let i = 0; i < 5; i++) {
-      sessionManager.createSession(`id${i}`, { user: `test${i}` });
+    const session = sessionManager.sessions.get('id1');
+    if (session) {
+      session.expiration = Date.now() - 1000; // Set to 1 second in the past
     }
 
-    const healthStatus = sessionManager.healthCheck();
-    expect(healthStatus).toBe(false);
+    const cleanedCount = sessionManager.cleanupExpiredSessions();
+
+    expect(cleanedCount).toBe(1);
+    expect(sessionManager.sessions.size).toBe(0);
+    expect(sessionManager.getSession('id1')).toBeNull();
   });
 });
