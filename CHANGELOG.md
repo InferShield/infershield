@@ -14,6 +14,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enhanced ML-based detection models
 - Custom policy builder UI
 
+## [0.8.0] - Proxy - 2026-02-23
+
+### Added
+- **Cross-Step Escalation Detection**: Session-aware policy evaluation tracks action sequences across requests
+  - Detects multi-step exfiltration chains (READ → TRANSFORM → SEND patterns)
+  - Identifies privilege escalation sequences (LOW → MEDIUM → HIGH privilege actions)
+  - Flags sensitive data transmission after collection
+  - In-memory session tracking (last 50 requests per session, 1-hour expiry)
+- **Content Analyzer**: Action classification for prompts (DATABASE_READ, FILE_READ, EXTERNAL_API_CALL, DATA_TRANSFORM, PRIVILEGED_WRITE)
+- **Extensible Policy Engine**: Pluggable policy architecture supporting both single-request and cross-step detection strategies
+- **Correlation Middleware**: Session ID tracking via X-Session-ID header for request correlation
+- **Integration Tests**: Validated 3-step exfiltration chain blocking and benign workflow handling
+
+### Refactored
+- Policy engine decoupled from route handlers into modular service layer
+- Migrated legacy regex patterns into SingleRequestPolicy for consistency
+- Introduced context parameter to policy evaluation for session history access
+
+### Documentation
+- Added attack scenario documentation: `docs/ATTACK_SCENARIO_CROSS_STEP.md`
+- Created test validation summary: `TEST_VALIDATION_SUMMARY.md`
+- Updated implementation spec: `CROSS_STEP_DETECTION_SPEC.md`
+
 ## [0.8.1] - Proxy - 2026-02-22
 
 ### Added
