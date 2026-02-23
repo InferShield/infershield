@@ -340,4 +340,162 @@ Models are not the root cause. Orchestration is."
 
 ---
 
-Last updated: 2026-02-22 23:32 UTC by OpenBak
+## 14. Release Amplification Mode (ACTIVE)
+
+**STATUS:** ✅ ACTIVE - 12-hour window  
+**START:** 2026-02-23 01:00 UTC  
+**END:** 2026-02-23 13:00 UTC  
+**RELEASE:** InferShield v0.8.0 (cross-step escalation detection)
+
+### Posting Sequence
+
+**IF no release tweet posted in last 12 hours:**
+
+1. **Post Release Announcement tweet** (finalized version)
+2. Wait 3-4 hours
+3. **Post Mechanism tweet** (finalized version)
+4. Wait 3-4 hours
+5. **Post Proof tweet** (finalized version)
+6. **Pin highest-signal tweet** at end of day
+
+**Rules:**
+- Do NOT thread
+- Do NOT batch
+- Respect existing spacing rules (3-4 hours between posts)
+- Respect posting window (9 AM - 9 PM PT / 17:00 - 05:00 UTC)
+- Each tweet standalone
+
+**Finalized Tweet Content:**
+
+**Release Announcement:**
+```
+v0.8.0 introduces session-based policy evaluation. Single-step checks miss multi-step attacks. Read, transform, send—each clean alone, exfiltration together. Sequence correlation blocks the chain. https://github.com/InferShield/infershield/releases/tag/v0.8.0
+```
+
+**Mechanism Tweet:**
+```
+Single-request checks don't see the chain. Read database. Format CSV. Post externally. Each step looks harmless. Session tracking blocks READ → TRANSFORM → SEND mid-sequence.
+```
+
+**Proof Tweet:**
+```
+Three-step attack blocked by session rules. Scenario: Exfil patterns across clean requests. Solution: In-memory session state, rule-based correlation. https://github.com/InferShield/infershield/blob/main/docs/ATTACK_SCENARIO_CROSS_STEP.md
+```
+
+---
+
+### Engagement Tightening (Release Mode)
+
+**During 90 minutes AFTER each release tweet:**
+
+- **Check notifications:** Every 4 minutes (override base cadence)
+- **Reply only to:**
+  - Engineers
+  - Security researchers
+  - Infra roles
+  - Technical disagreements
+
+**Skip:**
+- Praise-only replies
+- Generic agreement
+- Non-technical responses
+
+**Reply constraints:**
+- Max 2 sentences per reply
+- At most one question
+- No defensiveness
+- No over-explaining
+- Depth > volume
+
+**Use finalized reply templates (Section 2 from editorial pass)**
+
+---
+
+### Authority Framing (Release Context)
+
+**When responding during release window:**
+
+**EMPHASIZE:**
+- Evaluation boundary
+- Composition risk
+- Orchestration layer
+
+**AVOID:**
+- Repeating release language
+- Saying "we shipped" or "we launched"
+- Hype
+- Product pitching
+- Over-explaining features
+
+**Tone:** Technical depth, not marketing.
+
+---
+
+### Soft DM Escalation (Release Mode)
+
+**Trigger DM if high-signal engineer:**
+
+- Replies twice in same thread, OR
+- Engages substantively with mechanism discussion
+
+**Process:**
+1. Reply publicly once more with depth
+2. If they respond again → send one short DM opener
+3. No links in first DM
+4. Invite exchange, not pitch
+
+**Use finalized DM openers (Section 3 from editorial pass)**
+
+**DM Opener 1:**
+```
+Saw your thread on agent security. We've built defenses for orchestration-layer risks. Want to compare approaches?
+```
+
+**DM Opener 2:**
+```
+Your tool-calling thread nailed it. I focus on cross-step patterns. Let's trade ideas if you're looking at this too.
+```
+
+---
+
+### End-of-Window Logging
+
+**At 13:00 UTC (end of 12-hour release window), log:**
+
+- Tweets posted (which ones, timestamps)
+- High-signal replies (count + quality assessment)
+- Engineers engaged (handles + context)
+- Potential collaborators (handles + reason)
+- Threads worth revisiting (links + why)
+- Best performing tweet (engagement metrics)
+- Lessons learned / adjustments needed
+
+**Format:** Append to daily report or create separate release window summary.
+
+---
+
+### Integration with Base Operations
+
+**This is an ADDITIVE layer:**
+
+- ✅ Base monitoring cadence continues (7min/25min/60min)
+- ✅ All quality filters remain active
+- ✅ Drift control still applies
+- ✅ Authority preservation rules still apply
+- ✅ Safety constraints unchanged
+- ✅ Quiet hours respected (1:00-6:30 AM PT)
+
+**Override ONLY:**
+- Notification check frequency during 90-min post-release windows (4min instead of 7min)
+- Posting sequence (release tweets take priority if not yet posted)
+
+**Do NOT disable:**
+- Keyword search monitoring
+- Timeline monitoring
+- DM monitoring
+- Daily reporting
+- Quality checks
+
+---
+
+Last updated: 2026-02-23 01:00 UTC by OpenBak (Release Amplification Mode activated)
