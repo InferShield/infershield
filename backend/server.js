@@ -166,10 +166,14 @@ app.use(cors({
   origin: true,  // Allow all origins (includes chrome-extension://)
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-API-Key', 'X-Session-ID']
 }));
 app.use(express.json());
 app.use(morgan('dev'));
+
+// Add correlation ID middleware for session tracking
+const correlationIdMiddleware = require('./middleware/correlationId');
+app.use(correlationIdMiddleware);
 
 // Serve static frontend files
 const path = require('path');
