@@ -39,10 +39,15 @@ describe('SessionManager', () => {
   });
 
   test('should not exceed maximum session limit', () => {
+    // Listen for error events to prevent unhandled error
+    const errors = [];
+    sessionManager.events.on('error', (msg) => errors.push(msg));
+    
     for (let i = 0; i < 6; i++) {
       sessionManager.createSession(`id${i}`, { user: `test${i}` });
     }
     expect(sessionManager.sessions.size).toBe(5);
+    expect(errors).toEqual(['Session limit reached']);
   });
 
   test('should emit events for session lifecycle', () => {
