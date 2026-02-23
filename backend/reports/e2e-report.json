@@ -1,0 +1,74 @@
+{
+  "summary": {
+    "attackDetectionRate": 0.5555555555555556,
+    "falsePositiveRate": 0,
+    "f1Score": 0.7142857142857143,
+    "avgLatencyMs": 0.1451066,
+    "memoryGrowthMB": 0.2464599609375
+  },
+  "details": {
+    "metrics": {
+      "attacks": {
+        "total": 9,
+        "detected": 5,
+        "missed": 4,
+        "detectionRate": 0.5555555555555556,
+        "failed": [
+          {
+            "id": "attack_encoding_evasion_001",
+            "category": "encoding_evasion",
+            "reason": "Expected allowed=false, got true"
+          },
+          {
+            "id": "attack_encoding_evasion_004",
+            "category": "encoding_evasion",
+            "reason": "Expected allowed=false, got true"
+          },
+          {
+            "id": "attack_interleaving_001",
+            "category": "interleaving",
+            "reason": "Expected allowed=false, got true"
+          },
+          {
+            "id": "attack_interleaving_002",
+            "category": "interleaving",
+            "reason": "Expected allowed=false, got true"
+          }
+        ]
+      },
+      "benign": {
+        "total": 6,
+        "correct": 6,
+        "falsePositives": 0,
+        "falsePositiveRate": 0,
+        "failed": []
+      },
+      "aggregate": {
+        "precision": 1,
+        "recall": 0.5555555555555556,
+        "f1Score": 0.7142857142857143
+      },
+      "policyBreakdown": {
+        "xss-detection": 1,
+        "sql-injection": 1,
+        "prompt-injection": 2,
+        "data-exfiltration": 1
+      },
+      "severityDistribution": {
+        "low": 4,
+        "medium": 0,
+        "high": 4,
+        "critical": 1
+      },
+      "attackDetectionRate": 0.5555555555555556,
+      "falsePositiveRate": 0
+    },
+    "performance": {
+      "totalLatencyMs": 2.176599,
+      "avgLatencyMs": 0.1451066,
+      "memoryGrowthMB": 0.2464599609375
+    },
+    "regression": null
+  },
+  "timestamp": "2026-02-23T13:43:21.470Z"
+}
