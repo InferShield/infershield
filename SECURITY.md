@@ -91,14 +91,14 @@ When InferShield blocks a high-risk request:
 
 ### Authentication & Authorization
 
-**Platform (v0.7.0+):**
+**Platform (v0.9.0+):**
 - Passwords hashed with bcrypt (10 rounds)
 - JWT tokens (7-day expiry, secure httpOnly cookies)
 - API keys hashed with bcrypt (plaintext shown once)
 - Rate limiting on authentication endpoints
 - Email verification required
 
-**Proxy (v0.8.1+):**
+**Proxy (v1.0.0+):**
 - API key authentication only
 - Rate limiting per key (configurable)
 - No session state (stateless)

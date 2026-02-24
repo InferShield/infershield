@@ -1,4 +1,4 @@
-# InferShield Manual Integration Guide (v0.7.0)
+# InferShield Manual Integration Guide (v0.9.0)
 
 > **Use InferShield to scan code/prompts for PII and security threats before they reach your AI assistant.**
 
@@ -377,16 +377,15 @@ find src/ -name "*.js" -exec bash -c '
 
 ## Next Steps
 
-**Current Limitations (v0.7.0):**
-- ❌ Not a transparent proxy (manual scanning only)
-- ❌ No real-time Copilot interception
-- ❌ No streaming support
+**Current Limitations (v0.9.0):**
+- Single-instance deployment (no distributed state)
+- In-memory session state (no Redis)
+- No multi-session correlation
+- Rule-based detection (no ML models)
 
-**Coming in v0.8.0:**
-- ✅ Transparent proxy mode (`/api/proxy`)
-- ✅ VS Code extension
-- ✅ Real-time interception
-- ✅ Automatic blocking
+**Planned next:**
+- Redis-backed distributed sessions
+- Multi-session correlation + stronger org-wide policy enforcement
 
 **For now:**
 - Use git hooks for commit-time protection

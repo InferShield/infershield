@@ -164,11 +164,11 @@ export PATH="$HOME/bin:$PATH"
 
 ---
 
-## Ready to Ship v0.7.0!
+## Ready to Ship v0.9.0!
 
 Once you've tested this, we can:
-1. Tag v0.7.0
+1. Tag v0.9.0
 2. Create GitHub release
-3. Move to v0.8.0: Transparent Proxy Mode
+3. Next: v1.0 (distributed sessions + Redis)
 
 **Test it now and let me know how it goes!** 🚀
