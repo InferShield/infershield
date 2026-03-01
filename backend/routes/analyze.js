@@ -57,6 +57,21 @@ router.post('/analyze-prompt', async (req, res) => {
             currentRequest.riskScore = finalRiskScore;
         }
 
+        // Structured logging (no prompt content)
+        try {
+            // Lazy require to avoid changing load order
+            const logger = require('../lib/logger');
+            logger.info({
+                event: 'detection_result',
+                route: '/api/analyze-prompt',
+                session_id: sessionId,
+                correlation_id: correlationId,
+                risk_score: finalRiskScore,
+                blocked: isBlocked,
+                violations_count: (policyResult.violations || []).length
+            }, 'InferShield analyze-prompt result');
+        } catch (e) {}
+
         return res.json({
             score: finalRiskScore,
             flagged: isBlocked,
