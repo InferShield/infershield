@@ -35,7 +35,30 @@ InferShield analyzes LLM requests and responses to detect security threats. It t
 
 Early access: Contact hello@infershield.io
 
-### Option 2: Security Proxy (Developers)
+### Option 2: Security Proxy with OAuth (IDEs like Cursor / Copilot)
+
+Skip API key management. Authenticate once via browser and let InferShield handle token refresh automatically.
+
+```bash
+# 1. Clone and start
+git clone https://github.com/InferShield/infershield.git
+cd infershield
+echo "INFERSHIELD_MASTER_KEY=$(openssl rand -hex 32)" > .env
+docker-compose up -d
+
+# 2. Authenticate (browser-based device flow)
+docker exec -it infershield-proxy infershield auth login openai
+
+# 3. Point your IDE at the proxy
+export OPENAI_BASE_URL=http://localhost:8000/v1
+cursor .  # or windsurf, VS Code, etc.
+```
+
+See the [OAuth Setup Guide](./docs/OAUTH_SETUP.md) and [IDE Integration Guide](./docs/IDE_INTEGRATION.md) for full setup.
+
+---
+
+### Option 3: Security Proxy (Developers, API key mode)
 
 **Windows:**
 
@@ -184,6 +207,9 @@ See [docs/THREAT_MODEL.md](./docs/THREAT_MODEL.md) for complete threat model.
 - [Windows Setup](./docs/QUICKSTART_WINDOWS.md) - Windows-specific instructions
 - [Manual Integration](./docs/MANUAL_INTEGRATION.md) - API integration guide
 - [PII Redaction](./docs/PII_REDACTION.md) - Configure PII detection
+- [OAuth Setup](./docs/OAUTH_SETUP.md) - Enable OAuth & authenticate with your LLM provider
+- [IDE Integration](./docs/IDE_INTEGRATION.md) - Connect Cursor, Copilot, VS Code & more
+- [Token Security Model](./docs/SECURITY_OAUTH_TOKENS.md) - Storage, encryption, rotation, blast radius
 - [OAuth Architecture](./docs/OAUTH_ARCHITECTURE.md) - Authentication internals
 - [Deployment Guides](./docs/deployment/) - Railway, AWS, GCP, Azure
 - [Threat Model](./docs/THREAT_MODEL.md) - Security assumptions and out-of-scope threats
