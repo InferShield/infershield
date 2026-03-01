@@ -37,7 +37,9 @@ const app = express();
 
 // In-memory data stores
 const logs = [];
-const policies = [
+const { loadPolicies } = require('./lib/policyLoader');
+const policies = loadPolicies([
+
   {
     id: 1,
     name: 'Data Exfiltration Attempts',
@@ -158,7 +160,7 @@ const policies = [
     enabled: true,
     weight: 75
   }
-];
+]);
 const alerts = [];
 
 // Middleware
