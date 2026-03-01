@@ -19,8 +19,13 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      # KEY_MODE controls who holds upstream API keys:
+      #   server      (default) — set OPENAI_API_KEY here; client Authorization header is ignored.
+      #   passthrough            — client supplies its own "Authorization: Bearer <key>" header; no key stored server-side.
+      #   auto                   — use server key when set, fall back to client header.
+      - KEY_MODE=${KEY_MODE:-server}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
       - BACKEND_URL=http://backend:5000
       - PORT=8000
     depends_on:
