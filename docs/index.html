@@ -30,13 +30,14 @@
             <h1 class="glow">SECURE YOUR AI. PROTECT YOUR DATA.</h1>
             
             <p class="tagline">
-                <span class="prompt">></span> Enterprise security for LLM applications — detect threats, block PII, audit everything
+                <span class="prompt">></span> Enterprise security for LLM applications — detect threats, block PII, audit everything. Your API keys never leave your environment.
             </p>
             
             <div class="badges">
                 <span class="badge">✓ BROWSER EXTENSION</span>
                 <span class="badge">✓ SECURITY PROXY</span>
                 <span class="badge">✓ SELF-HOSTED</span>
+                <span class="badge">✓ NO KEY CUSTODY</span>
             </div>
             
             <div class="cta-buttons">
@@ -85,8 +86,9 @@
                         <li><strong>Drop-In Replacement:</strong> OpenAI-compatible, one-line code change</li>
                         <li><strong>Advanced Detection:</strong> Blocks PII, prompt injection, data exfiltration</li>
                         <li><strong>Multi-Provider:</strong> OpenAI, Anthropic, Google, Cohere, local models</li>
-                        <li><strong>< 1ms Latency:</strong> Minimal overhead, production-grade performance</li>
+                        <li><strong>&lt; 1ms Latency:</strong> Minimal overhead, production-grade performance</li>
                         <li><strong>Self-Hosted:</strong> Your data never leaves your infrastructure</li>
+                        <li><strong>No Key Custody:</strong> Your upstream API keys stay in your env — InferShield reads them from <code>OPENAI_API_KEY</code> (or forwarded headers) and passes them straight through. We never store or see them.</li>
                     </ul>
                 </div>
                 
@@ -158,9 +160,11 @@
                     <div class="arch-label">INFERSHIELD PROXY</div>
                     <div class="arch-code">localhost:8000 (v1.0.0)</div>
                     <div class="arch-features">
-                        ✓ Detect threats<br>
-                        ✓ Block PII/secrets<br>
-                        ✓ Log & audit
+                        ✓ Inspect &amp; redact PII<br>
+                        ✓ Block high-risk requests<br>
+                        ✓ Log &amp; audit<br>
+                        ✗ Never stores your API key<br>
+                        ✗ Never stores message content
                     </div>
                 </div>
                 <div class="arch-arrow">→</div>
@@ -197,6 +201,24 @@
                     <h3>Monitor & Audit</h3>
                     <p>View real-time threat detection in dashboard. Export audit logs for compliance. Block high-risk requests automatically.</p>
                     <div class="code-snippet">Dashboard: localhost:3000</div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Transparent Passthrough Callout -->
+        <section class="notice-section" id="passthrough">
+            <div class="notice-banner">
+                <div class="notice-icon">🔑</div>
+                <div class="notice-content">
+                    <h3>Transparent Passthrough — No Key Custody</h3>
+                    <p>InferShield sits between your app and the LLM provider as a <strong>transparent inspection layer</strong>. It does not act as a credential broker and does not hold your API keys.</p>
+                    <ul style="margin-top: 0.5rem; padding-left: 1.2rem;">
+                        <li><strong>Proxy mode:</strong> Set your provider key via env var (<code>OPENAI_API_KEY</code>, <code>ANTHROPIC_API_KEY</code>, etc.) or forward the <code>Authorization</code> header from your app. InferShield passes it upstream unchanged — it reads the key only to forward the request.</li>
+                        <li><strong>Extension mode:</strong> Keys live in the LLM platform's own browser session. InferShield inspects the outgoing prompt before submission — no keys are touched.</li>
+                        <li><strong>We never log, store, or transmit your API keys</strong> to InferShield infrastructure.</li>
+                    </ul>
+                    <p style="margin-top: 0.75rem;"><a href="https://github.com/InferShield/infershield/blob/main/docs/QUICKSTART.md" class="notice-link">See quickstart guide for key configuration →</a></p>
                 </div>
             </div>
         </section>
