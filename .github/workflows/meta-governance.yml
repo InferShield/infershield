@@ -1,0 +1,95 @@
+name: Meta Governance Gate
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  meta-governance:
+    name: meta-governance
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install backend deps
+        working-directory: backend
+        run: npm ci
+
+      - name: Unit tests (strict)
+        working-directory: backend
+        env:
+          NODE_ENV: test
+        run: npm test
+
+      - name: Lint (non-blocking for legacy)
+        working-directory: backend
+        run: npx eslint . --ext .js --max-warnings 50 || echo "Lint warnings/errors present - continuing"
+        continue-on-error: true
+
+      - name: Dependency audit (report-only for now)
+        working-directory: backend
+        run: npm audit --audit-level=critical || echo "npm audit found vulnerabilities - continuing (report-only)"
+        continue-on-error: true
+
+      - name: Landing page freshness gate
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const pull_number = context.payload.pull_request.number;
+
+            const pr = await github.rest.pulls.get({ owner, repo, pull_number });
+            const labels = (pr.data.labels || []).map(l => (typeof l === 'string' ? l : l.name)).filter(Boolean);
+            const bypass = labels.includes('no-landing-update');
+
+            const files = await github.paginate(github.rest.pulls.listFiles, {
+              owner, repo, pull_number, per_page: 100
+            });
+            const filenames = files.map(f => f.filename);
+
+            const landingPath = 'docs/index.html';
+            const landingTouched = filenames.includes(landingPath);
+
+            // Ignore-only buckets: changes here do not require landing page updates.
+            const IGNORE_PREFIXES = ['docs/', '.github/', 'tests/', 'test/', 'coverage/'];
+            const IGNORE_FILES = [
+              'README.md',
+              'CHANGELOG.md'
+            ];
+
+            const isIgnored = (p) =>
+              IGNORE_FILES.includes(p) ||
+              IGNORE_PREFIXES.some(prefix => p.startsWith(prefix));
+
+            const meaningfulChanges = filenames.filter(p => !isIgnored(p));
+
+            if (meaningfulChanges.length === 0) {
+              core.info('No meaningful (non-doc/test) changes detected; landing page update not required.');
+              return;
+            }
+
+            if (bypass) {
+              core.warning('Label "no-landing-update" present; bypassing landing page freshness gate.');
+              return;
+            }
+
+            if (!landingTouched) {
+              core.setFailed(
+                `This PR changes product code (${meaningfulChanges.length} files) but does not update ${landingPath}. ` +
+                `Either update the landing page or add the label "no-landing-update" with justification.`
+              );
+            } else {
+              core.info(`Landing page updated (${landingPath}).`);
+            }
