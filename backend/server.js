@@ -29,6 +29,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const { detectPII, redactPII } = require('./services/pii-redactor');
+const logger = require('./lib/logger');
 const { optionalAuth } = require('./middleware/auth');
 const usageService = require('./services/usage-service');
 
@@ -414,7 +415,34 @@ app.post('/api/analyze', optionalAuth, async (req, res) => {
   
   const scanDuration = Date.now() - startTime;
   
-  // Step 7: Record usage if user is authenticated
+  // Step 7: Structured detection logging (stdout)
+  try {
+    const threatTypes = [...new Set(all_threats.map(t => t.type))];
+    const patterns = all_threats.map(t => t.pattern).filter(Boolean);
+
+    logger.info({
+      event: 'detection_result',
+      route: '/api/analyze',
+      request_id: req.headers['x-request-id'] || null,
+      agent_id: agent_id || 'unknown-agent',
+      user_id: req.user?.id || null,
+      api_key_id: req.apiKey?.id || null,
+      provider: metadata?.provider || 'unknown',
+      status,
+      risk_score: total_risk,
+      threat_detected,
+      threats_count: all_threats.length,
+      threat_types: threatTypes,
+      patterns,
+      pii_detections: piiThreats.length,
+      policy_threats: policy_threats.length,
+      scan_duration_ms: scanDuration
+    }, 'InferShield detection result');
+  } catch (e) {
+    // Never fail the request due to logging.
+  }
+
+  // Step 8: Record usage if user is authenticated
   if (req.user) {
     try {
       await usageService.recordRequest(
@@ -426,14 +454,14 @@ app.post('/api/analyze', optionalAuth, async (req, res) => {
           pii_redactions: redactedResult.redacted !== prompt ? 1 : 0
         }
       );
-      console.log(`✅ Usage recorded for user ${req.user.id}`);
+      logger.info({ event: 'usage_recorded', user_id: req.user.id, api_key_id: req.apiKey?.id || null }, 'Usage recorded');
     } catch (error) {
-      console.error('Error recording usage:', error);
+      logger.error({ event: 'usage_record_failed', err: error, user_id: req.user.id }, 'Error recording usage');
       // Don't fail the request if usage recording fails
     }
   }
-  
-  // Step 8: Return response
+
+  // Step 9: Return response
   res.json({
     success: true,
     threat_detected,
