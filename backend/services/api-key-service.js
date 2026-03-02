@@ -53,6 +53,10 @@ class ApiKeyService {
 
   /**
    * Validate an API key and return user info
+   * 
+   * SECURITY NOTE: This function runs BEFORE authentication and CANNOT scope by user_id.
+   * Its purpose is to resolve which user owns a key (by looking up key_prefix).
+   * After validation succeeds, the returned user_id is used for tenant scoping in all subsequent queries.
    */
   async validateKey(key) {
     if (!key || !key.startsWith('isk_')) {
@@ -61,7 +65,8 @@ class ApiKeyService {
 
     const key_prefix = key.substring(0, 16);
 
-    // Find potential keys with matching prefix
+    // PRE-AUTH LOOKUP: Find potential keys with matching prefix (cannot scope by user_id yet)
+    // This query is whitelisted in audit-tenant-isolation.js as correct pre-authentication behavior
     const candidates = await db('api_keys')
       .where({ key_prefix, status: 'active' })
       .whereNull('revoked_at')

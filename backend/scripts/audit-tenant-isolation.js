@@ -34,7 +34,9 @@ const SAFE_PATTERNS = [
   { file: 'services/auth-service.js', pattern: /where.*email.*login|register|\.where\(\{\s*email/, reason: 'Auth queries lookup by email (pre-authentication)' },
   
   // API key validation: runs BEFORE authentication to determine which user owns a key
-  { file: 'services/api-key-service.js', pattern: /validateKey|where.*key_prefix/, reason: 'API key validation (pre-authentication lookup)' },
+  // The validateKey() function at line 65 looks up api_keys by key_prefix to determine ownership
+  // This is correct behavior - it CANNOT scope by user_id because resolving user identity is its purpose
+  { file: 'services/api-key-service.js', pattern: /validateKey|where.*key_prefix|Find potential keys/, reason: 'API key validation (pre-authentication lookup)' },
   
   // Seed files: dev/test data population, never runs in production
   { file: 'database/seeds/', reason: 'Seed scripts are dev/test only' },
