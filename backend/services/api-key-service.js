@@ -60,7 +60,9 @@ class ApiKeyService {
    */
   async validateKey(key) {
     if (!key || !key.startsWith('isk_')) {
-      throw new Error('Invalid API key format');
+      const error = new Error('Invalid API key format');
+      error.statusCode = 401;
+      throw error;
     }
 
     const key_prefix = key.substring(0, 16);
@@ -84,7 +86,7 @@ class ApiKeyService {
           .where({ id: candidate.id })
           .update({
             last_used_at: db.fn.now(),
-            first_used_at: db.raw('COALESCE(first_used_at, NOW())')
+            first_used_at: db.raw('COALESCE(first_used_at, CURRENT_TIMESTAMP)')
           })
           .increment('total_requests', 1);
 
@@ -95,7 +97,9 @@ class ApiKeyService {
           .first();
 
         if (!user) {
-          throw new Error('User not found or inactive');
+          const error = new Error('User not found or inactive');
+          error.statusCode = 401;
+          throw error;
         }
 
         return {
@@ -110,7 +114,9 @@ class ApiKeyService {
       }
     }
 
-    throw new Error('Invalid API key');
+    const error = new Error('Invalid API key');
+    error.statusCode = 401;
+    throw error;
   }
 
   /**
