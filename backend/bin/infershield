@@ -1,0 +1,78 @@
+#!/usr/bin/env node
+/**
+ * InferShield CLI
+ * 
+ * Command-line interface for InferShield operations.
+ * 
+ * @module bin/infershield
+ * @related Issue #1 - OAuth Device Flow (IDE Authentication Trigger)
+ */
+
+const { Command } = require('commander');
+const packageJson = require('../package.json');
+
+const program = new Command();
+
+// CLI metadata
+program
+  .name('infershield')
+  .description('InferShield CLI - AI Security Gateway')
+  .version(packageJson.version);
+
+// Register auth commands
+program
+  .command('auth')
+  .description('Authentication commands')
+  .action(() => {
+    console.log('Use: infershield auth login|logout|status|refresh');
+  });
+
+// Auth subcommands
+const authCommand = program.commands.find(cmd => cmd.name() === 'auth');
+
+authCommand
+  .command('login')
+  .description('Authenticate with OAuth Device Flow')
+  .option('-p, --provider <provider>', 'OAuth provider (openai, copilot, etc.)', 'openai')
+  .option('-s, --scope <scope>', 'OAuth scopes (comma-separated)', 'api')
+  .option('--no-browser', 'Skip automatic browser launch')
+  .action(async (options) => {
+    const { login } = require('../cli/commands/auth');
+    await login(options);
+  });
+
+authCommand
+  .command('logout')
+  .description('Revoke authentication tokens')
+  .option('-p, --provider <provider>', 'OAuth provider to logout from')
+  .option('--all', 'Logout from all providers')
+  .action(async (options) => {
+    const { logout } = require('../cli/commands/auth');
+    await logout(options);
+  });
+
+authCommand
+  .command('status')
+  .description('Show authentication status')
+  .option('-j, --json', 'Output as JSON')
+  .action(async (options) => {
+    const { status } = require('../cli/commands/auth');
+    await status(options);
+  });
+
+authCommand
+  .command('refresh')
+  .description('Manually refresh authentication tokens')
+  .option('-p, --provider <provider>', 'OAuth provider to refresh')
+  .action(async (options) => {
+    const { refresh } = require('../cli/commands/auth');
+    await refresh(options);
+  });
+
+// Parse arguments
+program.parse(process.argv);
+
+// Show help if no command provided
+if (!process.argv.slice(2).length) {
+  program.outputHelp();
+}
