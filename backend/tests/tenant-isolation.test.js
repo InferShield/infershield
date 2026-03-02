@@ -66,13 +66,19 @@ describe('Tenant Isolation', () => {
   });
 
   describe('Audit Logs Isolation', () => {
+    beforeEach(async () => {
+      // Clean all audit logs before each audit log test
+      await db('audit_logs').delete();
+    });
+
     it('User A cannot read User B audit logs', async () => {
       // Create audit log for user A
       await db('audit_logs').insert({
         user_id: userA.id,
         policy_type: 'prompt_injection',
         severity: 'high',
-        user: 'userA',
+        prompt: 'Test prompt from user A',
+        response: 'Test response for user A',
         created_at: new Date()
       });
 
@@ -81,32 +87,44 @@ describe('Tenant Isolation', () => {
         user_id: userB.id,
         policy_type: 'pii_detection',
         severity: 'medium',
-        user: 'userB',
+        prompt: 'Test prompt from user B',
+        response: 'Test response for user B',
         created_at: new Date()
       });
 
       // User B queries audit logs (should only see their own)
       const aggregator = new AuditAggregator();
-      const logsQuery = await aggregator.filterLogs(userB.id, {});
+      const logsQuery = aggregator.filterLogs(userB.id, {});
       const logs = await logsQuery.select('*');
 
       // User B should only see their own log
       expect(logs.length).toBeGreaterThan(0);
       logs.forEach(log => {
-        expect(log.user_id).toBe(userB.id);
-        expect(log.user_id).not.toBe(userA.id);
+        expect(String(log.user_id)).toBe(String(userB.id));
+        expect(String(log.user_id)).not.toBe(String(userA.id));
       });
     });
 
     it('tenantQuery automatically scopes audit log queries', async () => {
+      // Create a fresh audit log for user A (beforeEach already cleaned)
+      await db('audit_logs').insert({
+        user_id: userA.id,
+        policy_type: 'test_policy',
+        severity: 'low',
+        prompt: 'Test prompt for tenantQuery',
+        response: 'Test response for tenantQuery',
+        created_at: new Date()
+      });
+      
       const tdb = tenantQuery(db, userA.id);
       
       // Query audit logs using tenant-scoped query
       const logs = await tdb('audit_logs').select('*');
 
       // All returned logs should belong to user A
+      expect(logs.length).toBeGreaterThan(0);
       logs.forEach(log => {
-        expect(log.user_id).toBe(userA.id);
+        expect(String(log.user_id)).toBe(String(userA.id));
       });
     });
   });

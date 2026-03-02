@@ -1,4 +1,4 @@
-const db = require('../database/connection'); // Assuming knex instance
+const db = require('../database/db'); // Knex database instance
 /** 
  * Query Builder for Audit Logs.
  * Supports filtering on date, severity, policy type, and user/role combinations.
@@ -20,7 +20,7 @@ class AuditAggregator {
      * @param {string[]} filters.roles - Specific roles to filter by.
      * @returns 
      */
-    async filterLogs(userId, { start_date, end_date, policy_types, severity_levels, users, roles }) {
+    filterLogs(userId, { start_date, end_date, policy_types, severity_levels, users, roles }) {
         if (!userId) {
             throw new Error('[SECURITY] userId is required for audit log queries');
         }
