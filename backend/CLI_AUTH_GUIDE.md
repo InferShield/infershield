@@ -71,7 +71,13 @@ infershield auth status --json
 infershield auth refresh --provider openai
 ```
 
-*Note: Token refresh logic will be implemented in Issue #4 (Token Management)*
+**Implementation Status:**
+- Command structure and CLI interface: ✅ Implemented (commit 7c2e830)
+- Token refresh API call: ⏳ Stub only (implementation deferred to Issue #4)
+
+The `infershield auth refresh` command is available and accepts the `--provider` flag, but the actual token refresh logic (calling the OAuth provider's token endpoint, validating refresh tokens, and updating stored credentials) is not yet implemented. The command will acknowledge the request but will not perform token refresh until Issue #4 (Token Management) is completed.
+
+*Note: Full token refresh implementation (refresh_token validation, provider API calls, automatic token renewal) will be completed in Issue #4 (Token Management)*
 
 ## Example Session
 
