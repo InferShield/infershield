@@ -558,7 +558,7 @@ app.get('/api/stats', (req, res) => {
 // v0.7: Self-service routes
 console.log('📦 Loading v0.7 routes...');
 
-let authRoutes, keysRoutes, usageRoutes, billingRoutes, webhooksRoutes;
+let authRoutes, keysRoutes, usageRoutes, billingRoutes, webhooksRoutes, proxyRoutes;
 
 try {
   console.log('  ✓ Loading auth routes...');
@@ -576,7 +576,10 @@ try {
   console.log('  ✓ Loading webhooks routes...');
   webhooksRoutes = require('./routes/webhooks');
   
-  console.log('✅ All v0.7 routes loaded successfully!');
+  console.log('  ✓ Loading proxy routes...');
+  proxyRoutes = require('./routes/proxy');
+  
+  console.log('✅ All routes loaded successfully!');
 } catch (error) {
   console.error('💥 FAILED TO LOAD ROUTES:', error);
   console.error('Stack:', error.stack);
@@ -588,6 +591,7 @@ app.use('/api/keys', keysRoutes);
 app.use('/api/usage', usageRoutes);
 app.use('/api/billing', billingRoutes);
 app.use('/api/webhooks', webhooksRoutes);
+app.use('/v1', proxyRoutes); // OpenAI-API compatible proxy endpoints
 
 const PORT = process.env.PORT || 5000;
 
