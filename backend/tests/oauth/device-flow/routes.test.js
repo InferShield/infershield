@@ -404,16 +404,19 @@ describe('OAuth Device Flow Routes', () => {
   });
 
   describe('POST /oauth/device/authorize', () => {
-    it('should return not_implemented (Task 3 - not yet implemented)', async () => {
+    it('should handle authorization callback (Task 9 - now implemented)', async () => {
+      // This endpoint is now fully implemented
+      // Comprehensive tests in authorization-callback.test.js
+      // Here we just verify basic error handling for non-existent user code
       const response = await request(app)
         .post('/oauth/device/authorize')
         .send({
-          user_code: 'ABCD-1234',
+          user_code: 'NONEXISTENT-CODE',
           authorization_code: 'auth_code_123'
         });
 
-      expect(response.status).toBe(501);
-      expect(response.body.error).toBe('not_implemented');
+      expect(response.status).toBe(404);
+      expect(response.body.error).toBe('invalid_user_code');
     });
   });
 });
