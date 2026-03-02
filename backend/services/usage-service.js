@@ -45,8 +45,9 @@ class UsageService {
     
     // Also update API key usage counter (if apiKeyId provided)
     if (apiKeyId) {
+      // TENANT-SCOPED: ensures user isolation when updating API key stats
       await db('api_keys')
-        .where({ id: apiKeyId })
+        .where({ id: apiKeyId, user_id: userId })
         .increment('total_requests', 1)
         .update({
           last_used_at: db.fn.now(),

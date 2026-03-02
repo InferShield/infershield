@@ -2,12 +2,15 @@ const db = require('../database/connection'); // Assuming knex instance
 /** 
  * Query Builder for Audit Logs.
  * Supports filtering on date, severity, policy type, and user/role combinations.
+ * 
+ * SECURITY: All methods require userId parameter for tenant isolation.
  */
 class AuditAggregator {
 
     /**
      * Filters audit logs based on the provided parameters.
      * 
+     * @param {number} userId - User ID for tenant scoping (REQUIRED)
      * @param {Object} filters - Filtering criteria.
      * @param {Date} filters.start_date - Filter logs after this date.
      * @param {Date} filters.end_date - Filter logs before this date.
@@ -17,8 +20,13 @@ class AuditAggregator {
      * @param {string[]} filters.roles - Specific roles to filter by.
      * @returns 
      */
-    async filterLogs({ start_date, end_date, policy_types, severity_levels, users, roles }) {
-        const query = db('audit_logs');
+    async filterLogs(userId, { start_date, end_date, policy_types, severity_levels, users, roles }) {
+        if (!userId) {
+            throw new Error('[SECURITY] userId is required for audit log queries');
+        }
+
+        // TENANT-SCOPED: ensures user isolation
+        const query = db('audit_logs').where('user_id', userId);
         
         // Apply date range filter
         if (start_date) query.where('created_at', '>=', start_date);
@@ -48,9 +56,16 @@ class AuditAggregator {
 
     /**
      * Generates a summary of audit logs statistics.
+     * 
+     * @param {number} userId - User ID for tenant scoping (REQUIRED)
+     * @param {Object} filters - Filtering criteria
      */
-    async generateStatistics(filters) {
-        const filteredLogs = await this.filterLogs(filters);
+    async generateStatistics(userId, filters) {
+        if (!userId) {
+            throw new Error('[SECURITY] userId is required for audit statistics');
+        }
+
+        const filteredLogs = await this.filterLogs(userId, filters);
 
         // Compute total events grouped by policy type
         const totalByPolicy = await filteredLogs

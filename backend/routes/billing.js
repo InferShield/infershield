@@ -44,7 +44,7 @@ router.post('/checkout', async (req, res) => {
         
         stripe_customer_id = customer.id;
         
-        // Update user record with Stripe customer ID
+        // TENANT-SCOPED: Update user record with Stripe customer ID (scoped to authenticated user)
         await db('users')
           .where({ id: req.user.id })
           .update({ stripe_customer_id });

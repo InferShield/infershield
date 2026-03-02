@@ -521,6 +521,8 @@ app.put('/api/policies/:id', (req, res) => {
 });
 
 // Delete policy
+// TODO: SECURITY - When migrating to database-backed policies, add authentication middleware
+// and scope deletion to user_id: db('policies').where({ id: policyId, user_id: req.user.id }).delete()
 app.delete('/api/policies/:id', (req, res) => {
   const id = parseInt(req.params.id);
   const index = policies.findIndex(p => p.id === id);

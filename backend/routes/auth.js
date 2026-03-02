@@ -70,6 +70,7 @@ router.put('/me', authenticateJWT, async (req, res) => {
   try {
     const { name, company } = req.body;
     
+    // TENANT-SCOPED: req.userId comes from JWT, ensures user can only update their own profile
     const user = await authService.updateUser(req.userId, { name, company });
 
     res.json({

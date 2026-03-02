@@ -156,8 +156,13 @@ class AuthService {
 
   /**
    * Get user by ID
+   * 
+   * SECURITY NOTE: This function does not enforce that userId matches the authenticated user.
+   * Callers MUST verify userId === req.user.id before calling this function to prevent
+   * unauthorized access to other users' data.
    */
   async getUserById(userId) {
+    // TENANT-SCOPED: Query is scoped to specific user_id
     const user = await db('users')
       .where({ id: userId, status: 'active' })
       .whereNull('deleted_at')
@@ -175,6 +180,10 @@ class AuthService {
 
   /**
    * Update user
+   * 
+   * SECURITY NOTE: This function does not enforce that userId matches the authenticated user.
+   * Callers MUST verify userId === req.user.id before calling this function to prevent
+   * unauthorized modification of other users' data.
    */
   async updateUser(userId, updates) {
     const allowed = ['name', 'company'];
@@ -185,6 +194,7 @@ class AuthService {
         return obj;
       }, {});
 
+    // TENANT-SCOPED: Update is scoped to specific user_id
     const [user] = await db('users')
       .where({ id: userId })
       .update({ ...filtered, updated_at: db.fn.now() })
