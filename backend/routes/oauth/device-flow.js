@@ -218,25 +218,153 @@ router.post('/device/token', async (req, res) => {
 /**
  * POST /oauth/device/authorize
  * 
- * User authorization callback (after browser authentication)
+ * Authorization callback endpoint - processes OAuth provider authorization results
  * 
- * Request body:
+ * Called after user completes authorization in browser. Provider redirects here
+ * with either success (authorization_code) or failure (error).
+ * 
+ * Success flow:
+ * 1. Validate user_code exists and is not expired
+ * 2. Store authorization_code in device code data
+ * 3. Update device code state to AUTHORIZED
+ * 4. Client polling will now succeed and receive tokens
+ * 
+ * Failure flow:
+ * 1. Validate user_code
+ * 2. Update device code state to DENIED
+ * 3. Client polling will receive access_denied error
+ * 
+ * Request body (success):
  * {
  *   "user_code": "string",
- *   "authorization_code": "string"
+ *   "authorization_code": "string",
+ *   "state": "string"  // Optional state parameter
+ * }
+ * 
+ * Request body (error):
+ * {
+ *   "user_code": "string",
+ *   "error": "string",
+ *   "error_description": "string"  // Optional
  * }
  * 
  * Response (200):
  * {
- *   "success": true
+ *   "success": true,
+ *   "message": "Authorization processed successfully"
  * }
+ * 
+ * Response (400 - validation error):
+ * {
+ *   "error": "invalid_request",
+ *   "error_description": "..."
+ * }
+ * 
+ * Response (404 - user code not found):
+ * {
+ *   "error": "invalid_user_code",
+ *   "error_description": "User code not found or expired"
+ * }
+ * 
+ * @related Issue #1, Task 9 - Authorization callback handler
  */
 router.post('/device/authorize', async (req, res) => {
   try {
-    // TODO: Implement authorization callback (Task 3)
-    res.status(501).json({ error: 'not_implemented' });
+    const { user_code, authorization_code, error, error_description, state } = req.body;
+
+    // Validate user_code is provided
+    if (!user_code) {
+      return res.status(400).json({
+        error: 'invalid_request',
+        error_description: 'user_code is required'
+      });
+    }
+
+    // Retrieve device code by user code
+    const deviceData = deviceCodeManager.getByUserCode(user_code);
+
+    if (!deviceData) {
+      // User code not found or expired
+      return res.status(404).json({
+        error: 'invalid_user_code',
+        error_description: 'User code not found or expired'
+      });
+    }
+
+    const deviceCode = deviceData.device_code;
+
+    // Check if device code is in a valid state for authorization
+    if (deviceData.state !== DeviceCodeState.PENDING) {
+      return res.status(400).json({
+        error: 'invalid_state',
+        error_description: `Device code is in ${deviceData.state} state, expected pending`
+      });
+    }
+
+    // Handle authorization errors (user denied, provider error, etc.)
+    if (error) {
+      // User denied or provider returned error
+      const deniedReason = error_description || error;
+      
+      deviceCodeManager.updateState(
+        deviceCode,
+        DeviceCodeState.DENIED,
+        {
+          denied_reason: deniedReason,
+          denied_at: Date.now()
+        }
+      );
+
+      console.log(`[Device Authorization] User denied authorization for device code ${deviceCode}: ${deniedReason}`);
+
+      return res.status(200).json({
+        success: true,
+        message: 'Authorization denied',
+        reason: deniedReason
+      });
+    }
+
+    // Handle authorization success
+    if (!authorization_code) {
+      return res.status(400).json({
+        error: 'invalid_request',
+        error_description: 'authorization_code is required when error is not present'
+      });
+    }
+
+    // Store authorization code and update state to AUTHORIZED
+    const updateSuccess = deviceCodeManager.updateState(
+      deviceCode,
+      DeviceCodeState.AUTHORIZED,
+      {
+        authorization_code: authorization_code,
+        authorized_at: Date.now(),
+        state_param: state // Store optional state parameter
+      }
+    );
+
+    if (!updateSuccess) {
+      // Shouldn't happen since we just retrieved it, but handle race condition
+      return res.status(500).json({
+        error: 'server_error',
+        error_description: 'Failed to update device code state'
+      });
+    }
+
+    console.log(`[Device Authorization] Device code ${deviceCode} authorized successfully`);
+
+    // Return success response
+    return res.status(200).json({
+      success: true,
+      message: 'Authorization processed successfully'
+    });
+
   } catch (error) {
-    res.status(500).json({ error: 'server_error', message: error.message });
+    console.error('[Device Authorization Endpoint] Error:', error);
+    res.status(500).json({
+      error: 'server_error',
+      error_description: error.message
+    });
   }
 });
 
