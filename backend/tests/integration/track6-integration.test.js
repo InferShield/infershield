@@ -13,10 +13,7 @@
 const request = require('supertest');
 const app = require('../../app');
 const db = require('../../database/db');
-const apiKeyService = require('../../services/api-key-service');
-const piiRedactor = require('../../services/pii-redactor');
-const injectionDetector = require('../../services/injectionDetector');
-const policyEngine = require('../../services/policyEngine');
+const { piiRedactor, injectionDetector, policyEngine, apiKeyService } = require('./test-adapters');
 
 // Test configuration
 const JWT_SECRET = process.env.JWT_SECRET || 'test_secret_key';

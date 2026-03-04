@@ -3,7 +3,7 @@ const contentAnalyzer = require('../../contentAnalyzer');
 class CrossStepEscalationPolicy {
   async evaluate(request, context) {
     const { sessionHistory } = context;
-    if (!sessionHistory || sessionHistory.length < 2) {
+    if (!sessionHistory || sessionHistory.length < 1) {
       return { allow: true, riskScore: 0, violations: [] };
     }
 
@@ -56,7 +56,7 @@ class CrossStepEscalationPolicy {
     }
 
     if (hasDataRead && isExternalCall) {
-      return 80;  // Increased from 75 to meet blocking threshold
+      return 85;  // Ensures blocking even if other policies reduce score
     }
 
     return 0;

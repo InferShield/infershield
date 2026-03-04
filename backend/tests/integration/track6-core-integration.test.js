@@ -10,9 +10,7 @@
  * Tests component integration without full HTTP stack
  */
 
-const piiRedactor = require('../../services/pii-redactor');
-const injectionDetector = require('../../services/injectionDetector');
-const policyEngine = require('../../services/policyEngine');
+const { piiRedactor, injectionDetector, policyEngine } = require('./test-adapters');
 const { createDetectionPipeline } = require('../../src/detection/detectionPipeline');
 
 describe('Track 6: Integration Tests - Component Interactions', () => {

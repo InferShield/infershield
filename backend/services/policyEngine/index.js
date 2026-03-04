@@ -27,6 +27,11 @@ class PolicyEngine {
       }
     }
 
+    // Block if aggregate risk score exceeds threshold, even if individual policies allow
+    if (riskScore >= 80) {
+      allow = false;
+    }
+
     return {
       allow,
       riskScore,

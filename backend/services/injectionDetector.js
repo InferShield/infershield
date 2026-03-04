@@ -58,29 +58,33 @@ function analyzePrompt(prompt) {
         { regex: /(show|display|print)\s*(your\s*)?(instruction|rule|prompt|configuration)s?/, weight: 55, category: 'info-disclosure' },
         { regex: /(dump|expose|leak)\s*(memory|data|secret|configuration)/, weight: 50, category: 'info-disclosure' },
         
-        // CATEGORY 4: Role Manipulation (HIGH - 55 points)
+        // CATEGORY 4: Policy/Control Bypass (HIGH - 55 points)
+        { regex: /(ignore|bypass|disable|turn\s*off|deactivate|skip|override)\s*(the\s*)?(pii|redaction|privacy|security|policy|policies|protection|control|filtering|validation|check)s?/, weight: 55, category: 'policy-bypass' },
+        { regex: /(without|skip|no)\s*(pii|redaction|privacy|security|filtering|validation)\s*(policy|policies|protection|control)s?/, weight: 50, category: 'policy-bypass' },
+        
+        // CATEGORY 5: Role Manipulation (HIGH - 55 points)
         { regex: /you\s*are\s*(now\s*)?(a\s*)?dan/, weight: 60, category: 'role-manipulation' },
         { regex: /pretend\s*(you\s*)?(are|have)\s*(no\s*|not\s*)?(bound|limit|restriction)/, weight: 55, category: 'role-manipulation' },
         { regex: /you\s*are\s*(now\s*)?(a\s*)?(malicious|evil|unethical|unrestricted)/, weight: 60, category: 'role-manipulation' },
         { regex: /i\s*am\s*(your\s*)?(system\s*)?(administrator|admin|operator)/, weight: 50, category: 'role-manipulation' },
         
-        // CATEGORY 5: SQL Injection (MEDIUM - 40 points, need combination)
+        // CATEGORY 6: SQL Injection (MEDIUM - 40 points, need combination)
         { regex: /drop\s*table/, weight: 40, category: 'sql-injection' },
         { regex: /union\s*select/, weight: 40, category: 'sql-injection' },
         { regex: /;\s*(delete|update|insert)\s+/, weight: 40, category: 'sql-injection' },
         
-        // CATEGORY 6: XSS/Code Injection (MEDIUM - 40 points)
+        // CATEGORY 7: XSS/Code Injection (MEDIUM - 40 points)
         { regex: /<script[^>]*>/, weight: 40, category: 'xss' },
         { regex: /<iframe[^>]*>/, weight: 40, category: 'xss' },
         { regex: /javascript:/, weight: 35, category: 'xss' },
         { regex: /<\s*\/?\s*system\s*>/, weight: 55, category: 'xss' },  // Higher weight - <system> is prompt injection specific
         
-        // CATEGORY 7: Jailbreak Attempts (HIGH - 60 points)
+        // CATEGORY 8: Jailbreak Attempts (HIGH - 60 points)
         { regex: /do\s*anything\s*now/, weight: 60, category: 'jailbreak' },
         { regex: /(bypass|circumvent|override)\s*(all\s*)?(restriction|limit|rule|policy|constraint)s?/, weight: 55, category: 'jailbreak' },
         { regex: /act\s*as\s*(if|though)\s*you\s*have\s*no\s*(restriction|limit|rule)/, weight: 55, category: 'jailbreak' },
         
-        // CATEGORY 8: Context Confusion (MEDIUM - 40 points)
+        // CATEGORY 9: Context Confusion (MEDIUM - 40 points)
         { regex: /\|\|\|\s*end\s*of\s*prompt\s*\|\|\|/, weight: 40, category: 'context-confusion' },
         { regex: /"""\s*(ignore|forget|disregard)/, weight: 35, category: 'context-confusion' },
         
