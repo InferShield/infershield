@@ -32,8 +32,12 @@ const { detectPII, redactPII } = require('./services/pii-redactor');
 const logger = require('./lib/logger');
 const { optionalAuth } = require('./middleware/auth');
 const usageService = require('./services/usage-service');
+const metrics = require('./monitoring/metrics');
 
 const app = express();
+
+// Prometheus metrics middleware (track all HTTP requests)
+app.use(metrics.trackHttpRequest);
 
 // In-memory data stores
 const logs = [];
@@ -190,6 +194,18 @@ app.get('/', (req, res) => {
 // Health check endpoint for Railway
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
+});
+
+// Prometheus metrics endpoint
+app.get('/metrics', async (req, res) => {
+  try {
+    res.set('Content-Type', metrics.getContentType());
+    const metricsData = await metrics.getMetrics();
+    res.send(metricsData);
+  } catch (error) {
+    console.error('❌ Error exporting metrics:', error);
+    res.status(500).send('Error exporting metrics');
+  }
 });
 
 // Helper function to decode and normalize input
@@ -416,6 +432,15 @@ app.post('/api/analyze', optionalAuth, async (req, res) => {
   }
   
   const scanDuration = Date.now() - startTime;
+  
+  // Track metrics for Prometheus monitoring
+  metrics.trackRiskScore(total_risk);
+  if (status === 'blocked') {
+    const policyNames = policy_threats.map(t => t.pattern).join(', ') || 'unknown';
+    metrics.trackBlockedRequest(policyNames, 'security_policy');
+  } else {
+    metrics.trackAllowedRequest();
+  }
   
   // Step 7: Structured detection logging (stdout)
   try {
