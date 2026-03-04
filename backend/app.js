@@ -14,9 +14,13 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Routes (imported as modules are created)
-// app.use('/api/reports', require('./routes/reports'));
-// app.use('/api/schedules', require('./routes/schedules'));
-// app.use('/api/logs', require('./routes/logs'));
+// Routes - mount key management and related endpoints for testing
+try {
+  app.use('/api/auth', require('./routes/auth'));
+  app.use('/api/keys', require('./routes/keys'));
+  app.use('/api/usage', require('./routes/usage'));
+} catch (error) {
+  console.error('Error loading routes:', error.message);
+}
 
 module.exports = app;

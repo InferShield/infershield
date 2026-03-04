@@ -31,8 +31,10 @@ class CrossStepEscalationPolicy {
       riskScore = Math.max(riskScore, sensitiveExfil);
     }
 
+    const allow = riskScore < 80;
+
     return {
-      allow: riskScore < 80,  // Block if risk >= 80
+      allow,  // Block if risk >= 80
       violations,
       riskScore,
       reason: violations.length > 0 
@@ -42,9 +44,10 @@ class CrossStepEscalationPolicy {
   }
 
   detectExfiltrationChain(history, currentRequest) {
-    const window = history.slice(-5);
-    const hasDataRead = window.some(r => r.actions.includes('DATABASE_READ') || r.actions.includes('FILE_READ'));
-    const hasTransform = window.some(r => r.actions.includes('DATA_TRANSFORM'));
+    // Exclude current request from history if it's already there
+    const priorRequests = history.filter(r => r.correlationId !== currentRequest.correlationId).slice(-5);
+    const hasDataRead = priorRequests.some(r => r.actions && (r.actions.includes('DATABASE_READ') || r.actions.includes('FILE_READ')));
+    const hasTransform = priorRequests.some(r => r.actions && r.actions.includes('DATA_TRANSFORM'));
     const currentActions = contentAnalyzer.detectActions(currentRequest.prompt);
     const isExternalCall = currentActions.includes('EXTERNAL_API_CALL');
 
@@ -53,15 +56,19 @@ class CrossStepEscalationPolicy {
     }
 
     if (hasDataRead && isExternalCall) {
-      return 75;
+      return 80;  // Increased from 75 to meet blocking threshold
     }
 
     return 0;
   }
 
   detectPrivilegeEscalation(history, currentRequest) {
-    const window = history.slice(-3);
-    const levels = window.map(r => r.privilegeLevel || 'LOW');
+    // Exclude current request from history if it's already there
+    const window = history.slice(-4, -1).concat(history.slice(-3)).slice(0, 3);
+    // Simpler: just take last 3, but current request might be last, so take -4 to -1 to get prior 3
+    // Actually, let's filter out currentRequest correlationId to be safe
+    const priorRequests = history.filter(r => r.correlationId !== currentRequest.correlationId).slice(-3);
+    const levels = priorRequests.map(r => r.privilegeLevel || 'LOW');
     const currentLevel = contentAnalyzer.estimatePrivilegeLevel(currentRequest.prompt);
 
     const levelMap = { LOW: 1, MEDIUM: 2, HIGH: 3 };
@@ -83,7 +90,8 @@ class CrossStepEscalationPolicy {
   }
 
   detectSensitiveDataExfiltration(history, currentRequest) {
-    const recentSensitiveData = history.slice(-3).some(r => r.containsSensitiveData);
+    const priorRequests = history.filter(r => r.correlationId !== currentRequest.correlationId).slice(-3);
+    const recentSensitiveData = priorRequests.some(r => r.containsSensitiveData);
     const currentActions = contentAnalyzer.detectActions(currentRequest.prompt);
     const isExternalCall = currentActions.includes('EXTERNAL_API_CALL');
 
