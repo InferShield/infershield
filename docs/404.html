@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting... | InferShield</title>
+    <script>
+        // Redirect docs.infershield.io/* → infershield.io/*
+        // This handles the case where docs.infershield.io CNAME points to infershield.github.io
+        // but GitHub Pages only serves the infershield.io custom domain.
+        var path = window.location.pathname;
+        var query = window.location.search;
+        var target;
+        if (path === '/' || path === '') {
+            target = 'https://infershield.io/QUICKSTART';
+        } else {
+            target = 'https://infershield.io' + path + query;
+        }
+        window.location.replace(target);
+    </script>
+    <style>
+        body { font-family: monospace; background: #0a0a0a; color: #00ff88; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+        .msg { text-align: center; }
+        a { color: #00ff88; }
+    </style>
+</head>
+<body>
+    <div class="msg">
+        <p>Redirecting to InferShield docs...</p>
+        <p><a href="https://infershield.io/QUICKSTART">Click here if not redirected</a></p>
+    </div>
+</body>
+</html>
