@@ -1,0 +1,222 @@
+/* Reset and base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Header */
+header {
+    border-bottom: 1px solid #e1e4e8;
+    padding-bottom: 20px;
+    margin-bottom: 40px;
+}
+
+header h1 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+header h1 a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+nav a {
+    margin-right: 20px;
+    color: #0366d6;
+    text-decoration: none;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* Main content */
+main {
+    margin-bottom: 60px;
+}
+
+/* Blog post */
+.blog-post {
+    line-height: 1.8;
+}
+
+.post-header {
+    margin-bottom: 40px;
+}
+
+.post-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.meta {
+    color: #586069;
+    font-size: 0.9rem;
+}
+
+.blog-post h2 {
+    font-size: 1.8rem;
+    margin-top: 40px;
+    margin-bottom: 15px;
+}
+
+.blog-post h3 {
+    font-size: 1.4rem;
+    margin-top: 30px;
+    margin-bottom: 10px;
+}
+
+.blog-post h4 {
+    font-size: 1.2rem;
+    margin-top: 25px;
+    margin-bottom: 10px;
+}
+
+.blog-post p {
+    margin-bottom: 20px;
+}
+
+.blog-post code {
+    background: #f6f8fa;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 0.9em;
+}
+
+.blog-post pre {
+    background: #f6f8fa;
+    padding: 16px;
+    overflow-x: auto;
+    border-radius: 6px;
+    margin-bottom: 20px;
+}
+
+.blog-post pre code {
+    background: none;
+    padding: 0;
+}
+
+.blog-post ul, .blog-post ol {
+    margin-left: 30px;
+    margin-bottom: 20px;
+}
+
+.blog-post li {
+    margin-bottom: 8px;
+}
+
+.blog-post blockquote {
+    border-left: 4px solid #dfe2e5;
+    padding-left: 20px;
+    color: #586069;
+    margin-bottom: 20px;
+}
+
+.blog-post strong {
+    font-weight: 600;
+}
+
+.blog-post em {
+    font-style: italic;
+}
+
+.blog-post hr {
+    border: 0;
+    border-top: 1px solid #e1e4e8;
+    margin: 40px 0;
+}
+
+.blog-post a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.blog-post a:hover {
+    text-decoration: underline;
+}
+
+/* Post footer */
+.post-footer {
+    margin-top: 60px;
+    padding-top: 40px;
+    border-top: 1px solid #e1e4e8;
+}
+
+.post-footer p {
+    margin-bottom: 10px;
+}
+
+/* Homepage post previews */
+.post-preview {
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid #e1e4e8;
+}
+
+.post-preview h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.post-preview h2 a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.post-preview h2 a:hover {
+    text-decoration: underline;
+}
+
+.read-more {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+.read-more:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+footer {
+    border-top: 1px solid #e1e4e8;
+    padding-top: 20px;
+    text-align: center;
+    color: #586069;
+    font-size: 0.9rem;
+}
+
+footer a {
+    color: #0366d6;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
+    
+    .post-header h1 {
+        font-size: 2rem;
+    }
+    
+    .blog-post h2 {
+        font-size: 1.5rem;
+    }
+}

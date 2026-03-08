@@ -10,5 +10,6 @@ module.exports = {
   },
   transformIgnorePatterns: [
     'node_modules/(?!(module-that-needs-transform)/)'
-  ]
+  ],
+  setupFiles: ['<rootDir>/tests/setup.js']
 };

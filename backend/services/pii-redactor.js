@@ -5,11 +5,57 @@ const crypto = require('crypto');
  * Detects and redacts sensitive data before sending to LLMs
  */
 
+/**
+ * Normalize input text to handle common PII obfuscation techniques
+ * @param {string} text - Raw input text
+ * @returns {Object} - { normalized, original, mapping }
+ */
+function normalizePIIInput(text) {
+  if (!text || typeof text !== 'string') {
+    return { normalized: text, original: text, mapping: [] };
+  }
+
+  let normalized = text;
+  const mapping = [];
+
+  // De-obfuscation rules
+  const rules = [
+    // Email obfuscation
+    { pattern: /\[dot\]/gi, replacement: '.', type: 'email-deobfuscation' },
+    { pattern: /\[at\]/gi, replacement: '@', type: 'email-deobfuscation' },
+    { pattern: /\(dot\)/gi, replacement: '.', type: 'email-deobfuscation' },
+    { pattern: /\(at\)/gi, replacement: '@', type: 'email-deobfuscation' },
+  ];
+
+  rules.forEach(rule => {
+    if (rule.pattern.test(normalized)) {
+      normalized = normalized.replace(rule.pattern, rule.replacement);
+      mapping.push(rule.type);
+    }
+  });
+
+  // Unicode normalization
+  try {
+    const unicodeNormalized = normalized
+      .normalize('NFKD')  // Decompose combined characters
+      .replace(/[\u0300-\u036f]/g, '');  // Remove diacritics
+    
+    if (unicodeNormalized !== normalized) {
+      mapping.push('unicode-normalization');
+      normalized = unicodeNormalized;
+    }
+  } catch (e) {
+    // Unicode normalization not supported, continue without
+  }
+
+  return { normalized, original: text, mapping };
+}
+
 // PII detection patterns
 const PII_PATTERNS = {
-  // US Social Security Numbers
+  // US Social Security Numbers - support flexible formatting
   ssn: {
-    pattern: /\b\d{3}-\d{2}-\d{4}\b|\b\d{9}\b/g,
+    pattern: /\b\d{3}[\s-]?\d{2}[\s-]?\d{4}\b/g,
     name: 'SSN',
     severity: 'critical',
     category: 'government_id'
@@ -171,13 +217,17 @@ function detectPII(text, options = {}) {
     validateMatches = true
   } = options;
   
+  // Normalize input for detection
+  const { normalized, original, mapping } = normalizePIIInput(text);
+  
   const detectedPII = [];
   
   for (const patternKey of patterns) {
     const piiDef = PII_PATTERNS[patternKey];
     if (!piiDef) continue;
     
-    const matches = text.matchAll(piiDef.pattern);
+    // Use normalized text for detection
+    const matches = normalized.matchAll(piiDef.pattern);
     
     for (const match of matches) {
       const value = match[0];
@@ -194,7 +244,8 @@ function detectPII(text, options = {}) {
         position: match.index,
         length: value.length,
         severity: piiDef.severity,
-        category: piiDef.category
+        category: piiDef.category,
+        normalizationApplied: mapping.length > 0
       });
     }
   }
@@ -236,9 +287,48 @@ function redactPII(text, options = {}) {
     tokenKey = process.env.PII_TOKEN_KEY || 'default-key'
   } = options;
   
-  const detected = detectPII(text, { patterns });
+  let redacted = text;
+  const allDetections = [];
   
-  if (detected.length === 0) {
+  // FIRST: Handle obfuscated email patterns in original text (before normalization)
+  // Pattern matches: word [dot] word [at] word [dot] word
+  const obfuscatedEmailPattern = /\b[\w.%+-]+(?:\s*(?:\[dot\]|\(dot\))\s*[\w.%+-]+)*\s*(?:\[at\]|\(at\))\s*[\w.-]+\s*(?:\[dot\]|\(dot\))\s*\w{2,}\b/gi;
+  const obfuscatedMatches = [];
+  let obfMatch;
+  while ((obfMatch = obfuscatedEmailPattern.exec(text)) !== null) {
+    obfuscatedMatches.push({
+      value: obfMatch[0],
+      start: obfMatch.index,
+      end: obfMatch.index + obfMatch[0].length
+    });
+  }
+  
+  // Redact obfuscated emails
+  let offset = 0;
+  for (const match of obfuscatedMatches) {
+    const replacement = '[EMAIL_REDACTED]';
+    const actualStart = match.start + offset;
+    redacted = redacted.substring(0, actualStart) + replacement + redacted.substring(actualStart + match.value.length);
+    offset += replacement.length - match.value.length;
+    
+    allDetections.push({
+      type: 'emailObfuscated',
+      name: 'Email',
+      value: match.value,
+      position: match.start,
+      length: match.value.length,
+      severity: 'high',
+      category: 'contact'
+    });
+  }
+  
+  // SECOND: Normalize and detect standard PII patterns
+  const { normalized, original, mapping } = normalizePIIInput(redacted);
+  const detected = detectPII(redacted, { patterns, validateMatches: false });
+  
+  allDetections.push(...detected);
+  
+  if (detected.length === 0 && obfuscatedMatches.length === 0) {
     return {
       redacted: text,
       original: text,
@@ -247,9 +337,8 @@ function redactPII(text, options = {}) {
     };
   }
   
-  let redacted = text;
   const tokens = {};
-  let offset = 0;
+  offset = 0;
   
   for (const pii of detected) {
     const { type, value, position, length } = pii;
@@ -296,9 +385,10 @@ function redactPII(text, options = {}) {
   return {
     redacted,
     original: text,
-    detections: detected,
+    detections: allDetections,
     tokens: Object.keys(tokens).length > 0 ? tokens : undefined,
-    changed: true
+    changed: allDetections.length > 0,
+    normalizationApplied: mapping
   };
 }
 

@@ -1,18 +1,39 @@
 const contentAnalyzer = require('../../contentAnalyzer');
 
 class SingleRequestPolicy {
-  async evaluate(request) {
+  async evaluate(request, context) {
     const prompt = request.prompt || '';
     const actions = contentAnalyzer.detectActions(prompt);
+    const { sessionHistory } = context;
 
     const violations = [];
     let riskScore = 0;
 
-    if (actions.includes('EXTERNAL_API_CALL')) {
+    const isExternalCall = actions.includes('EXTERNAL_API_CALL');
+
+    if (isExternalCall) {
       const externalCallPattern = /http(s)?:\/\/\S+/i;
       if (externalCallPattern.test(prompt)) {
         violations.push('EXTERNAL_API_CALL_PATTERN');
         riskScore += 40;
+      }
+
+      // Check if recent history contains data access
+      if (sessionHistory && sessionHistory.length > 0) {
+        const recentRequests = sessionHistory.slice(-5);
+        const hasRecentDataAccess = recentRequests.some(r => 
+          r.actions && (
+            r.actions.includes('DATABASE_READ') || 
+            r.actions.includes('FILE_READ') ||
+            r.privilegeLevel === 'MEDIUM' ||
+            r.privilegeLevel === 'HIGH'
+          )
+        );
+
+        if (hasRecentDataAccess) {
+          riskScore += 50;  // Contributes to aggregate risk
+          violations.push('EXTERNAL_API_CALL_AFTER_DATA_ACCESS');
+        }
       }
     }
 
@@ -21,7 +42,7 @@ class SingleRequestPolicy {
       riskScore += 60;
     }
 
-    const allow = riskScore < 80;
+    const allow = true;  // SingleRequestPolicy doesn't block independently, contributes to aggregate
 
     return {
       allow,

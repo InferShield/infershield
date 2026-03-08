@@ -144,6 +144,14 @@ class AuthService {
   }
 
   /**
+   * Generate JWT token
+   * Used by test infrastructure to create authenticated requests
+   */
+  generateToken(payload) {
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  }
+
+  /**
    * Verify JWT token
    */
   verifyToken(token) {
