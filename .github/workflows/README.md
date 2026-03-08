@@ -482,3 +482,4 @@ GitHub Container Registry (GHCR):
 - [Docker Build Push Action](https://github.com/docker/build-push-action)
 - [Helm deployment](https://helm.sh/docs/topics/charts/)
 - [Kubernetes deployment strategies](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/)
+# CI label trigger test
