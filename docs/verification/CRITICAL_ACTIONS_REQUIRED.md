@@ -212,7 +212,7 @@ These are non-blocking but should be fixed before launch:
 
 **Current status:** ⚠️ CONDITIONAL APPROVAL
 
-**Recommendation:** Complete 3 critical items before deploying docs.infershield.dev
+**Recommendation:** Complete 3 critical items before deploying docs.infershield.io
 
 **Without these updates:**
 - ❌ Violation of CEO Windows disclosure requirement

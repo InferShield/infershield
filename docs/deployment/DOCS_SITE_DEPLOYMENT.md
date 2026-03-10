@@ -1,7 +1,7 @@
-# Documentation Site Deployment - docs.infershield.dev
+# Documentation Site Deployment - docs.infershield.io
 
 **Product ID:** prod_infershield_001  
-**Site URL:** https://docs.infershield.dev  
+**Site URL:** https://docs.infershield.io  
 **Source:** `/docs` folder in infershield repository  
 **Deployment:** GitHub Pages  
 **Configured:** 2026-03-03 16:52 UTC  
@@ -14,7 +14,7 @@
 **Repository:** github.com/InferShield/infershield  
 **Branch:** main  
 **Source Path:** /docs  
-**Custom Domain:** docs.infershield.dev  
+**Custom Domain:** docs.infershield.io  
 **HTTPS:** Pending (will be enabled after DNS propagation)
 
 **DNS Configuration:**
@@ -26,7 +26,7 @@
 **GitHub Pages Settings:**
 - Build type: Legacy (Jekyll/static)
 - Source: Branch `main`, folder `/docs`
-- Custom domain: docs.infershield.dev
+- Custom domain: docs.infershield.io
 - HTTPS enforced: Pending DNS propagation
 - Build status: ✅ In progress (triggered 2026-03-03 16:52 UTC)
 
@@ -37,7 +37,7 @@
 **Initial Setup (2026-03-03):**
 1. ✅ Verified repository structure (`/docs` folder exists)
 2. ✅ GitHub Pages already configured (previously: infershield.io)
-3. ✅ Updated CNAME file: docs.infershield.dev
+3. ✅ Updated CNAME file: docs.infershield.io
 4. ✅ Committed and pushed CNAME change (commit: f87c5f6)
 5. ✅ Updated GitHub Pages custom domain via API
 6. ✅ Triggered GitHub Pages rebuild
@@ -50,7 +50,7 @@ Any changes pushed to `/docs` folder in `main` branch automatically trigger rede
 1. Edit files in `/docs`
 2. Commit and push to `main`
 3. GitHub Pages automatically rebuilds (2-5 minutes)
-4. Changes live at docs.infershield.dev
+4. Changes live at docs.infershield.io
 
 ---
 
@@ -59,14 +59,14 @@ Any changes pushed to `/docs` folder in `main` branch automatically trigger rede
 **See:** [DNS_CONFIGURATION.md](./DNS_CONFIGURATION.md)
 
 **Required Action:**
-Add DNS CNAME record pointing `docs.infershield.dev` to `infershield.github.io`
+Add DNS CNAME record pointing `docs.infershield.io` to `infershield.github.io`
 
 **Verification:**
 ```bash
-dig docs.infershield.dev
+dig docs.infershield.io
 # Expected: CNAME record → infershield.github.io
 
-curl -I https://docs.infershield.dev/
+curl -I https://docs.infershield.io/
 # Expected: HTTP 200 OK (after DNS propagates)
 ```
 
@@ -105,10 +105,10 @@ Documentation site includes:
 - [x] GitHub Pages enabled on repository
 - [x] Source configured: `/docs` folder on `main` branch
 - [x] CNAME file created in `/docs` folder
-- [x] Custom domain configured: docs.infershield.dev
+- [x] Custom domain configured: docs.infershield.io
 - [ ] DNS CNAME record added (PENDING USER ACTION)
 - [ ] DNS propagation complete (5-60 minutes)
-- [ ] Site accessible at https://docs.infershield.dev
+- [ ] Site accessible at https://docs.infershield.io
 - [ ] HTTPS enforcement enabled
 - [ ] HTTPS certificate valid
 - [ ] Deployment documentation committed
@@ -123,13 +123,13 @@ After DNS CNAME record is added and propagates:
 
 1. **Verify DNS Resolution:**
    ```bash
-   dig docs.infershield.dev
-   nslookup docs.infershield.dev
+   dig docs.infershield.io
+   nslookup docs.infershield.io
    ```
 
 2. **Test Site Accessibility:**
    ```bash
-   curl -I http://docs.infershield.dev/
+   curl -I http://docs.infershield.io/
    # Should return HTTP 200 OK
    ```
 
@@ -142,7 +142,7 @@ After DNS CNAME record is added and propagates:
 
 4. **Verify HTTPS:**
    ```bash
-   curl -I https://docs.infershield.dev/
+   curl -I https://docs.infershield.io/
    # Should return HTTP 200 OK with valid certificate
    ```
 
@@ -154,7 +154,7 @@ After DNS CNAME record is added and propagates:
 
 **If site not accessible:**
 1. Check GitHub Pages deployment status: `gh run list --workflow=pages-build-deployment`
-2. Verify DNS propagation: `dig docs.infershield.dev`
+2. Verify DNS propagation: `dig docs.infershield.io`
 3. Check CNAME file exists: `cat docs/CNAME`
 4. Check GitHub Pages settings: `gh api repos/InferShield/infershield/pages`
 5. View build logs: `gh run view --log`

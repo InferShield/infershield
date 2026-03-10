@@ -1,4 +1,4 @@
-# ⚠️ REQUIRED USER ACTION: DNS Configuration for docs.infershield.dev
+# ⚠️ REQUIRED USER ACTION: DNS Configuration for docs.infershield.io
 
 **Product ID:** prod_infershield_001  
 **Priority:** P0 - BLOCKING DEPLOYMENT  
@@ -12,21 +12,21 @@
 ✅ **GitHub Pages Configuration:**
 - Repository: InferShield/infershield
 - Source: `/docs` folder on `main` branch
-- Custom domain configured: docs.infershield.dev
+- Custom domain configured: docs.infershield.io
 - CNAME file created and committed
 - GitHub Pages rebuild triggered
 - Deployment documentation created
 
 ✅ **Status:**
 - GitHub Pages: Building
-- CNAME file: docs.infershield.dev
+- CNAME file: docs.infershield.io
 - Documentation: Committed to repository
 
 ---
 
 ## What You Need to Do
 
-**Add DNS CNAME record** to make `docs.infershield.dev` accessible.
+**Add DNS CNAME record** to make `docs.infershield.io` accessible.
 
 ### Required DNS Record
 
@@ -76,7 +76,7 @@ aws route53 change-resource-record-sets \
     "Changes": [{
       "Action": "CREATE",
       "ResourceRecordSet": {
-        "Name": "docs.infershield.dev",
+        "Name": "docs.infershield.io",
         "Type": "CNAME",
         "TTL": 3600,
         "ResourceRecords": [{"Value": "infershield.github.io"}]
@@ -88,7 +88,7 @@ aws route53 change-resource-record-sets \
 ### Option 3: GCP Cloud DNS
 
 ```bash
-gcloud dns record-sets create docs.infershield.dev. \
+gcloud dns record-sets create docs.infershield.io. \
   --rrdatas="infershield.github.io." \
   --type=CNAME \
   --ttl=3600 \
@@ -115,30 +115,30 @@ gcloud dns record-sets create docs.infershield.dev. \
 
 ```bash
 # Check DNS propagation
-dig docs.infershield.dev
+dig docs.infershield.io
 
 # You should see:
-# docs.infershield.dev.  3600  IN  CNAME  infershield.github.io.
+# docs.infershield.io.  3600  IN  CNAME  infershield.github.io.
 ```
 
 ### Alternative Verification:
 
 ```bash
-nslookup docs.infershield.dev
-# Should show: docs.infershield.dev canonical name = infershield.github.io
+nslookup docs.infershield.io
+# Should show: docs.infershield.io canonical name = infershield.github.io
 ```
 
 ### Full Site Check (30-60 minutes after DNS propagates):
 
 ```bash
 # Test HTTP (should work immediately after DNS)
-curl -I http://docs.infershield.dev/
+curl -I http://docs.infershield.io/
 
 # Test HTTPS (after certificate provisioning, ~30 min)
-curl -I https://docs.infershield.dev/
+curl -I https://docs.infershield.io/
 ```
 
-**Or visit in browser:** http://docs.infershield.dev/
+**Or visit in browser:** http://docs.infershield.io/
 
 ---
 
@@ -164,8 +164,8 @@ curl -I https://docs.infershield.dev/
 1. DNS propagates (5-60 minutes)
 2. GitHub Pages detects DNS resolution
 3. HTTPS certificate auto-provisioned (Let's Encrypt)
-4. Site becomes accessible at http://docs.infershield.dev/
-5. HTTPS becomes available at https://docs.infershield.dev/
+4. Site becomes accessible at http://docs.infershield.io/
+5. HTTPS becomes available at https://docs.infershield.io/
 
 **Manual final step (after HTTPS cert ready):**
 
@@ -182,8 +182,8 @@ gh api -X PATCH /repos/InferShield/infershield/pages \
 **DNS not propagating?**
 - Wait 60 minutes (full propagation time)
 - Check TTL on old records (if changing existing record)
-- Try: `dig @8.8.8.8 docs.infershield.dev` (Google DNS)
-- Try: `dig @1.1.1.1 docs.infershield.dev` (Cloudflare DNS)
+- Try: `dig @8.8.8.8 docs.infershield.io` (Google DNS)
+- Try: `dig @1.1.1.1 docs.infershield.io` (Cloudflare DNS)
 
 **Site showing 404?**
 - GitHub Pages still building (check: `gh run list --workflow=pages-build-deployment`)

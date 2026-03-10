@@ -1,4 +1,4 @@
-# DNS Configuration Required for docs.infershield.dev
+# DNS Configuration Required for docs.infershield.io
 
 **Product ID:** prod_infershield_001  
 **Priority:** P0 - BLOCKING DEPLOYMENT  
@@ -9,7 +9,7 @@
 
 ## Required DNS Record
 
-To complete GitHub Pages setup for `docs.infershield.dev`, add the following DNS record:
+To complete GitHub Pages setup for `docs.infershield.io`, add the following DNS record:
 
 **Domain:** infershield.io  
 **Record Type:** CNAME  
@@ -17,7 +17,7 @@ To complete GitHub Pages setup for `docs.infershield.dev`, add the following DNS
 **Value:** infershield.github.io  
 **TTL:** 3600 (1 hour recommended)
 
-**Full Domain Resolution:** docs.infershield.dev → infershield.github.io
+**Full Domain Resolution:** docs.infershield.io → infershield.github.io
 
 ---
 
@@ -43,7 +43,7 @@ aws route53 change-resource-record-sets \
     "Changes": [{
       "Action": "CREATE",
       "ResourceRecordSet": {
-        "Name": "docs.infershield.dev",
+        "Name": "docs.infershield.io",
         "Type": "CNAME",
         "TTL": 3600,
         "ResourceRecords": [{"Value": "infershield.github.io"}]
@@ -54,7 +54,7 @@ aws route53 change-resource-record-sets \
 
 ### If using GCP Cloud DNS:
 ```bash
-gcloud dns record-sets create docs.infershield.dev. \
+gcloud dns record-sets create docs.infershield.io. \
   --rrdatas="infershield.github.io." \
   --type=CNAME \
   --ttl=3600 \
@@ -79,16 +79,16 @@ After adding DNS record, verify propagation:
 
 ```bash
 # Check DNS resolution
-dig docs.infershield.dev
+dig docs.infershield.io
 
 # Expected output:
-# docs.infershield.dev.  3600  IN  CNAME  infershield.github.io.
+# docs.infershield.io.  3600  IN  CNAME  infershield.github.io.
 
 # Alternative check
-nslookup docs.infershield.dev
+nslookup docs.infershield.io
 
 # Test with curl (after propagation)
-curl -I https://docs.infershield.dev/
+curl -I https://docs.infershield.io/
 ```
 
 ---
@@ -106,7 +106,7 @@ curl -I https://docs.infershield.dev/
 **GitHub Pages Configuration:**
 - ✅ Repository: InferShield/infershield
 - ✅ Source: `/docs` folder on `main` branch
-- ✅ Custom domain configured: docs.infershield.dev
+- ✅ Custom domain configured: docs.infershield.io
 - ✅ CNAME file created and committed
 - ⏳ Status: Building (triggered by CNAME change)
 - ⏳ DNS: Awaiting CNAME record creation

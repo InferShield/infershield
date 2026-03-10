@@ -527,7 +527,7 @@ curl $INFERSHIELD_ENDPOINT/health
 
 ## Testing Recommendations
 
-Before deploying docs site (docs.infershield.dev):
+Before deploying docs site (docs.infershield.io):
 
 1. **Link validation:**
    - Run `markdown-link-check` on all .md files
