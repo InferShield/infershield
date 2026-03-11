@@ -31,7 +31,9 @@ npm install
 
 ```bash
 cp .env.example .env
-# Edit .env and add your OpenAI API key
+# Default KEY_MODE=passthrough — no server-side API key required.
+# Clients pass their own key in the Authorization header.
+# See the Configuration section for KEY_MODE options.
 ```
 
 ### 3. Start Proxy
@@ -197,8 +199,22 @@ You should see:
 Edit `.env`:
 
 ```bash
-# Your OpenAI API key
-OPENAI_API_KEY=sk-proj-xxx
+# KEY_MODE controls how API keys are handled (default: passthrough)
+#
+#   passthrough — Client passes their own key in the Authorization header.
+#                 No server-side key needed. This is the default and recommended mode.
+#
+#   auto        — Use server OPENAI_API_KEY if set; otherwise use client's key.
+#                 Useful when migrating from server mode.
+#
+#   server      — [DEPRECATED] Server manages the OPENAI_API_KEY.
+#                 A deprecation warning is logged at startup.
+#                 Requires OPENAI_API_KEY to be set.
+#
+KEY_MODE=passthrough
+
+# Required only when KEY_MODE=server or KEY_MODE=auto (with server fallback desired)
+# OPENAI_API_KEY=sk-proj-xxx
 
 # InferShield backend URL
 FIREWALL_ENDPOINT=http://localhost:5000
@@ -206,6 +222,10 @@ FIREWALL_ENDPOINT=http://localhost:5000
 # Port to run proxy on
 PROXY_PORT=8000
 ```
+
+> ⚠️ **Deprecation Notice:** `KEY_MODE=server` is deprecated and will be removed in a future release.
+> Please migrate to `KEY_MODE=passthrough` where clients supply their own API keys.
+> This aligns with the modern InferShield SaaS model and avoids storing upstream credentials on the server.
 
 ## Deployment
 

@@ -12,9 +12,53 @@ const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const FIREWALL_ENDPOINT = process.env.FIREWALL_ENDPOINT || 'http://localhost:5000';
 const OPENAI_BASE = 'https://api.openai.com/v1';
 
-if (!OPENAI_API_KEY) {
-  console.error('ERROR: OPENAI_API_KEY not set in .env file');
+// KEY_MODE controls how API keys are handled:
+//   passthrough (default): Use client's Authorization header verbatim
+//   auto:                  Use server key if set, else fall back to client key
+//   server (deprecated):   Use server-side OPENAI_API_KEY (requires key to be set)
+const KEY_MODE = (process.env.KEY_MODE || 'passthrough').toLowerCase();
+
+if (!['passthrough', 'auto', 'server'].includes(KEY_MODE)) {
+  console.error(`ERROR: Invalid KEY_MODE "${KEY_MODE}". Must be one of: passthrough, auto, server`);
   process.exit(1);
+}
+
+if (KEY_MODE === 'server') {
+  console.warn('\n⚠️  DEPRECATION WARNING: KEY_MODE=server is deprecated.');
+  console.warn('   Server-managed API keys will be removed in a future release.');
+  console.warn('   Please migrate to KEY_MODE=passthrough (default) where clients');
+  console.warn('   supply their own API keys in the Authorization header.\n');
+  if (!OPENAI_API_KEY) {
+    console.error('ERROR: KEY_MODE=server requires OPENAI_API_KEY to be set.');
+    process.exit(1);
+  }
+}
+
+if (KEY_MODE === 'auto' && !OPENAI_API_KEY) {
+  console.warn('[KEY_MODE=auto] OPENAI_API_KEY not set — will use client Authorization headers.');
+}
+
+/**
+ * Resolve the Authorization header to forward to OpenAI.
+ *
+ * @param {string|undefined} clientAuthHeader - The Authorization header from the incoming request.
+ * @returns {string|null} The Authorization header value to forward, or null if none available.
+ */
+function resolveAuthorization(clientAuthHeader) {
+  switch (KEY_MODE) {
+    case 'server':
+      return `Bearer ${OPENAI_API_KEY}`;
+
+    case 'auto':
+      if (OPENAI_API_KEY) {
+        return `Bearer ${OPENAI_API_KEY}`;
+      }
+      return clientAuthHeader || null;
+
+    case 'passthrough':
+    default:
+      return clientAuthHeader || null;
+  }
 }
 
 // Helper: Extract prompt text from OpenAI request
@@ -64,10 +108,11 @@ async function logInteraction(prompt, response, analysis, agentId) {
 
 // Proxy handler for chat completions
 app.post('/v1/chat/completions', async (req, res) => {
-  const authHeader = req.headers.authorization;
+  const clientAuthHeader = req.headers.authorization;
   const agentId = req.headers['x-agent-id'] || 'unknown-agent';
-  
-  if (!authHeader) {
+
+  const authorization = resolveAuthorization(clientAuthHeader);
+  if (!authorization) {
     return res.status(401).json({ error: 'Missing Authorization header' });
   }
 
@@ -98,7 +143,7 @@ app.post('/v1/chat/completions', async (req, res) => {
       req.body,
       {
         headers: {
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Authorization': authorization,
           'Content-Type': 'application/json'
         },
         responseType: req.body.stream ? 'stream' : 'json'
@@ -127,10 +172,11 @@ app.post('/v1/chat/completions', async (req, res) => {
 
 // Proxy handler for legacy completions
 app.post('/v1/completions', async (req, res) => {
-  const authHeader = req.headers.authorization;
+  const clientAuthHeader = req.headers.authorization;
   const agentId = req.headers['x-agent-id'] || 'unknown-agent';
-  
-  if (!authHeader) {
+
+  const authorization = resolveAuthorization(clientAuthHeader);
+  if (!authorization) {
     return res.status(401).json({ error: 'Missing Authorization header' });
   }
 
@@ -152,7 +198,7 @@ app.post('/v1/completions', async (req, res) => {
       req.body,
       {
         headers: {
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Authorization': authorization,
           'Content-Type': 'application/json'
         }
       }
@@ -169,9 +215,10 @@ app.post('/v1/completions', async (req, res) => {
 
 // Proxy handler for embeddings
 app.post('/v1/embeddings', async (req, res) => {
-  const authHeader = req.headers.authorization;
-  
-  if (!authHeader) {
+  const clientAuthHeader = req.headers.authorization;
+
+  const authorization = resolveAuthorization(clientAuthHeader);
+  if (!authorization) {
     return res.status(401).json({ error: 'Missing Authorization header' });
   }
 
@@ -184,7 +231,7 @@ app.post('/v1/embeddings', async (req, res) => {
       req.body,
       {
         headers: {
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Authorization': authorization,
           'Content-Type': 'application/json'
         }
       }
@@ -200,10 +247,17 @@ app.post('/v1/embeddings', async (req, res) => {
 
 // List models endpoint
 app.get('/v1/models', async (req, res) => {
+  const clientAuthHeader = req.headers.authorization;
+  const authorization = resolveAuthorization(clientAuthHeader);
+
+  if (!authorization) {
+    return res.status(401).json({ error: 'Missing Authorization header' });
+  }
+
   try {
     const openaiResponse = await axios.get(`${OPENAI_BASE}/models`, {
       headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`
+        'Authorization': authorization
       }
     });
     res.json(openaiResponse.data);
@@ -219,14 +273,21 @@ app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     firewall: FIREWALL_ENDPOINT,
+    key_mode: KEY_MODE,
     timestamp: new Date().toISOString()
   });
 });
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🛡️  InferShield OpenAI Proxy`);
-  console.log(`📡 Listening on http://0.0.0.0:${PORT}`);
-  console.log(`🔒 Firewall: ${FIREWALL_ENDPOINT}`);
-  console.log(`🤖 OpenAI: ${OPENAI_BASE}\n`);
-  console.log(`Integration: Set OPENAI_API_BASE=http://localhost:${PORT}/v1\n`);
-});
+// Only start listening when run directly (not when required by tests)
+if (require.main === module) {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n🛡️  InferShield OpenAI Proxy`);
+    console.log(`📡 Listening on http://0.0.0.0:${PORT}`);
+    console.log(`🔒 Firewall: ${FIREWALL_ENDPOINT}`);
+    console.log(`🤖 OpenAI: ${OPENAI_BASE}`);
+    console.log(`🔑 Key Mode: ${KEY_MODE}\n`);
+    console.log(`Integration: Set OPENAI_API_BASE=http://localhost:${PORT}/v1\n`);
+  });
+}
+
+module.exports = { app, resolveAuthorization }; // Export for testing
