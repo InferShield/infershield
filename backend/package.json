@@ -4,13 +4,14 @@
   "description": "InferShield MVP Backend",
   "main": "index.js",
   "scripts": {
-    "start": "echo '🚀 npm start called' && echo 'PWD:' && pwd && echo 'Files:' && ls -la && echo 'Starting node...' && node server.js",
+    "start": "echo '\ud83d\ude80 npm start called' && echo 'PWD:' && pwd && echo 'Files:' && ls -la && echo 'Starting node...' && node server.js",
     "migrate:prod": "npx knex migrate:latest --env production",
     "migrate": "npx knex migrate:latest",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "test:e2e": "node tests/e2e/run-e2e.js"
+    "test:e2e": "node tests/e2e/run-e2e.js",
+    "test:windows": "jest --config ../jest.windows.config.js --rootDir .."
   },
   "dependencies": {
     "axios": "^1.13.6",
